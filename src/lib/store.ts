@@ -274,6 +274,83 @@ function seedCommunications(): CommRecord[] {
       sentAt: undefined,
       tags: ["client-update", "forensics", "tron-fraud"],
     },
+    // ── Troy Miller / 169 Creamer Drive Communications ──
+    {
+      id: uuidv4(),
+      channel: "email",
+      status: "sent" as CommStatus,
+      subject: "Formal Demand — Post-Closing Proceeds Reconciliation, 169 Creamer Drive",
+      body: "Michael,\n\nI am writing to formally request a full accounting and reconciliation of the post-closing proceeds from the sale of 169 Creamer Drive, Alpharetta, GA 30004.\n\nAs you know, I invested over $65,000 in improvements to the property that directly increased the sale price by approximately $100,000. I also carried approximately $60,000 in additional SBA valuation costs at $1,250/month over ~48 months, invested $6,800 in painting and labor during COVID to prepare the property for sale, managed all tenants, and handled ongoing maintenance.\n\nI acknowledge the $50,000 loan and $3,500 remaining on the auto and boom loans as offsets. I also acknowledge your improvements (A/C, roof, asphalt) which you verbally estimated at approximately $35,000, though no documentation has been provided despite requests.\n\nThe jointly held funds from closing — approximately $1,000,000 — need to be reconciled and distributed according to our agreement. Please provide a full accounting within 30 days.\n\nTroy Miller\nPresident/CEO, etrenzik\n678-467-5515\nCAGE Code: 6SCL2",
+      to: "michael@bestlyfegroup.com",
+      from: "tmiller@etrenzik.com",
+      privileged: false,
+      workProduct: false,
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      createdAt: "2026-03-30T12:00:00Z",
+      updatedAt: "2026-03-30T12:00:00Z",
+      sentAt: "2026-03-30T12:00:00Z",
+      tags: ["demand", "client-authored", "creamer-drive"],
+    },
+    {
+      id: uuidv4(),
+      channel: "email",
+      status: "draft" as CommStatus,
+      subject: "Engagement Letter — Troy Miller / 169 Creamer Drive Property Dispute",
+      body: "Dear Mr. Miller,\n\nThank you for retaining UNYKORN // LAW to represent you in connection with the post-closing proceeds dispute arising from the sale of 169 Creamer Drive, Alpharetta, Georgia 30004.\n\nScope of Representation:\nWe will represent you in pursuing claims against Michael Walser for breach of contract, equitable accounting, unjust enrichment, money had and received, and reimbursement for improvements related to the jointly held post-closing proceeds.\n\nFee Structure:\nThis matter will be handled on a contingency basis. Our fee shall be [percentage]% of the gross recovery obtained through settlement, judgment, or other resolution.\n\nEstimated Case Value:\nBased on our preliminary analysis, the estimated net recovery is approximately $143,300, subject to verification of all claimed amounts and discovery of respondent's assets.\n\nNext Steps:\n1. Execute this engagement letter\n2. Provide all documentation (closing statement, improvement invoices, bank statements, loan docs)\n3. We will draft and send a formal 30-day demand letter via certified mail\n4. If no response, prepare complaint for Forsyth County Superior Court\n\nPlease review, sign, and return at your earliest convenience.\n\nVery truly yours,\nKevan Burns\nUNYKORN // LAW",
+      to: "tmiller@etrenzik.com",
+      from: "legal@unykorn.org",
+      privileged: true,
+      workProduct: true,
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      createdAt: "2026-04-07T09:00:00Z",
+      updatedAt: "2026-04-07T09:00:00Z",
+      tags: ["engagement-letter", "attorney-privileged", "creamer-drive"],
+    },
+    {
+      id: uuidv4(),
+      channel: "email",
+      status: "draft" as CommStatus,
+      subject: "Document Request — 169 Creamer Drive Post-Closing Dispute",
+      body: "Dear Troy,\n\nTo build the strongest possible case, we need the following documents at your earliest convenience:\n\n1. CRITICAL — Closing/Settlement Statement (HUD-1 or Closing Disclosure)\n   - This shows how the ~$1M in proceeds was disbursed at closing\n\n2. Deed History — Any deeds showing ownership structure\n\n3. Written Communications — All emails, texts, and messages with Michael Walser regarding:\n   - The profit-split agreement\n   - Expense reconciliation terms\n   - His acknowledgment of your improvements\n\n4. Improvement Documentation:\n   - Invoices, receipts, and contractor agreements for the $65K+ in improvements\n   - Photos before/after improvements\n   - $6,800 painting/COVID prep invoices\n\n5. SBA Records:\n   - Monthly payment records showing the $1,250/mo carrying costs\n   - SBA valuation documents\n\n6. Loan Documentation:\n   - $50,000 loan documents\n   - Auto and boom loan records ($3,500 remaining)\n\n7. Bank Statements — Showing all payments made toward the property\n\n8. Tenant Management Records — Lease agreements, rent collected, management communications\n\n9. Michael Walser's Florida Address — Needed for service of process\n\nPlease send whatever you have — even partial records help build timeline and establish facts.\n\nBest regards,\nLegal Operations Team\nUNYKORN // LAW",
+      to: "tmiller@etrenzik.com",
+      from: "ops@unykorn.org",
+      privileged: false,
+      workProduct: false,
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      createdAt: "2026-04-07T10:00:00Z",
+      updatedAt: "2026-04-07T10:00:00Z",
+      tags: ["document-request", "client-communication", "creamer-drive"],
+    },
+    {
+      id: uuidv4(),
+      channel: "secure_message",
+      status: "draft" as CommStatus,
+      subject: "Case Strategy Update — Filing Timeline",
+      body: "Troy,\n\nQuick update on your case strategy:\n\n• COMPLETED: Conflict check — clear, no adverse relationships\n• COMPLETED: Georgia cotenant law research — strong authorities support your claims\n• IN PROGRESS: Formal demand letter (attorney review queue)\n• PENDING: Document collection from you (see separate email)\n• PENDING: Damages model (blocked until we receive your records)\n\nTimeline:\n- Demand letter response deadline: April 30, 2026\n- If no response: file complaint in Forsyth County Superior Court (May 2026)\n- Discovery phase: 3-6 months\n- Trial/resolution: 12-18 months\n\nIMPORTANT: Georgia has a 6-year statute of limitations on written contract claims and 4 years on unjust enrichment. We need to confirm when the breach occurred to ensure we file within the window.\n\nLet me know if you have questions.\n\n— Legal Ops",
+      to: "tmiller@etrenzik.com",
+      from: "ops@unykorn.org",
+      privileged: true,
+      workProduct: true,
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      createdAt: "2026-04-07T14:00:00Z",
+      updatedAt: "2026-04-07T14:00:00Z",
+      tags: ["strategy-update", "attorney-privileged", "creamer-drive"],
+    },
+    {
+      id: uuidv4(),
+      channel: "letter",
+      status: "draft" as CommStatus,
+      subject: "Certified Mail Demand — Michael Walser, 169 Creamer Drive Post-Closing Proceeds",
+      body: "VIA CERTIFIED MAIL — RETURN RECEIPT REQUESTED\n\nMichael Walser\n[Florida Address TBD]\n\nRe: Demand for Accounting and Distribution of Post-Closing Proceeds\n    169 Creamer Drive, Alpharetta, Georgia 30004\n\nDear Mr. Walser:\n\nThis firm represents Troy Miller in connection with the above-referenced matter. Mr. Miller is a co-owner/joint venture partner in the property formerly located at 169 Creamer Drive, Alpharetta, Georgia 30004, Forsyth County.\n\nPursuant to Georgia law, including O.C.G.A. § 23-2-70 (equitable accounting between cotenants), we hereby demand that you provide a complete and verified accounting of all post-closing proceeds from the sale of the above property within thirty (30) days of your receipt of this letter.\n\nOur client's verified contributions include:\n• $65,000+ in property improvements\n• $60,000 in SBA valuation carrying costs ($1,250/mo × ~48 months)\n• $6,800 in painting and labor (COVID sale preparation)\n• Full tenant management and ongoing maintenance\n\nAcknowledged offsets:\n• ($50,000) — loan associated with Mr. Miller\n• ($3,500) — remaining auto and boom loans\n\nYour claimed improvements (A/C, roof, asphalt) estimated verbally at ~$35,000 remain unverified. No documentation has been provided despite repeated requests.\n\nIf a satisfactory accounting and equitable distribution is not received within 30 days, we are authorized to file suit in the Superior Court of Forsyth County, Georgia, seeking:\n1. Full accounting and reconciliation\n2. Breach of contract damages\n3. Unjust enrichment recovery\n4. Prejudgment interest as allowed by Georgia law\n5. Attorney fees and litigation costs\n\nPlease direct all future communications to this office.\n\nVery truly yours,\n\nKevan Burns, Esq.\nUNYKORN // LAW\nlegal@unykorn.org",
+      to: "michael@bestlyfegroup.com",
+      from: "legal@unykorn.org",
+      privileged: true,
+      workProduct: true,
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      createdAt: "2026-04-07T11:00:00Z",
+      updatedAt: "2026-04-07T11:00:00Z",
+      tags: ["certified-demand", "attorney-privileged", "opposing-party", "creamer-drive"],
+    },
   ];
 }
 
@@ -290,6 +367,20 @@ function seedAudit(): AuditRecord[] {
     { id: uuidv4(), timestamp: new Date(now.getTime() - 900000).toISOString(), action: "task_completed", category: "workflow", actor: "intake-agent-001", actorType: "agent", resourceType: "task", resourceId: "TASK-001", description: "Initial case review task completed for intake pipeline", metadata: { workflowType: "intake_pipeline" } },
     { id: uuidv4(), timestamp: new Date(now.getTime() - 300000).toISOString(), action: "communication_drafted", category: "communication", actor: "comm-agent-001", actorType: "agent", resourceType: "communication", resourceId: "COMM-001", description: "Client update email drafted for TRON fraud investigation", metadata: { channel: "email", privileged: false } },
     { id: uuidv4(), timestamp: new Date(now.getTime() - 60000).toISOString(), action: "agent_heartbeat", category: "system", actor: "system", actorType: "system", resourceType: "agent_network", resourceId: "network-7332", description: "Agent network health check — 350/350 agents responding", metadata: { totalAgents: 350, healthy: 350, chain: 7332 } },
+    // ── Troy Miller / Creamer Drive Audit Trail ──
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 86400000).toISOString(), action: "intake_created", category: "intake", actor: "kevan-burns", actorType: "human", resourceType: "intake", resourceId: "INT-2026-TROY", description: "New intake created: Troy Miller — 169 Creamer Drive property dispute ($143K est.)", metadata: { matterType: "civil_property", estimatedValue: 143300, client: "Troy Miller" } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 85800000).toISOString(), action: "conflict_check_initiated", category: "compliance", actor: "compliance-agent-001", actorType: "agent", resourceType: "intake", resourceId: "INT-2026-TROY", description: "Conflict check initiated — Troy Miller vs. Michael Walser / BestLyfe Group", metadata: { adverseParties: ["Michael Walser", "BestLyfe Group"] } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 85200000).toISOString(), action: "conflict_check_cleared", category: "compliance", actor: "compliance-agent-001", actorType: "agent", resourceType: "intake", resourceId: "INT-2026-TROY", description: "Conflict check cleared — no adverse relationships with Walser or BestLyfe Group", metadata: { result: "cleared" } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 82800000).toISOString(), action: "intake_created", category: "intake", actor: "kevan-burns", actorType: "human", resourceType: "matter", resourceId: "UNY-CIV-2026-003", description: "Intake accepted — matter created: UNY-CIV-2026-003 (169 Creamer Drive)", metadata: { matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890" } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 79200000).toISOString(), action: "research_completed", category: "research", actor: "research-agent-001", actorType: "agent", resourceType: "research", resourceId: "RES-GA-COTENANT", description: "Georgia cotenant/JV law research completed — 8 binding authorities, 4 persuasive", metadata: { authorities: 12, bindingCount: 8, jurisdiction: "GA", topics: ["cotenant", "equitable_accounting", "reimbursement"] } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 75600000).toISOString(), action: "evidence_uploaded", category: "evidence", actor: "kevan-burns", actorType: "human", resourceType: "evidence", resourceId: "ev-demand-email", description: "Evidence uploaded: Troy Miller demand email to Michael Walser (2026-03-30)", metadata: { filename: "demand_email_2026-03-30.eml", category: "communication" } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 72000000).toISOString(), action: "evidence_verified", category: "evidence", actor: "document-agent-003", actorType: "agent", resourceType: "evidence", resourceId: "ev-demand-email", description: "Demand email verified — extracted 9 ledger entries, 5 claims, party details", metadata: { ledgerEntries: 9, claims: 5, verificationConfidence: 0.92 } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 68400000).toISOString(), action: "document_drafted", category: "document", actor: "drafter-agent-001", actorType: "agent", resourceType: "document", resourceId: "appr-001-demand", description: "Formal demand letter drafted for Creamer Drive — citing GA § 23-2-70, GA § 9-3-24", metadata: { confidence: 0.85, wordCount: 890, citations: 3 } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 64800000).toISOString(), action: "approval_submitted", category: "approval", actor: "drafter-agent-001", actorType: "agent", resourceType: "approval", resourceId: "appr-001-demand", description: "Demand letter submitted to approval queue — assigned to Kevan Burns", metadata: { category: "demand_letter", priority: "high" } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 61200000).toISOString(), action: "document_drafted", category: "document", actor: "drafter-agent-001", actorType: "agent", resourceType: "document", resourceId: "appr-003-engagement", description: "Engagement letter drafted for Troy Miller — contingency fee structure", metadata: { confidence: 0.90, wordCount: 650 } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 57600000).toISOString(), action: "document_drafted", category: "document", actor: "drafter-agent-001", actorType: "agent", resourceType: "document", resourceId: "appr-004-certified-demand", description: "Certified mail demand letter drafted — 30-day cure period, GA statutory citations", metadata: { confidence: 0.88, wordCount: 1100, citations: 3 } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 54000000).toISOString(), action: "communication_drafted", category: "communication", actor: "comm-agent-001", actorType: "agent", resourceType: "communication", resourceId: "COMM-TROY-DOCS", description: "Document request email drafted for Troy Miller — 9 categories of evidence needed", metadata: { channel: "email", documentCategories: 9 } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 50400000).toISOString(), action: "communication_drafted", category: "communication", actor: "comm-agent-001", actorType: "agent", resourceType: "communication", resourceId: "COMM-TROY-STRATEGY", description: "Case strategy update drafted for Troy Miller — timeline and next steps", metadata: { channel: "secure_message", privileged: true } },
   ];
 
   let prevHash = "0".repeat(64);
@@ -305,6 +396,91 @@ function seedAudit(): AuditRecord[] {
 }
 
 // ─── Store Class ──────────────────────────────────────────────────────────
+
+function seedResearch(): ResearchQuery[] {
+  return [
+    {
+      id: uuidv4(),
+      queryType: "statute",
+      query: "Georgia cotenant rights to accounting and partition of property proceeds — O.C.G.A. § 44-6-121 et seq. and § 23-2-70",
+      jurisdiction: "Georgia",
+      status: "completed",
+      resultCount: 8,
+      createdAt: "2026-04-07T02:00:00Z",
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    },
+    {
+      id: uuidv4(),
+      queryType: "case_law",
+      query: "Georgia breach of joint venture agreement — cotenant fails to account for sale proceeds after property sold",
+      jurisdiction: "Georgia",
+      status: "completed",
+      resultCount: 12,
+      createdAt: "2026-04-07T02:30:00Z",
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    },
+    {
+      id: uuidv4(),
+      queryType: "statute",
+      query: "Georgia statute of limitations — breach of written contract 6 years (§ 9-3-24) vs unjust enrichment 4 years (§ 9-3-26)",
+      jurisdiction: "Georgia",
+      status: "completed",
+      resultCount: 4,
+      createdAt: "2026-04-07T03:00:00Z",
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    },
+    {
+      id: uuidv4(),
+      queryType: "case_law",
+      query: "Georgia reimbursement for improvements by cotenant — increased property value, equitable lien",
+      jurisdiction: "Georgia",
+      status: "completed",
+      resultCount: 6,
+      createdAt: "2026-04-07T03:30:00Z",
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    },
+    {
+      id: uuidv4(),
+      queryType: "statute",
+      query: "Georgia long-arm statute § 9-10-91 — personal jurisdiction over nonresident who transacted business or owned property in Georgia",
+      jurisdiction: "Georgia",
+      status: "completed",
+      resultCount: 5,
+      createdAt: "2026-04-07T04:00:00Z",
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    },
+    {
+      id: uuidv4(),
+      queryType: "regulation",
+      query: "Florida Enforcement of Foreign Judgments Act — F.S. Ch. 55 (§ 55.501 et seq.) domestication of Georgia judgment",
+      jurisdiction: "Florida",
+      status: "completed",
+      resultCount: 3,
+      createdAt: "2026-04-07T04:30:00Z",
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    },
+    {
+      id: uuidv4(),
+      queryType: "case_law",
+      query: "Florida homestead exemption Art. X § 4 — limitations on judgment collection against Florida homestead property",
+      jurisdiction: "Florida",
+      status: "completed",
+      resultCount: 7,
+      createdAt: "2026-04-07T05:00:00Z",
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    },
+    {
+      id: uuidv4(),
+      queryType: "brief_analysis",
+      query: "Georgia prejudgment interest on breach of contract — availability and calculation methods for property accounting disputes",
+      jurisdiction: "Georgia",
+      status: "pending",
+      resultCount: 0,
+      createdAt: "2026-04-07T12:00:00Z",
+      matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    },
+  ];
+}
 
 type Listener = () => void;
 
@@ -327,7 +503,7 @@ class PlatformStore {
     this._communications = load(KEYS.communications, seedCommunications());
     this._audit = load(KEYS.audit, seedAudit());
     this._notifications = load(KEYS.notifications, []);
-    this._research = load(KEYS.research, []);
+    this._research = load(KEYS.research, seedResearch());
     this._initialized = true;
   }
 
