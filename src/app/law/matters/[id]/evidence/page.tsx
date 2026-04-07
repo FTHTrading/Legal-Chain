@@ -1,20 +1,27 @@
+"use client";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
+import { use, useState, useMemo } from "react";
 import { SEED_MATTER_CREAMER } from "@/lib/data/seed";
 
-export function generateStaticParams() {
-  return [{ id: SEED_MATTER_CREAMER.id }];
-}
+type EvidenceStatus = "verified" | "supported" | "alleged" | "disputed";
+const ALL_STATUSES: EvidenceStatus[] = ["verified", "supported", "alleged", "disputed"];
 
 function getMatter(id: string) {
   if (id === SEED_MATTER_CREAMER.id) return SEED_MATTER_CREAMER;
   return null;
 }
 
-export default async function EvidencePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default function EvidencePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const matter = getMatter(id);
+
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, EvidenceStatus>>({});
+  const [statusFilter, setStatusFilter] = useState<EvidenceStatus | "all">("all");
+  const [actionLog, setActionLog] = useState<Array<{ id: string; from: string; to: string; time: string }>>([]);
+
   if (!matter) {
     return (
       <>
@@ -34,10 +41,24 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
     { label: "Evidence", href: `/law/matters/${id}/evidence`, active: true },
   ];
 
-  const statusCounts = matter.evidence.reduce((acc, e) => {
+  const evidenceWithStatus = matter.evidence.map(e => ({
+    ...e,
+    status: statusOverrides[e.id] || e.status,
+  }));
+
+  const filteredEvidence = statusFilter === "all"
+    ? evidenceWithStatus
+    : evidenceWithStatus.filter(e => e.status === statusFilter);
+
+  const statusCounts = evidenceWithStatus.reduce((acc, e) => {
     acc[e.status] = (acc[e.status] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
+
+  function changeStatus(itemId: string, currentStatus: string, newStatus: EvidenceStatus) {
+    setStatusOverrides(prev => ({ ...prev, [itemId]: newStatus }));
+    setActionLog(prev => [{ id: itemId, from: currentStatus, to: newStatus, time: new Date().toISOString() }, ...prev]);
+  }
 
   return (
     <>
@@ -72,24 +93,32 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
             ))}
           </div>
 
-          {/* Status Summary */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          {/* Status Summary — clickable filters */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8">
+            <button onClick={() => setStatusFilter("all")} className={`bg-[var(--navy-card)] border rounded-lg p-6 text-center cursor-pointer transition-colors ${
+              statusFilter === "all" ? "border-[var(--gold)]" : "border-[rgba(201,168,76,0.1)] hover:border-[rgba(201,168,76,0.3)]"
+            }`}>
+              <div className="font-serif text-2xl font-bold text-[var(--text-primary)]">{evidenceWithStatus.length}</div>
+              <div className="text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mt-1">All</div>
+            </button>
             {[
-              { label: "Verified", count: statusCounts["verified"] || 0, color: "text-[var(--success)]" },
-              { label: "Supported", count: statusCounts["supported"] || 0, color: "text-[var(--gold)]" },
-              { label: "Alleged", count: statusCounts["alleged"] || 0, color: "text-[var(--text-muted)]" },
-              { label: "Disputed", count: statusCounts["disputed"] || 0, color: "text-red-400" },
+              { label: "Verified", key: "verified" as EvidenceStatus, color: "text-[var(--success)]" },
+              { label: "Supported", key: "supported" as EvidenceStatus, color: "text-[var(--gold)]" },
+              { label: "Alleged", key: "alleged" as EvidenceStatus, color: "text-[var(--text-muted)]" },
+              { label: "Disputed", key: "disputed" as EvidenceStatus, color: "text-red-400" },
             ].map((s) => (
-              <div key={s.label} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 text-center">
-                <div className={`font-serif text-2xl font-bold ${s.color}`}>{s.count}</div>
+              <button key={s.label} onClick={() => setStatusFilter(s.key)} className={`bg-[var(--navy-card)] border rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                statusFilter === s.key ? "border-[var(--gold)]" : "border-[rgba(201,168,76,0.1)] hover:border-[rgba(201,168,76,0.3)]"
+              }`}>
+                <div className={`font-serif text-2xl font-bold ${s.color}`}>{statusCounts[s.key] || 0}</div>
                 <div className="text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mt-1">{s.label}</div>
-              </div>
+              </button>
             ))}
           </div>
 
           {/* Evidence Items */}
           <div className="space-y-4">
-            {matter.evidence.map((item, i) => (
+            {filteredEvidence.map((item, i) => (
               <div key={item.id} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-4 flex-1">
@@ -113,7 +142,7 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
                       </div>
                     </div>
                   </div>
-                  <div className="text-right shrink-0">
+                  <div className="text-right shrink-0 flex flex-col items-end gap-2">
                     <span className={`text-xs font-mono tracking-wider uppercase ${
                       item.status === "verified" ? "text-[var(--success)]" :
                       item.status === "supported" ? "text-[var(--gold)]" :
@@ -123,8 +152,22 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
                       {item.status}
                     </span>
                     {item.dateObtained && (
-                      <div className="text-xs text-[var(--text-muted)] mt-1">{item.dateObtained}</div>
+                      <div className="text-xs text-[var(--text-muted)]">{item.dateObtained}</div>
                     )}
+                    {/* Status Actions */}
+                    <div className="flex gap-1 mt-1">
+                      {ALL_STATUSES.filter(s => s !== item.status).map(s => (
+                        <button key={s} onClick={() => changeStatus(item.id, item.status, s)}
+                          className={`text-[10px] font-mono px-2 py-0.5 rounded border cursor-pointer transition-colors ${
+                            s === "verified" ? "border-green-700 text-green-400 hover:bg-green-900/30" :
+                            s === "supported" ? "border-yellow-700 text-yellow-400 hover:bg-yellow-900/30" :
+                            s === "disputed" ? "border-red-700 text-red-400 hover:bg-red-900/30" :
+                            "border-gray-600 text-gray-400 hover:bg-gray-800/30"
+                          }`}>
+                          {s}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -139,6 +182,24 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
               </div>
             ))}
           </div>
+
+          {/* Action Log */}
+          {actionLog.length > 0 && (
+            <div className="mt-8 bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6">
+              <h3 className="text-xs font-mono text-[var(--gold)] tracking-wider mb-4">STATUS CHANGE LOG ({actionLog.length})</h3>
+              <div className="space-y-2">
+                {actionLog.slice(0, 10).map((log, i) => (
+                  <div key={i} className="flex items-center gap-3 text-xs font-mono text-[var(--text-muted)]">
+                    <span>{new Date(log.time).toLocaleTimeString()}</span>
+                    <span className="text-[var(--text-primary)]">{log.id}</span>
+                    <span>{log.from}</span>
+                    <span className="text-[var(--gold)]">→</span>
+                    <span className={log.to === "verified" ? "text-green-400" : log.to === "disputed" ? "text-red-400" : "text-[var(--text-primary)]"}>{log.to}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </main>
       <Footer />

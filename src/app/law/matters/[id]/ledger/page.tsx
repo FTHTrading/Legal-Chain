@@ -1,20 +1,21 @@
+"use client";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
+import { use, useState, useMemo } from "react";
 import { SEED_MATTER_CREAMER } from "@/lib/data/seed";
-
-export function generateStaticParams() {
-  return [{ id: SEED_MATTER_CREAMER.id }];
-}
 
 function getMatter(id: string) {
   if (id === SEED_MATTER_CREAMER.id) return SEED_MATTER_CREAMER;
   return null;
 }
 
-export default async function LedgerPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default function LedgerPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const matter = getMatter(id);
+  const [catFilter, setCatFilter] = useState("all");
+
   if (!matter) {
     return (
       <>
@@ -34,14 +35,45 @@ export default async function LedgerPage({ params }: { params: Promise<{ id: str
     { label: "Evidence", href: `/law/matters/${id}/evidence` },
   ];
 
+  const categories = ["all", ...Array.from(new Set(matter.ledger.map(e => e.category)))];
+
+  const filteredLedger = catFilter === "all" ? matter.ledger : matter.ledger.filter(e => e.category === catFilter);
+
   let runningBalance = 0;
-  const ledgerWithBalance = matter.ledger.map((entry) => {
+  const ledgerWithBalance = filteredLedger.map((entry) => {
     runningBalance += entry.amount;
     return { ...entry, balance: runningBalance };
   });
 
-  const totalClaimed = matter.ledger.filter((e) => e.amount > 0).reduce((s, e) => s + e.amount, 0);
-  const totalOffsets = matter.ledger.filter((e) => e.amount < 0).reduce((s, e) => s + e.amount, 0);
+  const totalClaimed = filteredLedger.filter((e) => e.amount > 0).reduce((s, e) => s + e.amount, 0);
+  const totalOffsets = filteredLedger.filter((e) => e.amount < 0).reduce((s, e) => s + e.amount, 0);
+  const netBalance = totalClaimed + totalOffsets;
+
+  function exportCSV() {
+    const header = "#,Date,Description,Category,Claimed,Offset,Balance,Status";
+    let bal = 0;
+    const rows = filteredLedger.map((e, i) => {
+      bal += e.amount;
+      return [
+        i + 1,
+        e.date,
+        `"${e.description.replace(/"/g, '""')}"`,
+        e.category.replace(/_/g, " "),
+        e.amount > 0 ? e.amount : "",
+        e.amount < 0 ? Math.abs(e.amount) : "",
+        bal,
+        e.verificationStatus,
+      ].join(",");
+    });
+    const csv = [header, ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${matter!.matterId}-ledger-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <>
@@ -57,10 +89,15 @@ export default async function LedgerPage({ params }: { params: Promise<{ id: str
             <span>Ledger</span>
           </div>
 
-          <h1 className="font-serif text-3xl md:text-4xl font-bold mb-2">
-            Financial Ledger
-          </h1>
-          <p className="text-[var(--text-muted)] mb-8">{matter.ledger.length} entries — {matter.title}</p>
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="font-serif text-3xl md:text-4xl font-bold">
+              Financial Ledger
+            </h1>
+            <button onClick={exportCSV} className="text-xs font-mono px-4 py-2 bg-[var(--gold)] text-[var(--midnight)] rounded hover:brightness-110 transition-all cursor-pointer font-bold">
+              EXPORT CSV
+            </button>
+          </div>
+          <p className="text-[var(--text-muted)] mb-8">{filteredLedger.length} entries{catFilter !== "all" ? ` (${catFilter.replace(/_/g, " ")})` : ""} — {matter.title}</p>
 
           {/* Tabs */}
           <div className="flex gap-1 mb-8 border-b border-[rgba(201,168,76,0.1)]">
@@ -73,6 +110,19 @@ export default async function LedgerPage({ params }: { params: Promise<{ id: str
                 }`}>
                 {t.label}
               </Link>
+            ))}
+          </div>
+
+          {/* Category Filters */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {categories.map(cat => (
+              <button key={cat} onClick={() => setCatFilter(cat)} className={`text-xs font-mono tracking-wider uppercase px-3 py-1.5 rounded border transition-colors cursor-pointer ${
+                catFilter === cat
+                  ? "bg-[var(--gold)] text-[var(--midnight)] border-[var(--gold)]"
+                  : "bg-transparent text-[var(--text-muted)] border-[rgba(201,168,76,0.2)] hover:border-[var(--gold)] hover:text-[var(--gold)]"
+              }`}>
+                {cat === "all" ? "all" : cat.replace(/_/g, " ")}
+              </button>
             ))}
           </div>
 
@@ -92,8 +142,8 @@ export default async function LedgerPage({ params }: { params: Promise<{ id: str
             </div>
             <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6">
               <div className="text-xs text-[var(--text-muted)] mb-1">Net Balance Owed</div>
-              <div className={`font-serif text-xl font-bold ${runningBalance >= 0 ? "text-[var(--gold)]" : "text-red-400"}`}>
-                ${Math.abs(runningBalance).toLocaleString()}
+              <div className={`font-serif text-xl font-bold ${netBalance >= 0 ? "text-[var(--gold)]" : "text-red-400"}`}>
+                ${Math.abs(netBalance).toLocaleString()}
               </div>
             </div>
           </div>

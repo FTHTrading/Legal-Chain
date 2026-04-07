@@ -3,15 +3,27 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { IMAGE_GALLERY, VIDEO_GALLERY } from "@/lib/data/seed";
 
 export default function MediaPage() {
   const [lightbox, setLightbox] = useState<typeof IMAGE_GALLERY[number] | null>(null);
+  const [videoPlayer, setVideoPlayer] = useState<typeof VIDEO_GALLERY[number] | null>(null);
   const categories = ["all", ...Array.from(new Set(IMAGE_GALLERY.map(i => i.category)))];
+  const videoCategories = ["all", ...Array.from(new Set(VIDEO_GALLERY.map(v => v.category)))];
   const [filter, setFilter] = useState("all");
+  const [videoFilter, setVideoFilter] = useState("all");
 
   const filteredImages = filter === "all" ? IMAGE_GALLERY : IMAGE_GALLERY.filter(i => i.category === filter);
+  const filteredVideos = useMemo(() => videoFilter === "all" ? VIDEO_GALLERY : VIDEO_GALLERY.filter(v => v.category === videoFilter), [videoFilter]);
+
+  const lightboxIndex = useMemo(() => lightbox ? filteredImages.findIndex(i => i.id === lightbox.id) : -1, [lightbox, filteredImages]);
+
+  const navigateLightbox = useCallback((dir: -1 | 1) => {
+    if (lightboxIndex < 0) return;
+    const next = lightboxIndex + dir;
+    if (next >= 0 && next < filteredImages.length) setLightbox(filteredImages[next]);
+  }, [lightboxIndex, filteredImages]);
 
   return (
     <>
@@ -60,12 +72,25 @@ export default function MediaPage() {
 
           {/* Video Gallery */}
           <section>
-            <h2 className="font-serif text-xs tracking-[0.2em] uppercase text-[var(--gold)] mb-6">Videos ({VIDEO_GALLERY.length})</h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-serif text-xs tracking-[0.2em] uppercase text-[var(--gold)]">Videos ({filteredVideos.length})</h2>
+              <div className="flex gap-2">
+                {videoCategories.map(cat => (
+                  <button key={cat} onClick={() => setVideoFilter(cat)} className={`text-xs font-mono tracking-wider uppercase px-3 py-1.5 rounded border transition-colors cursor-pointer ${
+                    videoFilter === cat
+                      ? "bg-[var(--gold)] text-[var(--midnight)] border-[var(--gold)]"
+                      : "bg-transparent text-[var(--text-muted)] border-[rgba(201,168,76,0.2)] hover:border-[var(--gold)] hover:text-[var(--gold)]"
+                  }`}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="grid md:grid-cols-2 gap-6">
-              {VIDEO_GALLERY.map((vid) => (
-                <div key={vid.id} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 card-lift">
+              {filteredVideos.map((vid) => (
+                <button key={vid.id} onClick={() => setVideoPlayer(vid)} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 card-lift text-left cursor-pointer hover:border-[var(--gold)] transition-colors w-full">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 shrink-0 rounded bg-[rgba(201,168,76,0.1)] flex items-center justify-center text-[var(--gold)]">
+                    <div className="w-12 h-12 shrink-0 rounded bg-[rgba(201,168,76,0.1)] flex items-center justify-center text-[var(--gold)] text-xl">
                       ▶
                     </div>
                     <div className="flex-1">
@@ -75,25 +100,58 @@ export default function MediaPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </section>
         </div>
       </main>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox Modal — Images */}
       {lightbox && (
         <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-8" onClick={() => setLightbox(null)}>
           <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 text-white text-3xl bg-transparent border-none cursor-pointer hover:text-[var(--gold)] transition-colors z-10">
             &times;
           </button>
+          {/* Prev */}
+          {lightboxIndex > 0 && (
+            <button onClick={(e) => { e.stopPropagation(); navigateLightbox(-1); }} className="absolute left-6 top-1/2 -translate-y-1/2 text-white text-4xl bg-transparent border-none cursor-pointer hover:text-[var(--gold)] transition-colors z-10">
+              ‹
+            </button>
+          )}
+          {/* Next */}
+          {lightboxIndex < filteredImages.length - 1 && (
+            <button onClick={(e) => { e.stopPropagation(); navigateLightbox(1); }} className="absolute right-6 top-1/2 -translate-y-1/2 text-white text-4xl bg-transparent border-none cursor-pointer hover:text-[var(--gold)] transition-colors z-10">
+              ›
+            </button>
+          )}
           <div className="relative max-w-[900px] max-h-[80vh] w-full aspect-video" onClick={(e) => e.stopPropagation()}>
             <Image src={lightbox.file} alt={lightbox.title} fill className="object-contain rounded-lg" />
           </div>
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
             <p className="font-serif text-lg font-semibold text-white">{lightbox.title}</p>
-            <p className="text-xs text-[var(--text-muted)] font-mono uppercase tracking-wider">{lightbox.category}</p>
+            <p className="text-xs text-[var(--text-muted)] font-mono uppercase tracking-wider">{lightbox.category} — {lightboxIndex + 1} / {filteredImages.length}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Video Player Modal */}
+      {videoPlayer && (
+        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-8" onClick={() => setVideoPlayer(null)}>
+          <button onClick={() => setVideoPlayer(null)} className="absolute top-6 right-6 text-white text-3xl bg-transparent border-none cursor-pointer hover:text-[var(--gold)] transition-colors z-10">
+            &times;
+          </button>
+          <div className="max-w-[960px] w-full" onClick={e => e.stopPropagation()}>
+            <video
+              src={`/media/videos/${videoPlayer.file}`}
+              controls
+              autoPlay
+              className="w-full rounded-lg border border-[rgba(201,168,76,0.2)]"
+            />
+            <div className="text-center mt-4">
+              <p className="font-serif text-lg font-semibold text-white">{videoPlayer.title}</p>
+              <p className="text-xs text-[var(--text-muted)] font-mono uppercase tracking-wider">{videoPlayer.category}</p>
+            </div>
           </div>
         </div>
       )}

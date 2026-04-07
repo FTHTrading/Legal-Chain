@@ -1,11 +1,9 @@
+"use client";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { SEED_FORENSIC_TRON } from "@/lib/data/seed-platform";
-
-export const metadata = {
-  title: "Forensics Lab — UNYKORN // LAW",
-  description: "Web3 blockchain forensic investigations — wallet tracing, transaction analysis, evidence packaging.",
-};
+import { useState, useMemo } from "react";
 
 export default function ForensicsPage() {
   const fc = SEED_FORENSIC_TRON;
@@ -19,6 +17,147 @@ export default function ForensicsPage() {
   };
   const caseRisk = fc.transactions.some(t => t.riskLevel === "critical") ? "critical"
     : fc.transactions.some(t => t.riskLevel === "high") ? "high" : "medium";
+
+  const [walletSearch, setWalletSearch] = useState("");
+  const [reportModal, setReportModal] = useState<"transaction" | "wallet" | "declaration" | null>(null);
+
+  const filteredWallets = useMemo(() => {
+    if (!walletSearch.trim()) return fc.wallets;
+    const q = walletSearch.toLowerCase();
+    return fc.wallets.filter(w =>
+      (w.label?.toLowerCase().includes(q)) ||
+      w.address.toLowerCase().includes(q) ||
+      w.ownerName?.toLowerCase().includes(q) ||
+      w.chain.toLowerCase().includes(q) ||
+      w.riskLevel.toLowerCase().includes(q)
+    );
+  }, [walletSearch, fc.wallets]);
+
+  function generateTransactionReport() {
+    const lines = [
+      "═══════════════════════════════════════════════════════════",
+      "UNYKORN // LAW — BLOCKCHAIN TRANSACTION REPORT",
+      "═══════════════════════════════════════════════════════════",
+      "",
+      `Case: ${fc.title}`,
+      `Case ID: ${fc.id}`,
+      `Type: ${fc.caseType.replace(/_/g, " ")}`,
+      `Chains: ${fc.chains.join(", ").toUpperCase()}`,
+      `Generated: ${new Date().toISOString()}`,
+      `Total Value Traced: $${totalTracedUsd.toLocaleString()}`,
+      `Estimated Recoverable: $${recoverableUsd.toLocaleString()}`,
+      "",
+      "───────────────────────────────────────────────────────────",
+      "TRACED TRANSACTIONS",
+      "───────────────────────────────────────────────────────────",
+      "",
+    ];
+    fc.transactions.forEach((tx, i) => {
+      const amt = (parseFloat(tx.amount) / 1e6).toLocaleString();
+      lines.push(`[${String(i + 1).padStart(2, "0")}] ${tx.notes || tx.txType}`);
+      lines.push(`     Hash: ${tx.txHash}`);
+      lines.push(`     From: ${tx.fromAddress}`);
+      lines.push(`     To:   ${tx.toAddress}`);
+      lines.push(`     Amount: $${amt} ${tx.asset} | Chain: ${tx.chain.toUpperCase()}`);
+      lines.push(`     Risk: ${tx.riskLevel} | Indicators: ${tx.riskIndicators.join(", ")}`);
+      lines.push(`     Time: ${new Date(tx.timestamp).toLocaleString()}`);
+      lines.push("");
+    });
+    return lines.join("\n");
+  }
+
+  function generateWalletReport() {
+    const lines = [
+      "═══════════════════════════════════════════════════════════",
+      "UNYKORN // LAW — WALLET ANALYSIS REPORT",
+      "═══════════════════════════════════════════════════════════",
+      "",
+      `Case: ${fc.title}`,
+      `Generated: ${new Date().toISOString()}`,
+      `Total Wallets Traced: ${fc.wallets.length}`,
+      "",
+      "───────────────────────────────────────────────────────────",
+      "WALLET RISK ANALYSIS",
+      "───────────────────────────────────────────────────────────",
+      "",
+    ];
+    fc.wallets.forEach((w, i) => {
+      lines.push(`[${String(i + 1).padStart(2, "0")}] ${w.label || "Unknown"}`);
+      lines.push(`     Address: ${w.address}`);
+      lines.push(`     Chain: ${w.chain.toUpperCase()} | Risk: ${w.riskLevel.toUpperCase()}`);
+      if (w.ownerName) lines.push(`     Owner: ${w.ownerName}`);
+      if (w.transactionCount != null) lines.push(`     Transactions: ${w.transactionCount}`);
+      if (w.firstSeen) lines.push(`     First Seen: ${new Date(w.firstSeen).toLocaleDateString()}`);
+      if (w.riskIndicators.length) lines.push(`     Risk Indicators: ${w.riskIndicators.join(", ")}`);
+      lines.push("");
+    });
+    return lines.join("\n");
+  }
+
+  function generateCourtDeclaration() {
+    const lines = [
+      "═══════════════════════════════════════════════════════════",
+      "EXPERT DECLARATION — BLOCKCHAIN FORENSIC ANALYSIS",
+      "═══════════════════════════════════════════════════════════",
+      "",
+      "IN THE MATTER OF: " + fc.title,
+      "CASE REFERENCE: " + fc.id,
+      "",
+      "I, [EXPERT NAME], declare under penalty of perjury:",
+      "",
+      "1. QUALIFICATIONS",
+      "   I am a certified blockchain forensic analyst retained by",
+      "   UNYKORN // LAW to conduct digital asset tracing and analysis.",
+      "",
+      "2. SCOPE OF INVESTIGATION",
+      `   This investigation covers ${fc.chains.join(" and ").toUpperCase()} blockchain`,
+      `   networks. ${fc.wallets.length} wallets and ${fc.transactions.length} transactions`,
+      "   were analyzed using chain-specific block explorers and proprietary tools.",
+      "",
+      "3. FINDINGS",
+      `   Total Value Traced: $${totalTracedUsd.toLocaleString()}`,
+      `   Estimated Recoverable: $${recoverableUsd.toLocaleString()}`,
+      `   Risk Assessment: ${caseRisk.toUpperCase()}`,
+      "",
+      "4. EVIDENCE SUMMARY",
+    ];
+    fc.wallets.forEach((w, i) => {
+      lines.push(`   Exhibit ${String.fromCharCode(65 + i)}: Wallet ${w.address.slice(0, 12)}...`);
+      lines.push(`     — ${w.label || "Unknown"} (${w.riskLevel} risk)`);
+      if (w.riskIndicators.length) lines.push(`     — Indicators: ${w.riskIndicators.join(", ")}`);
+    });
+    lines.push("");
+    lines.push("5. CHAIN OF CUSTODY");
+    lines.push("   All evidence was cryptographically hashed at time of collection.");
+    lines.push("   Transaction data verified against on-chain state.");
+    lines.push("");
+    lines.push("   [SIGNATURE BLOCK]");
+    lines.push(`   Date: ${new Date().toLocaleDateString()}`);
+    lines.push("");
+    lines.push("   *** REQUIRES ATTORNEY REVIEW BEFORE FILING ***");
+    return lines.join("\n");
+  }
+
+  const reportContent = reportModal === "transaction" ? generateTransactionReport()
+    : reportModal === "wallet" ? generateWalletReport()
+    : reportModal === "declaration" ? generateCourtDeclaration()
+    : "";
+
+  const reportTitle = reportModal === "transaction" ? "Transaction Report"
+    : reportModal === "wallet" ? "Wallet Analysis"
+    : reportModal === "declaration" ? "Court Declaration"
+    : "";
+
+  function handleDownload() {
+    if (!reportContent || !reportModal) return;
+    const blob = new Blob([reportContent], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${fc.id}-${reportModal}-${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <>
@@ -78,11 +217,18 @@ export default function ForensicsPage() {
 
           {/* Traced Wallets */}
           <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg overflow-hidden mb-8">
-            <div className="p-4 border-b border-[rgba(201,168,76,0.1)]">
-              <p className="text-xs font-mono text-[var(--gold)] tracking-wider">TRACED WALLETS</p>
+            <div className="p-4 border-b border-[rgba(201,168,76,0.1)] flex items-center justify-between gap-4">
+              <p className="text-xs font-mono text-[var(--gold)] tracking-wider">TRACED WALLETS ({filteredWallets.length})</p>
+              <input
+                type="text"
+                placeholder="Search wallets..."
+                value={walletSearch}
+                onChange={e => setWalletSearch(e.target.value)}
+                className="text-xs font-mono bg-[var(--navy)] border border-[rgba(201,168,76,0.2)] rounded px-3 py-1.5 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] w-64 focus:outline-none focus:border-[var(--gold)] transition-colors"
+              />
             </div>
             <div className="divide-y divide-[rgba(201,168,76,0.05)]">
-              {fc.wallets.map(w => (
+              {filteredWallets.map(w => (
                 <div key={w.address} className="p-4 hover:bg-[var(--navy)] transition-colors">
                   <div className="flex items-start justify-between">
                     <div>
@@ -118,6 +264,9 @@ export default function ForensicsPage() {
                   )}
                 </div>
               ))}
+              {filteredWallets.length === 0 && (
+                <div className="p-8 text-center text-sm text-[var(--text-muted)]">No wallets match &ldquo;{walletSearch}&rdquo;</div>
+              )}
             </div>
           </div>
 
@@ -172,15 +321,15 @@ export default function ForensicsPage() {
           <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6">
             <h2 className="font-serif text-sm tracking-[0.2em] uppercase text-[var(--gold)] mb-4">EVIDENCE PACKAGE</h2>
             <div className="grid md:grid-cols-3 gap-4">
-              <button className="p-4 bg-[var(--navy)] border border-[rgba(201,168,76,0.2)] rounded text-left hover:border-[var(--gold)] transition-colors cursor-pointer">
+              <button onClick={() => setReportModal("transaction")} className="p-4 bg-[var(--navy)] border border-[rgba(201,168,76,0.2)] rounded text-left hover:border-[var(--gold)] transition-colors cursor-pointer">
                 <p className="text-sm font-bold mb-1">Transaction Report</p>
                 <p className="text-xs text-[var(--text-muted)]">Full traced transaction history with chain verification timestamps</p>
               </button>
-              <button className="p-4 bg-[var(--navy)] border border-[rgba(201,168,76,0.2)] rounded text-left hover:border-[var(--gold)] transition-colors cursor-pointer">
+              <button onClick={() => setReportModal("wallet")} className="p-4 bg-[var(--navy)] border border-[rgba(201,168,76,0.2)] rounded text-left hover:border-[var(--gold)] transition-colors cursor-pointer">
                 <p className="text-sm font-bold mb-1">Wallet Analysis</p>
                 <p className="text-xs text-[var(--text-muted)]">Complete wallet ownership analysis with risk scoring</p>
               </button>
-              <button className="p-4 bg-[var(--navy)] border border-[rgba(201,168,76,0.2)] rounded text-left hover:border-[var(--gold)] transition-colors cursor-pointer">
+              <button onClick={() => setReportModal("declaration")} className="p-4 bg-[var(--navy)] border border-[rgba(201,168,76,0.2)] rounded text-left hover:border-[var(--gold)] transition-colors cursor-pointer">
                 <p className="text-sm font-bold mb-1">Court Declaration</p>
                 <p className="text-xs text-[var(--text-muted)]">Formatted expert declaration for court filing with exhibits</p>
               </button>
@@ -196,6 +345,32 @@ export default function ForensicsPage() {
           </div>
         </div>
       </main>
+
+      {/* Report Modal */}
+      {reportModal && (
+        <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-8" onClick={() => setReportModal(null)}>
+          <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded-lg max-w-[900px] w-full max-h-[85vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-6 border-b border-[rgba(201,168,76,0.1)]">
+              <div>
+                <p className="text-xs font-mono text-[var(--gold)] tracking-wider mb-1">EVIDENCE PACKAGE</p>
+                <h3 className="font-serif text-xl font-bold">{reportTitle}</h3>
+              </div>
+              <div className="flex items-center gap-3">
+                <button onClick={handleDownload} className="text-xs font-mono px-4 py-2 bg-[var(--gold)] text-[var(--midnight)] rounded hover:brightness-110 transition-all cursor-pointer font-bold">
+                  DOWNLOAD .TXT
+                </button>
+                <button onClick={() => setReportModal(null)} className="text-2xl text-[var(--text-muted)] hover:text-white transition-colors bg-transparent border-none cursor-pointer">
+                  &times;
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6">
+              <pre className="text-xs font-mono text-[var(--text-primary)] whitespace-pre-wrap leading-relaxed">{reportContent}</pre>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </>
   );
