@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { SEED_NAMESPACE_MARQUIS } from "@/lib/data/seed-platform";
+import { SEED_NAMESPACE_MARQUIS, SEED_NAMESPACE_TRONFRAUD, SEED_NAMESPACE_CREAMER } from "@/lib/data/seed-platform";
 import { useCommunications, useApprovals } from "@/lib/hooks";
 import { use } from "react";
 
@@ -15,8 +15,13 @@ export default function PortalPage({
   const comms = useCommunications();
   const approvals = useApprovals();
 
-  // Demo: only "marquis" namespace has seed data
-  const ns = slug === "marquis" ? SEED_NAMESPACE_MARQUIS : null;
+  const NAMESPACES: Record<string, typeof SEED_NAMESPACE_MARQUIS> = {
+    marquis: SEED_NAMESPACE_MARQUIS,
+    tronfraud: SEED_NAMESPACE_TRONFRAUD,
+    creamer: SEED_NAMESPACE_CREAMER,
+  };
+
+  const ns = NAMESPACES[slug] || null;
 
   // Pull live data for this namespace's matter
   const matterComms = comms.filter(c => c.matterId === (ns as any)?.matterId || c.tags?.some(t => t.includes(slug)));

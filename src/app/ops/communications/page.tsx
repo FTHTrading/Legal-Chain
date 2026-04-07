@@ -172,6 +172,11 @@ export default function CommunicationsPage() {
                         APPROVE
                       </button>
                     )}
+                    {comm.status === "approved" && (
+                      <button onClick={() => { store.updateCommStatus(comm.id, "sent"); toast("success", "Sent", `"${comm.subject}" dispatched successfully`); }} className="px-3 py-1.5 bg-blue-800/30 text-blue-400 rounded text-xs font-mono hover:bg-blue-800/40 transition-colors cursor-pointer">
+                        SEND
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

@@ -487,3 +487,142 @@ export const SEED_WORKFLOW_INTAKE: Workflow = {
   createdAt: "2026-04-07T00:00:00Z",
   updatedAt: "2026-04-07T12:00:00Z",
 };
+
+// ── TRON Fraud Namespace (NTI-LEAVITT-2026-001) ──
+
+export const SEED_NAMESPACE_TRONFRAUD: Namespace = {
+  slug: "tronfraud",
+  matterId: "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+  title: "NTI-LEAVITT-2026-001",
+  subtitle: "Cryptocurrency Fraud Recovery — TRON / ETH",
+  status: "active",
+  createdAt: "2026-01-20T00:00:00Z",
+  updatedAt: "2026-04-07T00:00:00Z",
+  caseType: "crypto_fraud",
+  jurisdiction: "Federal — FBI IC3 / Multi-Chain",
+  statusSummary: "Active blockchain forensics tracing $36,150 across TRON and Ethereum networks. 14 wallets identified. Cross-chain bridge exits under investigation.",
+  nextAction: "Complete forensic report and submit to FBI IC3",
+  access: [
+    {
+      userId: "00000000-0000-0000-0000-000000000001",
+      role: "counsel",
+      grantedBy: "00000000-0000-0000-0000-000000000001",
+      grantedAt: "2026-01-20T00:00:00Z",
+      permissions: ["view_overview", "view_timeline", "view_documents", "view_evidence", "view_status", "view_milestones", "view_financials", "view_strategy", "view_privileged"],
+    },
+    {
+      userId: "client-leavitt-001",
+      role: "client",
+      grantedBy: "00000000-0000-0000-0000-000000000001",
+      grantedAt: "2026-01-20T00:00:00Z",
+      permissions: ["view_overview", "view_timeline", "view_status", "view_milestones", "send_messages"],
+    },
+  ],
+  milestones: [
+    {
+      id: "ms-tron-intake",
+      title: "Case Intake & Wallet Collection",
+      status: "completed",
+      completedAt: "2026-01-22T00:00:00Z",
+      visibleToClient: true,
+    },
+    {
+      id: "ms-tron-tracing",
+      title: "Blockchain Forensic Tracing",
+      status: "completed",
+      completedAt: "2026-02-15T00:00:00Z",
+      visibleToClient: true,
+    },
+    {
+      id: "ms-tron-bridge",
+      title: "Cross-Chain Bridge Analysis",
+      status: "in_progress",
+      visibleToClient: true,
+    },
+    {
+      id: "ms-tron-report",
+      title: "Forensic Report Generation",
+      status: "pending",
+      targetDate: "2026-05-15",
+      visibleToClient: true,
+    },
+    {
+      id: "ms-tron-filing",
+      title: "FBI IC3 Complaint Filing",
+      status: "pending",
+      visibleToClient: true,
+    },
+  ],
+  messages: [],
+  packets: [],
+};
+
+// ── Creamer Drive Namespace (169 Creamer Dr) ──
+
+export const SEED_NAMESPACE_CREAMER: Namespace = {
+  slug: "creamer",
+  matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  title: "169 Creamer Drive",
+  subtitle: "Post-Closing Proceeds Accounting",
+  status: "active",
+  createdAt: "2026-04-07T00:00:00Z",
+  updatedAt: "2026-04-07T00:00:00Z",
+  caseType: "civil_joint_property_accounting",
+  jurisdiction: "Forsyth County, GA / FL Enforcement Overlay",
+  statusSummary: "Pre-litigation — formal demand sent to respondent. Awaiting response within 30-day cure period. Damages model in development pending client documents.",
+  nextAction: "Follow up on demand letter response deadline",
+  access: [
+    {
+      userId: "00000000-0000-0000-0000-000000000001",
+      role: "counsel",
+      grantedBy: "00000000-0000-0000-0000-000000000001",
+      grantedAt: "2026-04-07T00:00:00Z",
+      permissions: ["view_overview", "view_timeline", "view_documents", "view_evidence", "view_status", "view_milestones", "view_financials", "view_strategy", "view_privileged"],
+    },
+    {
+      userId: "client-troy-miller-001",
+      role: "client",
+      grantedBy: "00000000-0000-0000-0000-000000000001",
+      grantedAt: "2026-04-07T00:00:00Z",
+      permissions: ["view_overview", "view_timeline", "view_status", "view_milestones", "send_messages"],
+    },
+  ],
+  milestones: [
+    {
+      id: "ms-cr-intake",
+      title: "Case Intake & Conflict Check",
+      status: "completed",
+      completedAt: "2026-04-07T01:00:00Z",
+      visibleToClient: true,
+    },
+    {
+      id: "ms-cr-research",
+      title: "Georgia Cotenant Law Research",
+      status: "completed",
+      completedAt: "2026-04-07T02:00:00Z",
+      visibleToClient: true,
+    },
+    {
+      id: "ms-cr-demand",
+      title: "Formal Demand Letter Sent",
+      status: "completed",
+      completedAt: "2026-04-08T00:00:00Z",
+      visibleToClient: true,
+    },
+    {
+      id: "ms-cr-docs",
+      title: "Client Document Collection",
+      status: "in_progress",
+      visibleToClient: true,
+    },
+    {
+      id: "ms-cr-damages",
+      title: "Damages Model & Filing Preparation",
+      status: "pending",
+      targetDate: "2026-05-01",
+      visibleToClient: true,
+    },
+  ],
+  messages: [],
+  packets: [],
+};

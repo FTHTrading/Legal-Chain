@@ -1,14 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useTasks, useToast } from "@/lib/hooks";
 import { store } from "@/lib/store";
 import { ToastContainer } from "@/components/ui";
 
+const AGENT_OPTIONS = [
+  { id: "compliance-agent-001", label: "Compliance Agent" },
+  { id: "research-agent-001", label: "Research Agent" },
+  { id: "filing-agent-001", label: "Filing Agent" },
+  { id: "forensic-chain-agent-001", label: "Forensic Agent" },
+  { id: "kevan-burns", label: "Kevan Burns" },
+];
+
 export default function TasksPage() {
   const tasks = useTasks();
   const { toasts, toast } = useToast();
+  const [reassignId, setReassignId] = useState<string | null>(null);
   const completedCount = tasks.filter(t => t.status === "completed").length;
   const progressPct = Math.round((completedCount / tasks.length) * 100);
 
@@ -136,6 +146,17 @@ export default function TasksPage() {
                           <button onClick={() => { store.updateTaskStatus(task.id, "completed"); toast("success", "Task Completed", `"${task.title}" marked complete`); }} className="px-3 py-1 bg-green-800/30 text-green-400 rounded text-xs font-mono hover:bg-green-800/40 transition-colors cursor-pointer">COMPLETE</button>
                         )}
                         <button onClick={() => { store.updateTaskStatus(task.id, "blocked"); toast("warning", "Task Blocked", `"${task.title}" marked as blocked`); }} className="px-3 py-1 bg-transparent border border-red-800/30 text-red-400 rounded text-xs font-mono hover:bg-red-900/20 transition-colors cursor-pointer">BLOCK</button>
+                        {reassignId === task.id ? (
+                          <div className="flex gap-1 items-center">
+                            <select onChange={(e) => { if (e.target.value) { store.reassignTask(task.id, e.target.value); const label = AGENT_OPTIONS.find(a => a.id === e.target.value)?.label || e.target.value; toast("info", "Reassigned", `"${task.title}" → ${label}`); setReassignId(null); } }} defaultValue="" className="bg-[var(--midnight)] border border-[var(--gold)]/20 rounded px-2 py-1 text-xs font-mono text-[var(--text-primary)] focus:outline-none focus:border-[var(--gold)]/50">
+                              <option value="" disabled>Select agent…</option>
+                              {AGENT_OPTIONS.map(a => <option key={a.id} value={a.id}>{a.label}</option>)}
+                            </select>
+                            <button onClick={() => setReassignId(null)} className="text-xs text-[var(--text-muted)] hover:text-white cursor-pointer">✕</button>
+                          </div>
+                        ) : (
+                          <button onClick={() => setReassignId(task.id)} className="px-3 py-1 bg-transparent border border-[rgba(201,168,76,0.2)] text-[var(--text-muted)] rounded text-xs font-mono hover:border-[var(--gold)] hover:text-white transition-colors cursor-pointer">REASSIGN</button>
+                        )}
                       </div>
                     )}
                   </div>

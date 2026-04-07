@@ -531,6 +531,17 @@ class PlatformStore {
     return record;
   }
 
+  reassignTask(id: string, agentId: string) {
+    const task = this._tasks.find((t) => t.id === id);
+    if (!task) return;
+    const prev = task.assignedToAgent;
+    task.assignedToAgent = agentId;
+    task.updatedAt = new Date().toISOString();
+    this.persist();
+    this.logAction("task_reassigned", "workflow", "kevan-burns", "human", "task", id, `Task "${task.title}" reassigned: ${prev} → ${agentId}`, { workflowType: task.workflowType });
+    this.notify();
+  }
+
   // ─── Communications ──────────────────────────────────────────────────
 
   get communications() { this.init(); return this._communications; }

@@ -1,16 +1,16 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
-import { SEED_MATTER_CREAMER } from "@/lib/data/seed";
+import { SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON } from "@/lib/data/seed";
 
-// For now, static generation with the single known matter
+const ALL_MATTERS = [SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON];
+
 export function generateStaticParams() {
-  return [{ id: SEED_MATTER_CREAMER.id }];
+  return ALL_MATTERS.map(m => ({ id: m.id }));
 }
 
 function getMatter(id: string) {
-  if (id === SEED_MATTER_CREAMER.id) return SEED_MATTER_CREAMER;
-  return null;
+  return ALL_MATTERS.find(m => m.id === id) || null;
 }
 
 export default async function MatterOverview({ params }: { params: Promise<{ id: string }> }) {

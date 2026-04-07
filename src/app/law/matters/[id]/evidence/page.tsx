@@ -4,14 +4,14 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { use, useState, useMemo } from "react";
-import { SEED_MATTER_CREAMER } from "@/lib/data/seed";
+import { SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON } from "@/lib/data/seed";
 
 type EvidenceStatus = "verified" | "supported" | "alleged" | "disputed";
 const ALL_STATUSES: EvidenceStatus[] = ["verified", "supported", "alleged", "disputed"];
+const ALL_MATTERS = [SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON];
 
 function getMatter(id: string) {
-  if (id === SEED_MATTER_CREAMER.id) return SEED_MATTER_CREAMER;
-  return null;
+  return ALL_MATTERS.find(m => m.id === id) || null;
 }
 
 export default function EvidencePage({ params }: { params: Promise<{ id: string }> }) {

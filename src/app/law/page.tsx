@@ -3,7 +3,7 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
-import { ACTIVE_CASES, SEED_MATTER_CREAMER } from "@/lib/data/seed";
+import { ACTIVE_CASES, SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON } from "@/lib/data/seed";
 import { useStore } from "@/lib/hooks";
 import { useState } from "react";
 
@@ -51,6 +51,10 @@ export default function LawPage() {
             {filtered.map((c) => {
               const href = c.id === "creamer-drive-169"
                 ? `/law/matters/${SEED_MATTER_CREAMER.id}`
+                : c.id === "state-v-delcampo"
+                ? `/law/matters/${SEED_MATTER_DELCAMPO.id}`
+                : c.id === "nti-leavitt-2026-001"
+                ? `/law/matters/${SEED_MATTER_TRON.id}`
                 : `/portal/${c.namespace?.split(".")[0] || "marquis"}`;
 
               return (
