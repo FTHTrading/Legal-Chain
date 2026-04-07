@@ -39,6 +39,10 @@ export default function EvidencePage({ params }: { params: Promise<{ id: string 
     { label: "Claims", href: `/law/matters/${id}/claims` },
     { label: "Ledger", href: `/law/matters/${id}/ledger` },
     { label: "Evidence", href: `/law/matters/${id}/evidence`, active: true },
+    { label: "Documents", href: `/law/matters/${id}/documents` },
+    { label: "Jurisdiction", href: `/law/matters/${id}/jurisdiction` },
+    { label: "Recovery", href: `/law/matters/${id}/recovery` },
+    { label: "Timeline", href: `/law/matters/${id}/timeline` },
   ];
 
   const evidenceWithStatus = matter.evidence.map(e => ({
@@ -80,10 +84,10 @@ export default function EvidencePage({ params }: { params: Promise<{ id: string 
           <p className="text-[var(--text-muted)] mb-8">{matter.evidence.length} items collected — {matter.title}</p>
 
           {/* Tabs */}
-          <div className="flex gap-1 mb-8 border-b border-[rgba(201,168,76,0.1)]">
+          <div className="flex gap-1 mb-8 border-b border-[rgba(201,168,76,0.1)] overflow-x-auto">
             {tabs.map((t) => (
               <Link key={t.label} href={t.href}
-                className={`px-4 py-3 text-sm font-serif tracking-wider uppercase no-underline transition-colors ${
+                className={`px-4 py-3 text-sm font-serif tracking-wider uppercase no-underline transition-colors whitespace-nowrap ${
                   t.active
                     ? "text-[var(--gold)] border-b-2 border-[var(--gold)]"
                     : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
