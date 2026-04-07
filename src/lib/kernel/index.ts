@@ -1,7 +1,7 @@
 /**
- * UNYKORN TRUTH KERNEL — Orchestrator (v2)
+ * UNYKORN TRUTH KERNEL — Orchestrator (v3)
  *
- * Composes eight architectural modules into a single kernel:
+ * Composes eleven architectural modules into a single kernel:
  *   1. Canonical State    — versioned, fingerprinted truth records
  *   2. Evidence + Proof   — hashed artifacts, manifests, chain anchors
  *   3. Transition Engine  — rule-based lifecycle state machine
@@ -10,6 +10,9 @@
  *   6. State Roots        — periodic roll-up for chain anchoring
  *   7. Replay Engine      — deterministic verification + export bundles
  *   8. Twin Bindings      — digital twin simulation lifecycle
+ *   9. Evidence Chain     — legal chain-of-custody, privilege, redaction
+ *  10. Workflow Engine    — 9-stage legal reliability pipeline + approval gates
+ *  11. Access Control     — role-based isolation + outbound action gates
  *
  * Import `truthKernel` for the singleton instance.
  */
@@ -36,6 +39,20 @@ export type {
 export type {
   TwinRun, ModelVersion, ScenarioAssumptions, Entitlement, TwinDomain, RunStatus,
 } from "./twin-bindings";
+export type {
+  EvidenceItem, CustodyEvent, AuthenticityStatus, PrivilegeFlag,
+  RedactionState, CustodyAction,
+} from "./evidence-chain";
+export type {
+  Workflow, StageRecord, ApprovalRecord, PipelineStage,
+  StageStatus, WorkflowStatus, ApprovalDecision, StageGate,
+} from "./workflow-engine";
+export { STAGE_ORDER } from "./workflow-engine";
+export type {
+  AccessSubject, AccessTarget, AccessDecision, AccessAuditEntry,
+  AuditSeverity,
+} from "./access-control";
+export { AccessDeniedError } from "./access-control";
 
 // ─── Imports ────────────────────────────────────────────────────────────────
 
@@ -47,6 +64,9 @@ import { AttestationRegistry } from "./attestations";
 import { StateRootEngine } from "./roots";
 import { ReplayEngine } from "./replay";
 import { TwinRegistry } from "./twin-bindings";
+import { EvidenceChain } from "./evidence-chain";
+import { WorkflowEngine } from "./workflow-engine";
+import { AccessControl } from "./access-control";
 
 // ─── TruthKernel ────────────────────────────────────────────────────────────
 
@@ -62,6 +82,11 @@ export class TruthKernel {
   readonly roots = new StateRootEngine();
   readonly replay = new ReplayEngine();
   readonly twins = new TwinRegistry();
+
+  // Legal operations envelope (v3)
+  readonly evidence = new EvidenceChain();
+  readonly workflows = new WorkflowEngine();
+  readonly access = new AccessControl();
 
   /** Async SHA-256 hash (delegates to ProofKernel utility). */
   sha256 = sha256;
@@ -125,6 +150,22 @@ export class TruthKernel {
         return { count: runs.length, fingerprints: runs.map(r => r.inputFingerprint) };
       },
     });
+
+    this.roots.registerCollector({
+      layer: "evidence" as any,
+      collect: () => {
+        const items = this.evidence.allEvidence;
+        return { count: items.length, fingerprints: items.map(e => e.currentHash) };
+      },
+    });
+
+    this.roots.registerCollector({
+      layer: "workflows" as any,
+      collect: () => {
+        const wfs = this.workflows.allWorkflows;
+        return { count: wfs.length, fingerprints: wfs.map(w => w.id) };
+      },
+    });
   }
 
   /** Kernel stats for dashboard display. */
@@ -150,6 +191,16 @@ export class TruthKernel {
       twinRuns: this.twins.runCount,
       completedRuns: this.twins.completedRunCount,
       entitlements: this.twins.entitlementCount,
+      // v3 stats
+      evidenceItems: this.evidence.evidenceCount,
+      preservationHolds: this.evidence.holdCount,
+      privilegedEvidence: this.evidence.privilegedCount,
+      challengedEvidence: this.evidence.challengedCount,
+      activeWorkflows: this.workflows.workflowCount,
+      awaitingApproval: this.workflows.awaitingCount,
+      overdueWorkflows: this.workflows.overdueCount,
+      accessAuditEntries: this.access.auditEntryCount,
+      accessDenials: this.access.denialCount,
     };
   }
 
@@ -161,6 +212,9 @@ export class TruthKernel {
     this.attestations.reset();
     this.roots.reset();
     this.twins.reset();
+    this.evidence.reset();
+    this.workflows.reset();
+    this.access.reset();
   }
 }
 
