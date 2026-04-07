@@ -69,19 +69,18 @@ async function main() {
           title: doc.title,
         },
         useLegalChunking: true,
-        replaceExisting: true,
       });
 
-      totalChunks += result.chunksStored;
+      totalChunks += result.chunksCreated;
       success++;
-      console.log(`  OK    ${doc.file} → ${result.chunksStored} chunks`);
+      console.log(`  OK    ${doc.file} → ${result.chunksCreated} chunks`);
     } catch (err) {
       failed++;
       console.error(`  FAIL  ${doc.file}: ${err instanceof Error ? err.message : err}`);
     }
   }
 
-  const stats = vectorStore.stats();
+  const stats = await vectorStore.stats();
   console.log(`\n--- Ingestion Complete ---`);
   console.log(`Documents: ${success} ingested, ${failed} failed`);
   console.log(`Total chunks in store: ${stats.totalDocuments}`);
