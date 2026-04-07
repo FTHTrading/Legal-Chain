@@ -54,6 +54,13 @@ export function useNotifications() {
   return store.notifications;
 }
 
+/** Subscribe to research queries */
+export function useResearch() {
+  const [, setTick] = useState(0);
+  useEffect(() => store.subscribe(() => setTick((t) => t + 1)), []);
+  return store.research;
+}
+
 /** Toast notification system */
 export function useToast() {
   const [toasts, setToasts] = useState<Array<{ id: string; type: string; title: string; message: string }>>([]);

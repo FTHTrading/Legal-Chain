@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { store } from "@/lib/store";
+import { useStore, useResearch } from "@/lib/hooks";
 
 type QueryType = "case_law" | "statute" | "regulation" | "secondary_source" | "brief_analysis";
 
@@ -83,10 +85,46 @@ const DEMO_AUTHORITIES: Authority[] = [
 ];
 
 export default function ResearchPage() {
+  const stats = useStore();
+  const savedQueries = useResearch();
   const [queryType, setQueryType] = useState<QueryType>("case_law");
   const [query, setQuery] = useState("");
   const [jurisdiction, setJurisdiction] = useState("Georgia");
-  const [results] = useState<Authority[]>(DEMO_AUTHORITIES);
+  const [results, setResults] = useState<Authority[]>(DEMO_AUTHORITIES);
+  const [showHistory, setShowHistory] = useState(false);
+
+  const filteredResults = jurisdiction === "all"
+    ? results
+    : results.filter((r) => r.jurisdiction === jurisdiction || jurisdiction === "Georgia");
+
+  const executeQuery = () => {
+    if (!query.trim()) return;
+    // Filter demo authorities by jurisdiction + text match
+    const matched = DEMO_AUTHORITIES.filter(
+      (a) =>
+        (jurisdiction === "all" || a.jurisdiction === jurisdiction || a.jurisdiction === "Georgia") &&
+        (a.title.toLowerCase().includes(query.toLowerCase()) ||
+          a.keyPassage.toLowerCase().includes(query.toLowerCase()) ||
+          a.citation.toLowerCase().includes(query.toLowerCase()) ||
+          query.toLowerCase().includes("cotenant") ||
+          query.toLowerCase().includes("partition") ||
+          query.toLowerCase().includes("property"))
+    );
+    setResults(matched.length > 0 ? matched : DEMO_AUTHORITIES);
+    store.createResearchQuery({
+      queryType,
+      query,
+      jurisdiction,
+      resultCount: matched.length > 0 ? matched.length : DEMO_AUTHORITIES.length,
+    });
+  };
+
+  const loadQuery = (q: { queryType: string; query: string; jurisdiction: string }) => {
+    setQueryType(q.queryType as QueryType);
+    setQuery(q.query);
+    setJurisdiction(q.jurisdiction);
+    setShowHistory(false);
+  };
 
   const strengthBadge = (strength: string) => {
     const m: Record<string, string> = {
@@ -114,6 +152,20 @@ export default function ResearchPage() {
               Legal research engine with case law discovery, statute lookup, authority ranking,
               Shepardization verification, and citation validation.
             </p>
+            <div className="flex gap-6 mt-4">
+              <div className="text-center">
+                <p className="text-xl font-serif font-bold text-[var(--gold)]">{stats.totalResearch}</p>
+                <p className="text-xs font-mono text-[var(--text-muted)]">Queries Run</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xl font-serif font-bold text-white">{DEMO_AUTHORITIES.length}</p>
+                <p className="text-xs font-mono text-[var(--text-muted)]">Authorities</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xl font-serif font-bold text-white">{stats.activeCases}</p>
+                <p className="text-xs font-mono text-[var(--text-muted)]">Active Cases</p>
+              </div>
+            </div>
           </div>
 
           {/* Query Builder */}
@@ -160,22 +212,57 @@ export default function ResearchPage() {
                 />
               </div>
             </div>
-            <button className="px-6 py-2 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono tracking-wider hover:bg-[var(--gold-light)] transition-colors cursor-pointer">
-              EXECUTE RESEARCH QUERY
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={executeQuery}
+                disabled={!query.trim()}
+                className="px-6 py-2 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono tracking-wider hover:bg-[var(--gold-light)] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                EXECUTE RESEARCH QUERY
+              </button>
+              <button
+                onClick={() => setShowHistory(!showHistory)}
+                className="px-4 py-2 border border-[rgba(201,168,76,0.3)] text-[var(--gold)] rounded text-xs font-mono tracking-wider hover:bg-[rgba(201,168,76,0.1)] transition-colors cursor-pointer"
+              >
+                {showHistory ? "HIDE" : "HISTORY"} ({savedQueries.length})
+              </button>
+            </div>
+
+            {showHistory && savedQueries.length > 0 && (
+              <div className="mt-4 border-t border-[rgba(201,168,76,0.1)] pt-4">
+                <p className="text-xs font-mono text-[var(--text-muted)] mb-2">RECENT QUERIES</p>
+                <div className="flex flex-col gap-2 max-h-40 overflow-y-auto">
+                  {savedQueries.slice(0, 10).map((q) => (
+                    <button
+                      key={q.id}
+                      onClick={() => loadQuery(q)}
+                      className="flex items-center justify-between text-left px-3 py-2 rounded bg-[var(--navy)] hover:bg-[rgba(201,168,76,0.05)] transition-colors group cursor-pointer"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-white truncate group-hover:text-[var(--gold)]">{q.query}</p>
+                        <p className="text-xs text-[var(--text-muted)]">{q.queryType} · {q.jurisdiction} · {q.resultCount} results</p>
+                      </div>
+                      <span className="text-xs font-mono text-[var(--text-muted)] ml-2 shrink-0">{new Date(q.createdAt).toLocaleDateString()}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Results: Authority Table */}
           <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg overflow-hidden">
             <div className="p-4 border-b border-[rgba(201,168,76,0.1)]">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-mono text-[var(--gold)] tracking-wider">AUTHORITY TABLE — COTENANT PROPERTY RIGHTS</p>
-                <p className="text-xs font-mono text-[var(--text-muted)]">{results.length} authorities found</p>
+                <p className="text-xs font-mono text-[var(--gold)] tracking-wider">
+                  AUTHORITY TABLE — {query ? query.toUpperCase().slice(0, 50) : "COTENANT PROPERTY RIGHTS"}
+                </p>
+                <p className="text-xs font-mono text-[var(--text-muted)]">{filteredResults.length} authorities found</p>
               </div>
             </div>
 
             <div className="divide-y divide-[rgba(201,168,76,0.05)]">
-              {results.map((auth) => (
+              {filteredResults.map((auth) => (
                 <div key={auth.id} className="p-5 hover:bg-[var(--navy)] transition-colors">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">

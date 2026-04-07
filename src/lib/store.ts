@@ -97,6 +97,17 @@ export interface AuditRecord {
   metadata: Record<string, unknown>;
 }
 
+export interface ResearchQuery {
+  id: string;
+  queryType: "case_law" | "statute" | "regulation" | "secondary_source" | "brief_analysis";
+  query: string;
+  jurisdiction: string;
+  status: "pending" | "completed" | "saved";
+  resultCount: number;
+  createdAt: string;
+  matterId?: string;
+}
+
 export interface Notification {
   id: string;
   type: "success" | "error" | "warning" | "info";
@@ -115,6 +126,7 @@ const KEYS = {
   communications: "unykorn_communications",
   audit: "unykorn_audit",
   notifications: "unykorn_notifications",
+  research: "unykorn_research",
 } as const;
 
 // ─── Persistence ──────────────────────────────────────────────────────────
@@ -303,6 +315,7 @@ class PlatformStore {
   private _communications: CommRecord[] = [];
   private _audit: AuditRecord[] = [];
   private _notifications: Notification[] = [];
+  private _research: ResearchQuery[] = [];
   private _initialized = false;
 
   init() {
@@ -313,6 +326,7 @@ class PlatformStore {
     this._communications = load(KEYS.communications, seedCommunications());
     this._audit = load(KEYS.audit, seedAudit());
     this._notifications = load(KEYS.notifications, []);
+    this._research = load(KEYS.research, []);
     this._initialized = true;
   }
 
@@ -327,6 +341,7 @@ class PlatformStore {
     save(KEYS.communications, this._communications);
     save(KEYS.audit, this._audit);
     save(KEYS.notifications, this._notifications);
+    save(KEYS.research, this._research);
   }
 
   subscribe(fn: Listener): () => void {
@@ -571,6 +586,36 @@ class PlatformStore {
   get audit() { this.init(); return this._audit; }
   get notifications() { this.init(); return this._notifications; }
 
+  // ─── Research ──────────────────────────────────────────────────────
+
+  get research() { this.init(); return this._research; }
+
+  createResearchQuery(data: { queryType: ResearchQuery["queryType"]; query: string; jurisdiction: string; resultCount: number; matterId?: string }): ResearchQuery {
+    const now = new Date().toISOString();
+    const record: ResearchQuery = {
+      id: uuidv4(),
+      queryType: data.queryType,
+      query: data.query,
+      jurisdiction: data.jurisdiction,
+      status: "completed",
+      resultCount: data.resultCount,
+      createdAt: now,
+      matterId: data.matterId,
+    };
+    this._research.unshift(record);
+    this.persist();
+    this.logAction("research_query_executed", "research", "kevan-burns", "human", "research", record.id, `Research query: ${data.query.slice(0, 80)}`, { queryType: data.queryType, jurisdiction: data.jurisdiction, resultCount: data.resultCount });
+    this.addNotification("info", "Research Complete", `Found ${data.resultCount} authorities for "${data.query.slice(0, 50)}"`);
+    this.notify();
+    return record;
+  }
+
+  deleteResearchQuery(id: string) {
+    this._research = this._research.filter((r) => r.id !== id);
+    this.persist();
+    this.notify();
+  }
+
   // ─── Analytics ──────────────────────────────────────────────────────
 
   get stats() {
@@ -590,6 +635,7 @@ class PlatformStore {
       agentCount: AGENT_NETWORK.total || 350,
       activeCases: ACTIVE_CASES.length,
       notifications: this._notifications.filter((n) => !n.read).length,
+      totalResearch: this._research.length,
     };
   }
 

@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useStore } from "@/lib/hooks";
 
 export default function Footer() {
+  const stats = useStore();
+
   return (
     <footer className="border-t border-[rgba(201,168,76,0.15)] bg-[var(--midnight)] py-16 px-8">
       <div className="max-w-[1200px] mx-auto">
@@ -12,7 +17,7 @@ export default function Footer() {
               <span className="text-[var(--text-primary)] font-normal">// LAW</span>
             </div>
             <p className="text-[var(--text-muted)] text-sm leading-relaxed">
-              350 AI agents. Zero cost. Fighting for the falsely accused and those without resources since 2026.
+              {stats.agentCount} AI agents. Zero cost. Fighting for the falsely accused and those without resources since 2026.
             </p>
             <p className="text-[var(--gold)] mt-4 text-sm">law@unykorn.org</p>
           </div>
@@ -21,21 +26,21 @@ export default function Footer() {
           <div>
             <h4 className="font-serif text-xs font-semibold tracking-[0.15em] uppercase text-[var(--gold)] mb-4">Platform</h4>
             <div className="flex flex-col gap-2">
-              <Link href="/#process" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">How It Works</Link>
-              <Link href="/#network" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">The Network</Link>
-              <Link href="/#tech" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">Technology Stack</Link>
-              <Link href="/law" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">Active Cases</Link>
+              <Link href="/" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">How It Works</Link>
+              <Link href="/ops" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">Operations</Link>
+              <Link href="/media" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">Media &amp; Evidence</Link>
+              <Link href="/law" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">Active Cases ({stats.activeCases})</Link>
             </div>
           </div>
 
           {/* Resources */}
           <div>
-            <h4 className="font-serif text-xs font-semibold tracking-[0.15em] uppercase text-[var(--gold)] mb-4">Free Resources</h4>
+            <h4 className="font-serif text-xs font-semibold tracking-[0.15em] uppercase text-[var(--gold)] mb-4">Operations</h4>
             <div className="flex flex-col gap-2">
-              <span className="text-[var(--text-muted)] text-sm">Your Rights Guide</span>
-              <span className="text-[var(--text-muted)] text-sm">Challenge Evidence</span>
-              <span className="text-[var(--text-muted)] text-sm">Criminal Proceedings</span>
-              <span className="text-[var(--text-muted)] text-sm">AI Defense Guide</span>
+              <Link href="/ops/approvals" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">Approvals ({stats.pendingApprovals})</Link>
+              <Link href="/ops/tasks" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">Tasks ({stats.activeTasks})</Link>
+              <Link href="/ops/forensics" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">Forensics</Link>
+              <Link href="/ops/research" className="text-[var(--text-muted)] text-sm hover:text-[var(--gold)] transition-colors no-underline">Research</Link>
             </div>
           </div>
 
@@ -43,10 +48,10 @@ export default function Footer() {
           <div>
             <h4 className="font-serif text-xs font-semibold tracking-[0.15em] uppercase text-[var(--gold)] mb-4">Case Portals</h4>
             <div className="flex flex-col gap-2">
-              <span className="text-[var(--text-muted)] text-sm font-mono">tronfraud.unykorn.org</span>
-              <span className="text-[var(--text-muted)] text-sm font-mono">marquis.unykorn.org</span>
-              <span className="text-[var(--text-muted)] text-sm font-mono">creamer.unykorn.org</span>
-              <Link href="/#intake" className="text-[var(--gold)] text-sm hover:text-[var(--gold-light)] transition-colors no-underline">Open New Case</Link>
+              <Link href="/portal/tronfraud" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">tronfraud.unykorn.org</Link>
+              <Link href="/portal/marquis" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">marquis.unykorn.org</Link>
+              <Link href="/portal/creamer" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">creamer.unykorn.org</Link>
+              <Link href="/intake" className="text-[var(--gold)] text-sm hover:text-[var(--gold-light)] transition-colors no-underline">Open New Case</Link>
             </div>
           </div>
         </div>
