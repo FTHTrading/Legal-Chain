@@ -3,6 +3,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { SEED_INTAKES, SEED_APPROVALS, SEED_WORKFLOW_INTAKE, SEED_FORENSIC_TRON, SEED_NAMESPACE_MARQUIS } from "./data/seed-platform";
 import { ACTIVE_CASES, AGENT_NETWORK } from "./data/seed";
+import { truthKernel } from "./kernel";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -406,6 +407,7 @@ class PlatformStore {
       submittedDocuments: [],
     };
     this._intakes.unshift(record);
+    truthKernel.state.commit("intake", record.id, record, { actor: "system", actorType: "system", action: "intake_created" });
     this.persist();
     this.logAction("intake_created", "intake", "system", "system", "intake", record.id, `New intake created: ${data.clientName} — ${data.matterType}`, { caseReference: record.caseReference });
     this.addNotification("success", "Intake Received", `Case ${record.caseReference} created for ${data.clientName}`);
@@ -420,6 +422,7 @@ class PlatformStore {
     intake.status = status;
     intake.updatedAt = new Date().toISOString();
     if (note) intake.notes.push(`[${new Date().toLocaleDateString()}] ${note}`);
+    truthKernel.state.commit("intake", id, intake, { actor: "kevan-burns", actorType: "user", action: "intake_status_changed" });
     this.persist();
     this.logAction("intake_status_changed", "intake", "kevan-burns", "human", "intake", id, `Intake ${intake.caseReference} status: ${prev} → ${status}`, { previousStatus: prev, newStatus: status });
     this.notify();
@@ -435,6 +438,7 @@ class PlatformStore {
     item.status = "approved";
     item.updatedAt = new Date().toISOString();
     item.reviews.push({ reviewerId: "kevan-burns", role: "supervising_attorney", decision: "approved", comments, timestamp: new Date().toISOString() });
+    truthKernel.state.commit("approval", id, item, { actor: "kevan-burns", actorType: "user", action: "approval_approved" });
     this.persist();
     this.logAction("approval_approved", "approval", "kevan-burns", "human", "approval", id, `Approved: ${item.title}`, { category: item.category });
     this.addNotification("success", "Approved", `"${item.title}" has been approved`);
@@ -447,6 +451,7 @@ class PlatformStore {
     item.status = "rejected";
     item.updatedAt = new Date().toISOString();
     item.reviews.push({ reviewerId: "kevan-burns", role: "supervising_attorney", decision: "rejected", comments: reason, timestamp: new Date().toISOString() });
+    truthKernel.state.commit("approval", id, item, { actor: "kevan-burns", actorType: "user", action: "approval_rejected" });
     this.persist();
     this.logAction("approval_rejected", "approval", "kevan-burns", "human", "approval", id, `Rejected: ${item.title} — ${reason}`, { category: item.category, reason });
     this.addNotification("warning", "Rejected", `"${item.title}" has been rejected`);
@@ -459,6 +464,7 @@ class PlatformStore {
     item.status = "requires_source_check";
     item.updatedAt = new Date().toISOString();
     item.reviews.push({ reviewerId: "kevan-burns", role: "supervising_attorney", decision: "changes_requested", comments, timestamp: new Date().toISOString() });
+    truthKernel.state.commit("approval", id, item, { actor: "kevan-burns", actorType: "user", action: "approval_changes_requested" });
     this.persist();
     this.logAction("approval_changes_requested", "approval", "kevan-burns", "human", "approval", id, `Changes requested: ${item.title}`, { category: item.category });
     this.addNotification("info", "Changes Requested", `"${item.title}" needs revision`);
@@ -486,6 +492,7 @@ class PlatformStore {
       reviews: [],
     };
     this._approvals.unshift(record);
+    truthKernel.state.commit("approval", record.id, record, { actor: "kevan-burns", actorType: "user", action: "approval_created" });
     this.persist();
     this.logAction("approval_created", "approval", "kevan-burns", "human", "approval", record.id, `Created approval: ${data.title}`, { category: data.category });
     this.notify();
@@ -503,6 +510,7 @@ class PlatformStore {
     task.status = status;
     task.updatedAt = new Date().toISOString();
     if (status === "completed") task.completedAt = new Date().toISOString();
+    truthKernel.state.commit("task", id, task, { actor: "kevan-burns", actorType: "user", action: "task_status_changed" });
     this.persist();
     this.logAction("task_status_changed", "workflow", "kevan-burns", "human", "task", id, `Task "${task.title}" status: ${prev} → ${status}`, { workflowType: task.workflowType });
     this.notify();
@@ -525,6 +533,7 @@ class PlatformStore {
       updatedAt: now,
     };
     this._tasks.push(record);
+    truthKernel.state.commit("task", record.id, record, { actor: "kevan-burns", actorType: "user", action: "task_created" });
     this.persist();
     this.logAction("task_created", "workflow", "kevan-burns", "human", "task", record.id, `Created task: ${data.title}`, { workflowType: data.workflowType, priority: data.priority });
     this.notify();
@@ -537,6 +546,7 @@ class PlatformStore {
     const prev = task.assignedToAgent;
     task.assignedToAgent = agentId;
     task.updatedAt = new Date().toISOString();
+    truthKernel.state.commit("task", id, task, { actor: "kevan-burns", actorType: "user", action: "task_reassigned" });
     this.persist();
     this.logAction("task_reassigned", "workflow", "kevan-burns", "human", "task", id, `Task "${task.title}" reassigned: ${prev} → ${agentId}`, { workflowType: task.workflowType });
     this.notify();
@@ -553,6 +563,7 @@ class PlatformStore {
     comm.status = status;
     comm.updatedAt = new Date().toISOString();
     if (status === "sent") comm.sentAt = new Date().toISOString();
+    truthKernel.state.commit("communication", id, comm, { actor: "kevan-burns", actorType: "user", action: "communication_status_changed" });
     this.persist();
     this.logAction("communication_status_changed", "communication", "kevan-burns", "human", "communication", id, `Communication "${comm.subject}" status: ${prev} → ${status}`, { channel: comm.channel });
     if (status === "approved") this.addNotification("success", "Communication Approved", `"${comm.subject}" approved for sending`);
@@ -586,6 +597,7 @@ class PlatformStore {
       tags: data.tags || [],
     };
     this._communications.unshift(record);
+    truthKernel.state.commit("communication", record.id, record, { actor: "kevan-burns", actorType: "user", action: "communication_drafted" });
     this.persist();
     this.logAction("communication_drafted", "communication", "kevan-burns", "human", "communication", record.id, `Drafted: ${data.subject}`, { channel: data.channel, privileged: data.privileged });
     this.notify();
@@ -614,6 +626,7 @@ class PlatformStore {
       matterId: data.matterId,
     };
     this._research.unshift(record);
+    truthKernel.state.commit("research", record.id, record, { actor: "kevan-burns", actorType: "user", action: "research_query_executed" });
     this.persist();
     this.logAction("research_query_executed", "research", "kevan-burns", "human", "research", record.id, `Research query: ${data.query.slice(0, 80)}`, { queryType: data.queryType, jurisdiction: data.jurisdiction, resultCount: data.resultCount });
     this.addNotification("info", "Research Complete", `Found ${data.resultCount} authorities for "${data.query.slice(0, 50)}"`);
@@ -657,7 +670,8 @@ class PlatformStore {
     const taskCompletionRate = s.totalTasks > 0 ? Math.round((s.completedTasks / s.totalTasks) * 100) : 0;
     const approvalRate = s.totalApprovals > 0 ? Math.round((s.approvedCount / s.totalApprovals) * 100) : 0;
     const recentActivity = this._audit.slice(-24).length;
-    return { ...s, blockedTasks, taskCompletionRate, approvalRate, recentActivity };
+    const kernel = truthKernel.stats;
+    return { ...s, blockedTasks, taskCompletionRate, approvalRate, recentActivity, kernel };
   }
 
   exportAuditLog(): string {
@@ -675,6 +689,7 @@ class PlatformStore {
     Object.values(KEYS).forEach((k) => {
       if (typeof window !== "undefined") localStorage.removeItem(k);
     });
+    truthKernel.reset();
     this._initialized = false;
     this.init();
     this.notify();
