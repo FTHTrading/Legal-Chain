@@ -20,7 +20,7 @@ export default function TasksPage() {
   const { toasts, toast } = useToast();
   const [reassignId, setReassignId] = useState<string | null>(null);
   const completedCount = tasks.filter(t => t.status === "completed").length;
-  const progressPct = Math.round((completedCount / tasks.length) * 100);
+  const progressPct = tasks.length > 0 ? Math.round((completedCount / tasks.length) * 100) : 0;
 
   const statusColor = (status: string) => {
     const m: Record<string, string> = {
@@ -87,6 +87,15 @@ export default function TasksPage() {
 
           {/* Task List */}
           <div className="space-y-3">
+            {tasks.length === 0 && (
+              <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-12 text-center">
+                <p className="text-3xl mb-3">📋</p>
+                <h3 className="font-serif text-lg font-bold mb-2">No Tasks Yet</h3>
+                <p className="text-sm text-[var(--text-muted)]">
+                  Tasks will appear here as workflows are initiated for active matters.
+                </p>
+              </div>
+            )}
             {tasks.map((task, idx) => (
               <div key={task.id}
                 className={`bg-[var(--navy-card)] border rounded-lg p-5 ${

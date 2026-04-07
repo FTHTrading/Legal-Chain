@@ -650,6 +650,25 @@ class PlatformStore {
     };
   }
 
+  getDashboardStats() {
+    this.init();
+    const s = this.stats;
+    const blockedTasks = this._tasks.filter(t => t.status === "blocked").length;
+    const taskCompletionRate = s.totalTasks > 0 ? Math.round((s.completedTasks / s.totalTasks) * 100) : 0;
+    const approvalRate = s.totalApprovals > 0 ? Math.round((s.approvedCount / s.totalApprovals) * 100) : 0;
+    const recentActivity = this._audit.slice(-24).length;
+    return { ...s, blockedTasks, taskCompletionRate, approvalRate, recentActivity };
+  }
+
+  exportAuditLog(): string {
+    this.init();
+    const header = "id,timestamp,action,category,actor,actorType,resourceType,resourceId,description,contentHash";
+    const rows = this._audit.map(e =>
+      [e.id, e.timestamp, e.action, e.category, e.actor, e.actorType, e.resourceType, e.resourceId, `"${e.description.replace(/"/g, '""')}"`, e.contentHash].join(",")
+    );
+    return [header, ...rows].join("\n");
+  }
+
   // ─── Reset ──────────────────────────────────────────────────────────
 
   reset() {

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
@@ -11,6 +12,16 @@ export function generateStaticParams() {
 
 function getMatter(id: string) {
   return ALL_MATTERS.find(m => m.id === id) || null;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const matter = getMatter(id);
+  if (!matter) return { title: "Matter Not Found — UNYKORN // LAW" };
+  return {
+    title: `${matter.matterId} — ${matter.title} | UNYKORN // LAW`,
+    description: `${matter.type} matter: ${matter.title}. Status: ${matter.status}. Estimated recovery: $${matter.damages.estimatedCaseValue.toLocaleString()}.`,
+  };
 }
 
 export default async function MatterOverview({ params }: { params: Promise<{ id: string }> }) {

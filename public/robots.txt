@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /ops/
+Disallow: /portal/
+
+Sitemap: https://law.unykorn.org/sitemap.xml
