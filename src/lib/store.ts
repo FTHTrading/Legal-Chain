@@ -1,7 +1,7 @@
 "use client";
 
 import { v4 as uuidv4 } from "uuid";
-import { SEED_INTAKES, SEED_APPROVALS, SEED_WORKFLOW_INTAKE, SEED_FORENSIC_TRON, SEED_NAMESPACE_MARQUIS } from "./data/seed-platform";
+import { SEED_INTAKES, SEED_APPROVALS, SEED_WORKFLOW_INTAKE } from "./data/seed-platform";
 import { ACTIVE_CASES, AGENT_NETWORK } from "./data/seed";
 import { truthKernel } from "./kernel";
 
@@ -181,7 +181,7 @@ function seedIntakes(): IntakeRecord[] {
     conflictCheck: s.conflictCheck ? { status: s.conflictCheck.result || "pending", adverseParties: s.conflictCheck.conflictingPartyNames || [], cleared: s.conflictCheck.result === "clear", waived: s.conflictCheck.waived || false } : undefined,
     assignedTo: s.assignedTo,
     notes: s.notes || [],
-    submittedDocuments: Array.isArray(s.submittedDocuments) ? s.submittedDocuments.map((d: any) => typeof d === "string" ? d : d.filename) : [],
+    submittedDocuments: Array.isArray(s.submittedDocuments) ? s.submittedDocuments.map((d: string | { filename: string }) => typeof d === "string" ? d : d.filename) : [],
   }));
 }
 
@@ -200,10 +200,10 @@ function seedApprovals(): ApprovalRecord[] {
     updatedAt: s.updatedAt,
     matterId: s.matterId,
     contentVersion: s.contentVersion || 1,
-    citations: (s.sourceCitations || s.citations || []).map((c: any) => ({ source: c.title || "", citationType: c.citationType || "", pinCite: c.reference || "", retrievedAt: s.createdAt, confidence: 1 })),
+    citations: (s.sourceCitations || s.citations || []).map((c: Record<string, string>) => ({ source: c.title || "", citationType: c.citationType || "", pinCite: c.reference || "", retrievedAt: s.createdAt, confidence: 1 })),
     evidenceLinks: s.evidenceLinks || [],
     redlines: s.redlines || [],
-    reviews: (s.reviews || []).map((r: any) => ({ reviewerId: r.reviewerId || "", role: r.reviewerRole || r.role || "", decision: r.decision || "", comments: r.comment || r.comments || "", timestamp: r.createdAt || r.timestamp || "" })),
+    reviews: (s.reviews || []).map((r: Record<string, string>) => ({ reviewerId: r.reviewerId || "", role: r.reviewerRole || r.role || "", decision: r.decision || "", comments: r.comment || r.comments || "", timestamp: r.createdAt || r.timestamp || "" })),
   }));
 }
 
@@ -494,6 +494,7 @@ class PlatformStore {
   private _notifications: Notification[] = [];
   private _research: ResearchQuery[] = [];
   private _initialized = false;
+  private _statsCache: ReturnType<PlatformStore["computeStats"]> | null = null;
 
   init() {
     if (this._initialized) return;
@@ -508,6 +509,7 @@ class PlatformStore {
   }
 
   private notify() {
+    this._statsCache = null;
     this.listeners.forEach((fn) => fn());
   }
 
@@ -818,8 +820,7 @@ class PlatformStore {
 
   // ─── Analytics ──────────────────────────────────────────────────────
 
-  get stats() {
-    this.init();
+  private computeStats() {
     return {
       totalIntakes: this._intakes.length,
       pendingIntakes: this._intakes.filter((i) => i.status === "new" || i.status === "under_review").length,
@@ -837,6 +838,12 @@ class PlatformStore {
       notifications: this._notifications.filter((n) => !n.read).length,
       totalResearch: this._research.length,
     };
+  }
+
+  get stats() {
+    this.init();
+    if (!this._statsCache) this._statsCache = this.computeStats();
+    return this._statsCache;
   }
 
   getDashboardStats() {

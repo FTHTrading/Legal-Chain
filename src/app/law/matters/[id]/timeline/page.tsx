@@ -65,6 +65,7 @@ export default function TimelinePage({ params }: { params: Promise<{ id: string 
   const { id } = use(params);
   const matter = getMatter(id);
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [nowMs] = useState(() => Date.now());
 
   if (!matter) {
     return (
@@ -188,7 +189,7 @@ export default function TimelinePage({ params }: { params: Promise<{ id: string 
               <div className="grid md:grid-cols-2 gap-3">
                 {upcomingDeadlines.map(dl => {
                   const d = parseDate(dl.date)!;
-                  const daysAway = Math.ceil((d.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                  const daysAway = Math.ceil((d.getTime() - nowMs) / (1000 * 60 * 60 * 24));
                   return (
                     <div key={dl.id} className="flex items-center justify-between py-2">
                       <div>
@@ -236,7 +237,7 @@ export default function TimelinePage({ params }: { params: Promise<{ id: string 
             <div className="absolute left-6 top-0 bottom-0 w-px bg-[rgba(201,168,76,0.15)]" />
 
             <div className="space-y-0">
-              {filteredEvents.map((event, i) => {
+              {filteredEvents.map((event) => {
                 const badge = event.status ? STATUS_BADGES[event.status] : null;
                 return (
                   <div key={event.id} className="relative pl-16 pb-8">

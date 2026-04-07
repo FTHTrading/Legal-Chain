@@ -3,7 +3,7 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
-import { use, useState, useMemo } from "react";
+import { use, useState } from "react";
 import { SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON } from "@/lib/data/seed";
 import MatterTabs from "@/components/law/MatterTabs";
 
@@ -36,11 +36,11 @@ export default function LedgerPage({ params }: { params: Promise<{ id: string }>
 
   const filteredLedger = catFilter === "all" ? matter.ledger : matter.ledger.filter(e => e.category === catFilter);
 
-  let runningBalance = 0;
-  const ledgerWithBalance = filteredLedger.map((entry) => {
-    runningBalance += entry.amount;
-    return { ...entry, balance: runningBalance };
-  });
+  const ledgerWithBalance = filteredLedger.reduce<Array<typeof filteredLedger[number] & { balance: number }>>((acc, entry) => {
+    const balance = (acc.length > 0 ? acc[acc.length - 1].balance : 0) + entry.amount;
+    acc.push({ ...entry, balance });
+    return acc;
+  }, []);
 
   const totalClaimed = filteredLedger.filter((e) => e.amount > 0).reduce((s, e) => s + e.amount, 0);
   const totalOffsets = filteredLedger.filter((e) => e.amount < 0).reduce((s, e) => s + e.amount, 0);

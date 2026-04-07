@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SEED_MATTER_CREAMER, ACTIVE_CASES } from "@/lib/data/seed";
+import { ACTIVE_CASES } from "@/lib/data/seed";
 
 // GET /api/matters — list all matters
 export async function GET(request: NextRequest) {

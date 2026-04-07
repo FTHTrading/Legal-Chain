@@ -24,8 +24,8 @@ export default function PortalPage({
   const ns = NAMESPACES[slug] || null;
 
   // Pull live data for this namespace's matter
-  const matterComms = comms.filter(c => c.matterId === (ns as any)?.matterId || c.tags?.some(t => t.includes(slug)));
-  const matterApprovals = approvals.filter(a => a.matterId === (ns as any)?.matterId);
+  const matterComms = comms.filter(c => c.matterId === ns?.matterId || c.tags?.some(t => t.includes(slug)));
+  const matterApprovals = approvals.filter(a => a.matterId === ns?.matterId);
 
   if (!ns) {
     return (

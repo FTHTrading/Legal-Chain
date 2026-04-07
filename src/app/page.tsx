@@ -63,7 +63,7 @@ export default function Home() {
             System Online &nbsp;&middot;&nbsp; 350 Agents Active &nbsp;&middot;&nbsp; x402 Protocol &nbsp;&middot;&nbsp; Chain 7332
           </div>
           <div className="relative mb-8">
-            <Image src="/media/images/legal-helix-1.webp" alt="UNYKORN Legal DNA" width={200} height={200} className="rounded-full opacity-90" />
+            <Image src="/media/images/legal-helix-1.webp" alt="UNYKORN Legal DNA" width={200} height={200} className="rounded-full opacity-90" style={{ width: 200, height: "auto" }} />
           </div>
           <p className="font-serif text-sm tracking-[0.4em] uppercase text-[var(--gold)] mb-4">UNYKORN // LAW</p>
           <h1 className="font-serif text-5xl md:text-7xl font-bold leading-tight mb-6">

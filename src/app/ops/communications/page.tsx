@@ -10,58 +10,6 @@ import { SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON } from "@/l
 
 const MATTERS = [SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON];
 
-interface CommDraft {
-  id: string;
-  type: "email" | "letter" | "secure_message";
-  subject: string;
-  to: string;
-  matterId: string;
-  matterName: string;
-  status: "drafting" | "pending_review" | "approved" | "sent";
-  privileged: boolean;
-  body: string;
-  createdAt: string;
-}
-
-const DEMO_COMMS: CommDraft[] = [
-  {
-    id: "comm-1",
-    type: "email",
-    subject: "Formal Demand — Unauthorized Occupancy of 169 Creamer Drive, Statesboro GA",
-    to: "troy.miller@email.com",
-    matterId: "c7f3a1b2-8d4e-4f5a-9c6b-1d2e3f4a5b6c",
-    matterName: "169 Creamer Drive",
-    status: "pending_review",
-    privileged: false,
-    body: "Dear Mr. Miller,\n\nThis firm represents the cotenant owners of the property at 169 Creamer Drive, Statesboro, Georgia 30458. This letter serves as formal demand that you vacate the premises within thirty (30) days of receipt of this notice...",
-    createdAt: "2026-04-03T10:00:00Z",
-  },
-  {
-    id: "comm-2",
-    type: "secure_message",
-    subject: "Case Status Update — Motion Filing Timeline",
-    to: "client:marquis-delcampo",
-    matterId: "d8e4b2c3-9f5e-4a6b-8d7c-2e3f4a5b6c7d",
-    matterName: "State v. Delcampo",
-    status: "drafting",
-    privileged: true,
-    body: "Dear Mr. Delcampo,\n\nThis is a privileged communication regarding your pending motion. We have completed the initial review of your sentencing records and identified multiple grounds for relief under Georgia state law...",
-    createdAt: "2026-04-03T14:30:00Z",
-  },
-  {
-    id: "comm-3",
-    type: "letter",
-    subject: "Victim Impact Statement — Cryptocurrency Fraud Investigation",
-    to: "FBI IC3 / TRON Foundation Compliance",
-    matterId: "e9f5c3d4-0a6f-4b7c-9e8d-3f4a5b6c7d8e",
-    matterName: "NTI-LEAVITT-2026-001",
-    status: "drafting",
-    privileged: false,
-    body: "To Whom It May Concern,\n\nThis letter accompanies a formal complaint regarding cryptocurrency fraud perpetrated through the TRON blockchain network. Our client has suffered documented losses of approximately $36,150 USD...",
-    createdAt: "2026-04-02T16:00:00Z",
-  },
-];
-
 export default function CommunicationsPage() {
   const comms = useCommunications();
   const { toasts, toast } = useToast();

@@ -10,7 +10,7 @@
  * content-hash proof layer.
  */
 
-import { fingerprint } from "./state";
+// fingerprint available via kernel re-export if needed
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 

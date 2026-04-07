@@ -14,7 +14,7 @@ export default function Footer() {
           <div>
             <div className="font-serif text-lg font-bold tracking-[0.12em] uppercase mb-4">
               <span className="text-[var(--gold)]">UNYKORN</span>{" "}
-              <span className="text-[var(--text-primary)] font-normal">// LAW</span>
+              <span className="text-[var(--text-primary)] font-normal">{"// LAW"}</span>
             </div>
             <p className="text-[var(--text-muted)] text-sm leading-relaxed">
               {stats.agentCount} AI agents. Zero cost. Fighting for the falsely accused and those without resources since 2026.

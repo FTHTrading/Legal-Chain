@@ -3,7 +3,7 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
-import { use, useState, useMemo } from "react";
+import { use, useState } from "react";
 import { SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON } from "@/lib/data/seed";
 import MatterTabs from "@/components/law/MatterTabs";
 

@@ -3,12 +3,14 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
+import { useState } from "react";
 import { useStore, useAudit } from "@/lib/hooks";
 import { AGENT_NETWORK } from "@/lib/data/seed";
 
 export default function OpsPage() {
   const stats = useStore();
   const auditEntries = useAudit();
+  const [nowMs] = useState(() => Date.now());
   const pendingApprovals = stats.pendingApprovals;
   const urgentApprovals = stats.pendingApprovals > 0 ? 1 : 0;
   const activeIntakes = stats.pendingIntakes;
@@ -138,7 +140,7 @@ export default function OpsPage() {
             <h2 className="font-serif text-sm tracking-[0.2em] uppercase text-[var(--gold)] mb-6">RECENT ACTIVITY</h2>
             <div className="space-y-4">
               {auditEntries.slice(-10).reverse().map((entry) => {
-                const ago = Math.round((Date.now() - new Date(entry.timestamp).getTime()) / 60000);
+                const ago = Math.round((nowMs - new Date(entry.timestamp).getTime()) / 60000);
                 const timeLabel = ago < 1 ? "just now" : ago < 60 ? `${ago}m ago` : ago < 1440 ? `${Math.round(ago / 60)}h ago` : `${Math.round(ago / 1440)}d ago`;
                 const catColors: Record<string, string> = { approval: "text-orange-400 bg-orange-900/20", forensics: "text-red-400 bg-red-900/20", research: "text-blue-400 bg-blue-900/20", intake: "text-green-400 bg-green-900/20", workflow: "text-indigo-400 bg-indigo-900/20", communication: "text-cyan-400 bg-cyan-900/20" };
                 return (

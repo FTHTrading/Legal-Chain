@@ -3,12 +3,20 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { store } from "./store";
 
+/** Stable empty snapshot for SSR (no localStorage on server) */
+const SERVER_SNAPSHOT = {
+  totalIntakes: 0, pendingIntakes: 0, totalApprovals: 0, pendingApprovals: 0,
+  approvedCount: 0, totalTasks: 0, completedTasks: 0, activeTasks: 0,
+  totalComms: 0, pendingComms: 0, totalAuditEntries: 0, agentCount: 350,
+  activeCases: 0, notifications: 0, totalResearch: 0,
+} as const;
+
 /** Subscribe to the platform store — re-renders on any store mutation */
 export function useStore() {
   return useSyncExternalStore(
     (cb) => store.subscribe(cb),
     () => store.stats,
-    () => store.stats
+    () => SERVER_SNAPSHOT
   );
 }
 

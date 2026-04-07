@@ -21,16 +21,16 @@
 @theme inline {
   --color-background: var(--midnight);
   --color-foreground: var(--text-primary);
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-body: 'Cormorant Garamond', Garamond, serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-serif: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  --font-body: var(--font-cormorant), 'Cormorant Garamond', Garamond, serif;
+  --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Cormorant Garamond', Garamond, serif;
+  font-family: var(--font-cormorant), 'Cormorant Garamond', Garamond, serif;
   background: var(--midnight);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;

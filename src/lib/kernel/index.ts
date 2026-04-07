@@ -152,7 +152,7 @@ export class TruthKernel {
     });
 
     this.roots.registerCollector({
-      layer: "evidence" as any,
+      layer: "evidence",
       collect: () => {
         const items = this.evidence.allEvidence;
         return { count: items.length, fingerprints: items.map(e => e.currentHash) };
@@ -160,7 +160,7 @@ export class TruthKernel {
     });
 
     this.roots.registerCollector({
-      layer: "workflows" as any,
+      layer: "workflows",
       collect: () => {
         const wfs = this.workflows.allWorkflows;
         return { count: wfs.length, fingerprints: wfs.map(w => w.id) };

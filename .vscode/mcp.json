@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "legal-chain": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["tsx", "src/lib/mcp/server.ts"],
+      "cwd": "."
+    }
+  }
+}
