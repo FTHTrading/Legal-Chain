@@ -1,0 +1,83 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@300;400&display=swap');
+
+:root {
+  --midnight: #080b16;
+  --navy: #0e1225;
+  --navy-light: #161b33;
+  --navy-card: #111628;
+  --gold: #c9a84c;
+  --gold-light: #d4b868;
+  --gold-dark: #8b7d3c;
+  --gold-muted: #a89350;
+  --parchment: #f5f0e8;
+  --cream: #e8e2d4;
+  --stone: #6b6a5f;
+  --text-primary: #d8d2c4;
+  --text-muted: #8a8578;
+  --danger: #c44;
+  --success: #4a8;
+}
+
+@theme inline {
+  --color-background: var(--midnight);
+  --color-foreground: var(--text-primary);
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-body: 'Cormorant Garamond', Garamond, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Cormorant Garamond', Garamond, serif;
+  background: var(--midnight);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--midnight);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--midnight); }
+::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-ticker { animation: ticker 30s linear infinite; }
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 20px rgba(201,168,76,0.15); }
+  50% { box-shadow: 0 0 40px rgba(201,168,76,0.3); }
+}
+.glow-gold { animation: pulse-gold 3s ease-in-out infinite; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fade-up 0.8s ease-out forwards; }
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.card-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(201,168,76,0.1);
+}
