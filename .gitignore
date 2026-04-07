@@ -43,5 +43,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# media assets (too large for git)
-/public/media/videos/
+# media assets — videos committed for Vercel deployment (~228MB)
+# /public/media/videos/
