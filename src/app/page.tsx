@@ -5,7 +5,7 @@ import Footer from "@/components/layout/Footer";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { ACTIVE_CASES, AGENT_NETWORK, IMAGE_GALLERY } from "@/lib/data/seed";
+import { ACTIVE_CASES, AGENT_NETWORK, IMAGE_GALLERY, VIDEO_GALLERY } from "@/lib/data/seed";
 import { store } from "@/lib/store";
 import { useStore } from "@/lib/hooks";
 
@@ -226,6 +226,44 @@ export default function Home() {
               <Link href="/media" className="text-[var(--gold)] font-serif text-sm tracking-[0.1em] uppercase hover:text-[var(--gold-light)] transition-colors no-underline">
                 View Full Media Gallery →
               </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ FEATURED VIDEO REEL ═══ */}
+        <section className="py-24 px-8">
+          <div className="max-w-[1200px] mx-auto">
+            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Featured Footage</p>
+            <h2 className="font-serif text-4xl md:text-5xl font-bold mb-16">
+              SEE THE<br/><span className="text-[var(--gold)]">SYSTEM.</span>
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {VIDEO_GALLERY.slice(0, 3).map((vid) => (
+                <Link key={vid.id} href="/media" className="relative aspect-video overflow-hidden rounded-lg border border-[rgba(201,168,76,0.08)] group no-underline block">
+                  <video
+                    src={`/media/videos/${vid.file}`}
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-80 transition-opacity duration-500"
+                    onMouseEnter={(e) => { e.currentTarget.currentTime = 0; e.currentTarget.play().catch(() => {}); }}
+                    onMouseLeave={(e) => e.currentTarget.pause()}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--midnight)] via-transparent to-transparent" />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
+                    <div className="w-14 h-14 rounded-full bg-[rgba(201,168,76,0.15)] border border-[var(--gold)] flex items-center justify-center group-hover:shadow-[0_0_30px_rgba(201,168,76,0.3)] transition-all">
+                      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" className="ml-0.5">
+                        <path d="M14 8L0 16V0L14 8Z" fill="var(--gold)" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+                    <h3 className="font-serif text-sm font-bold text-white">{vid.title}</h3>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--gold)]">{vid.category}</span>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </section>

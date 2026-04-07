@@ -634,6 +634,9 @@ export const VIDEO_GALLERY = [
   { id: "v21", title: "Courtroom Command II", file: "20250127_0108_Futuristic Courtroom Command_storyboard_01jjk5z80kf92ab6v1p9fxkn4d.mp4", category: "courtroom" },
   { id: "v22", title: "Courtroom Mastery II", file: "20250127_0105_Futuristic Courtroom Mastery_storyboard_01jjk5t8t8f7xrengkv5pdvzfs.mp4", category: "courtroom" },
   { id: "v23", title: "Courtroom Drama Unfolds", file: "20250127_0119_Courtroom Drama Unfolds_storyboard_01jjk6khjtfpcazy9zvrtk2x4w.mp4", category: "courtroom" },
+  { id: "v24", title: "Energy Renaissance I", file: "20250303_1439_Energy Renaissance_storyboard_01jnera0rcex6b52spg8qaxb3y.mp4", category: "tech" },
+  { id: "v25", title: "Energy Renaissance II", file: "20250303_1439_Energy Renaissance_storyboard_01jnera0r7eag9q8vkwpwhtkqv.mp4", category: "tech" },
+  { id: "v26", title: "Futuristic Courtroom Resolution II", file: "20250126_2304_Futuristic Courtroom Resolution_storyboard_01jjjywj0rfskan9tn3yvjg8n8.mp4", category: "courtroom" },
 ];
 
 export const IMAGE_GALLERY = [
