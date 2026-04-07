@@ -13,6 +13,15 @@ import {
   anchorVaultRecord,
 } from "@/lib/privacy/vault";
 
+const VAULT_TOKEN = process.env.VAULT_API_TOKEN;
+
+function checkAuth(request: NextRequest): boolean {
+  if (!VAULT_TOKEN) return false;
+  const auth = request.headers.get("authorization");
+  if (!auth?.startsWith("Bearer ")) return false;
+  return auth.slice(7) === VAULT_TOKEN;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const matterId = searchParams.get("matterId");
@@ -42,6 +51,9 @@ export async function POST(request: NextRequest) {
     const { action, recordId, role } = body;
 
     if (action === "decrypt") {
+      if (!checkAuth(request)) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
       if (!recordId || !role) {
         return NextResponse.json(
           { error: "recordId and role are required for decryption" },

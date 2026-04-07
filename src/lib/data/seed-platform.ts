@@ -1,16 +1,16 @@
-import type { ForensicCase } from "@/lib/schemas/forensics";
+﻿import type { ForensicCase } from "@/lib/schemas/forensics";
 import type { Intake } from "@/lib/schemas/intake";
 import type { Namespace } from "@/lib/schemas/namespace";
 import type { ApprovalItem } from "@/lib/schemas/approval";
 import type { Workflow } from "@/lib/schemas/workflow";
 
-// ── TRON Fraud Forensic Case (NTI-LEAVITT-2026-001) ──
+// â”€â”€ TRON Fraud Forensic Case (NTI-2026-001) â”€â”€
 
 export const SEED_FORENSIC_TRON: ForensicCase = {
   id: "fc-tron-leavitt-001",
   matterId: "b2c3d4e5-f6a7-8901-bcde-f12345678901",
-  matterTitle: "NTI-LEAVITT-2026-001 — Cryptocurrency Fraud Recovery",
-  title: "TRON/ETH Fraud — Leavitt Wallet Tracing",
+  matterTitle: "NTI-2026-001 â€” Cryptocurrency Fraud Recovery",
+  title: "TRON/ETH Fraud â€” Wallet Tracing",
   description: "Blockchain forensics tracing $36,150 stolen funds across TRON and Ethereum networks. 14 wallets identified, layered transfers through DEX swaps and cross-chain bridges.",
   caseType: "crypto_fraud",
   chains: ["tron", "ethereum"],
@@ -18,14 +18,14 @@ export const SEED_FORENSIC_TRON: ForensicCase = {
     {
       address: "TFake1...victim",
       chain: "tron",
-      label: "Victim Primary (Leavitt)",
+      label: "Victim Primary",
       ownerKnown: true,
-      ownerName: "Victim — NTI Client",
+      ownerName: "Victim â€” NTI Client",
       riskLevel: "low",
       riskIndicators: [],
       linkedWallets: [],
       totalSent: "36150000000",
-      notes: "Source of stolen funds — victim's primary TRON wallet",
+      notes: "Source of stolen funds â€” victim's primary TRON wallet",
     },
     {
       address: "TFake2...suspect1",
@@ -37,17 +37,17 @@ export const SEED_FORENSIC_TRON: ForensicCase = {
       firstSeen: "2026-01-15T10:00:00Z",
       transactionCount: 47,
       linkedWallets: ["TFake3...suspect2", "0xFake1...ethbridge"],
-      notes: "Primary collection wallet — received initial $36,150 via social engineering",
+      notes: "Primary collection wallet â€” received initial $36,150 via social engineering",
     },
     {
       address: "TFake3...suspect2",
       chain: "tron",
-      label: "Suspect Wallet 2 — Layering",
+      label: "Suspect Wallet 2 â€” Layering",
       ownerKnown: false,
       riskLevel: "high",
       riskIndicators: ["layering_pattern", "small_batch_transfers"],
       linkedWallets: ["TFake2...suspect1", "TFake4...dex"],
-      notes: "Layering wallet — funds split and recombined to obscure trail",
+      notes: "Layering wallet â€” funds split and recombined to obscure trail",
     },
     {
       address: "0xFake1...ethbridge",
@@ -57,7 +57,7 @@ export const SEED_FORENSIC_TRON: ForensicCase = {
       riskLevel: "high",
       riskIndicators: ["cross_chain_bridge", "rapid_movement"],
       linkedWallets: ["TFake2...suspect1"],
-      notes: "TRON→ETH bridge — funds moved cross-chain to complicate tracing",
+      notes: "TRONâ†’ETH bridge â€” funds moved cross-chain to complicate tracing",
     },
   ],
   transactions: [
@@ -76,7 +76,7 @@ export const SEED_FORENSIC_TRON: ForensicCase = {
       isLayering: false,
       isMixing: false,
       isExchangeDeposit: false,
-      notes: "Initial theft — victim sent USDT under false pretenses",
+      notes: "Initial theft â€” victim sent USDT under false pretenses",
     },
     {
       id: "tx-002-layer",
@@ -93,7 +93,7 @@ export const SEED_FORENSIC_TRON: ForensicCase = {
       isLayering: true,
       isMixing: false,
       isExchangeDeposit: false,
-      notes: "First split — $18K moved to layering wallet",
+      notes: "First split â€” $18K moved to layering wallet",
     },
     {
       id: "tx-003-bridge",
@@ -110,7 +110,7 @@ export const SEED_FORENSIC_TRON: ForensicCase = {
       isLayering: false,
       isMixing: false,
       isExchangeDeposit: false,
-      notes: "Cross-chain bridge — $15K moved TRON→Ethereum",
+      notes: "Cross-chain bridge â€” $15K moved TRONâ†’Ethereum",
     },
   ],
   totalValueTraced: "36150",
@@ -129,13 +129,13 @@ export const SEED_FORENSIC_TRON: ForensicCase = {
   updatedAt: "2026-04-07T00:00:00Z",
 };
 
-// ── Criminal Appeal — State v. Delcampo ──
+// â”€â”€ Criminal Appeal â€” State v. Delcampo â”€â”€
 
 export const SEED_NAMESPACE_MARQUIS: Namespace = {
   slug: "marquis",
   matterId: "c3d4e5f6-a7b8-9012-cdef-123456789012",
-  title: "State v. Delcampo",
-  subtitle: "Illegal Sentence Appeal — F.S. 784.045",
+  title: "State v. [Appellant]",
+  subtitle: "Illegal Sentence Appeal â€” F.S. 784.045",
   status: "active",
   createdAt: "2026-02-01T00:00:00Z",
   updatedAt: "2026-04-07T00:00:00Z",
@@ -206,15 +206,15 @@ export const SEED_NAMESPACE_MARQUIS: Namespace = {
   packets: [],
 };
 
-// ── Intake Queue — Demo Entries ──
+// â”€â”€ Intake Queue â€” Demo Entries â”€â”€
 
 export const SEED_INTAKES: Intake[] = [
   {
     id: "int-001-crypto-scam",
     source: "web_form",
     status: "screening",
-    contactName: "James W.",
-    contactEmail: "jw-intake@example.com",
+    contactName: "Intake Client 1",
+    contactEmail: "client1@example.com",
     matterType: "crypto_fraud",
     briefDescription: "Lost approximately $15,000 in a pump-and-dump scheme on Solana. Have wallet addresses and Discord screenshots of organizers making promises. Transferred SOL from Phantom wallet to a contract that rugged.",
     urgency: "elevated",
@@ -235,8 +235,8 @@ export const SEED_INTAKES: Intake[] = [
     id: "int-002-wrongful",
     source: "phone",
     status: "initial_review",
-    contactName: "Maria R.",
-    contactPhone: "404-555-0199",
+    contactName: "Intake Client 2",
+    contactPhone: "[Redacted]",
     matterType: "wrongful_charge",
     jurisdiction: "DeKalb County, GA",
     briefDescription: "Charged with aggravated assault under OCGA 16-5-21 but the facts only support simple battery at most. Witness statements contradict the arresting officer's report. Need aggressive defense counsel.",
@@ -256,14 +256,14 @@ export const SEED_INTAKES: Intake[] = [
     id: "int-003-business",
     source: "referral",
     status: "conflict_check",
-    contactName: "David K.",
-    contactEmail: "dk-intake@example.com",
+    contactName: "Intake Client 3",
+    contactEmail: "client3@example.com",
     matterType: "business_dispute",
     jurisdiction: "Fulton County, GA",
     briefDescription: "Partner in a 3-person LLC diverted $200K in company funds to personal accounts. Have QuickBooks records showing unauthorized transfers. Operating agreement has dispute resolution clause requiring mediation first.",
     urgency: "routine",
     adverseParties: [
-      { name: "Robert S.", role: "managing_member" },
+      { name: "Adverse Party A", role: "managing_member" },
     ],
     submittedDocuments: [],
     estimatedValue: 200000,
@@ -272,7 +272,7 @@ export const SEED_INTAKES: Intake[] = [
       id: "cc-003",
       checkedAt: "2026-04-06T16:00:00Z",
       checkedBy: "00000000-0000-0000-0000-000000000003",
-      checkedByName: "Sarah Chen",
+      checkedByName: "Staff Attorney",
       result: "clear",
       conflictingMatterIds: [],
       conflictingPartyNames: [],
@@ -281,22 +281,20 @@ export const SEED_INTAKES: Intake[] = [
     createdAt: "2026-04-06T10:00:00Z",
     updatedAt: "2026-04-06T16:30:00Z",
     createdBy: "00000000-0000-0000-0000-000000000003",
-    createdByName: "Sarah Chen",
+    createdByName: "Staff Attorney",
   },
   {
     id: "int-004-troy-miller",
     source: "email",
     status: "accepted",
-    contactName: "Troy Miller",
-    contactEmail: "tmiller@etrenzik.com",
-    contactPhone: "678-467-5515",
+    contactName: "Claimant A",
     matterType: "civil_property",
     jurisdiction: "Forsyth County, GA",
-    briefDescription: "Joint venture property dispute — 169 Creamer Dr, Alpharetta, GA 30004. Client claims co-owner Michael Walser took ~$1M in post-closing proceeds without reconciling expenses. Troy invested $65K+ in improvements, carried $60K in SBA valuation costs, and managed the property. Walser is non-responsive and relocated to Florida. Formal demand email sent 2026-03-30.",
+    briefDescription: "Joint venture property dispute. Client claims co-owner took ~$1M in post-closing proceeds without reconciling expenses. Client invested $65K+ in improvements, carried $60K in SBA valuation costs, and managed the property. Co-owner is non-responsive and relocated to Florida. Formal demand email sent 2026-03-30.",
     urgency: "elevated",
     adverseParties: [
-      { name: "Michael Walser", role: "co_owner" },
-      { name: "BestLyfe Group", role: "respondent_entity" },
+      { name: "Respondent B", role: "co_owner" },
+      { name: "Respondent Entity", role: "respondent_entity" },
     ],
     estimatedValue: 143300,
     feeStructure: "contingency",
@@ -304,35 +302,35 @@ export const SEED_INTAKES: Intake[] = [
       id: "cc-004",
       checkedAt: "2026-04-07T01:00:00Z",
       checkedBy: "00000000-0000-0000-0000-000000000001",
-      checkedByName: "Kevan Burns",
+      checkedByName: "Supervising Attorney",
       result: "clear",
       conflictingMatterIds: [],
       conflictingPartyNames: [],
       waived: false,
     },
     submittedDocuments: [
-      { filename: "demand_email_2026-03-30.eml", description: "Troy Miller demand email to Michael Walser", uploadedAt: "2026-04-06T18:00:00Z" },
-      { filename: "forward_to_counsel_2026-04-06.eml", description: "Troy's forwarded email with client intake info", uploadedAt: "2026-04-06T18:05:00Z" },
+      { filename: "demand_email_2026-03-30.eml", description: "Claimant A demand email to Respondent B", uploadedAt: "2026-04-06T18:00:00Z" },
+      { filename: "forward_to_counsel_2026-04-06.eml", description: "Client forwarded email with intake info", uploadedAt: "2026-04-06T18:05:00Z" },
     ],
     matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     createdAt: "2026-04-06T18:00:00Z",
     updatedAt: "2026-04-07T01:30:00Z",
     createdBy: "00000000-0000-0000-0000-000000000001",
-    createdByName: "Kevan Burns",
+    createdByName: "Supervising Attorney",
   },
 ];
 
-// ── Approval Queue — Demo Items ──
+// â”€â”€ Approval Queue â€” Demo Items â”€â”€
 
 export const SEED_APPROVALS: ApprovalItem[] = [
   {
     id: "appr-001-demand",
     matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    matterTitle: "169 Creamer Drive — Post-Closing Proceeds Accounting",
+    matterTitle: "Property Matter â€” Post-Closing Proceeds Accounting",
     category: "demand_letter",
-    title: "Formal Demand Letter — Michael Walser",
-    summary: "30-day formal demand for accounting of ~$1M in post-closing proceeds from 169 Creamer Drive sale. Covers $65K improvements, $60K SBA carrying costs, $6,800 painting, less $53,500 acknowledged offsets.",
-    content: "# FORMAL DEMAND FOR ACCOUNTING\n\n## VIA CERTIFIED MAIL AND EMAIL\n\nDear Mr. Walser,\n\nThis firm represents Troy Miller regarding the post-closing proceeds from the sale of real property located at 169 Creamer Drive, Alpharetta, Georgia 30004...\n\n[Draft content pending attorney review]",
+    title: "Formal Demand Letter â€” Respondent B",
+    summary: "30-day formal demand for accounting of ~$1M in post-closing proceeds from subject property sale. Covers $65K improvements, $60K SBA carrying costs, $6,800 painting, less $53,500 acknowledged offsets.",
+    content: "# FORMAL DEMAND FOR ACCOUNTING\n\n## VIA CERTIFIED MAIL AND EMAIL\n\nDear Respondent,\n\nThis firm represents Claimant A regarding the post-closing proceeds from the sale of subject real property...\n\n[Draft content pending attorney review]",
     contentVersion: 1,
     status: "in_review",
     priority: "high",
@@ -341,7 +339,7 @@ export const SEED_APPROVALS: ApprovalItem[] = [
         id: "sc-001-ga-contract",
         citationType: "statute",
         title: "Georgia Contract Limitations",
-        reference: "GA § 9-3-24",
+        reference: "GA Â§ 9-3-24",
         content: "6-year limitation on breach of written contract actions",
         jurisdiction: "Georgia",
       },
@@ -349,7 +347,7 @@ export const SEED_APPROVALS: ApprovalItem[] = [
         id: "sc-002-ga-accounting",
         citationType: "statute",
         title: "Georgia Equitable Accounting",
-        reference: "GA § 23-2-70",
+        reference: "GA Â§ 23-2-70",
         content: "Court may compel accounting between partners and cotenants",
         jurisdiction: "Georgia",
       },
@@ -358,7 +356,7 @@ export const SEED_APPROVALS: ApprovalItem[] = [
     factTags: ["demand_letter", "property_accounting", "formal_demand", "certified_mail"],
     confidenceScore: 0.85,
     assignedTo: "00000000-0000-0000-0000-000000000001",
-    assignedToName: "Kevan Burns",
+    assignedToName: "Supervising Attorney",
     requiredRole: "supervising_attorney",
     createdBy: "agent-drafter-001",
     createdByName: "Document Drafter Agent",
@@ -373,9 +371,9 @@ export const SEED_APPROVALS: ApprovalItem[] = [
   {
     id: "appr-002-motion",
     matterId: "c3d4e5f6-a7b8-9012-cdef-123456789012",
-    matterTitle: "State v. Delcampo — Illegal Sentence Appeal",
+    matterTitle: "State v. [Appellant] â€” Illegal Sentence Appeal",
     category: "motion",
-    title: "Motion to Correct Illegal Sentence — F.S. 3.800(a)",
+    title: "Motion to Correct Illegal Sentence â€” F.S. 3.800(a)",
     summary: "Motion arguing 20-year sentence exceeds statutory maximum for second-degree felony aggravated battery under F.S. 784.045. Statutory max is 15 years under F.S. 775.082(3)(c).",
     content: "# MOTION TO CORRECT ILLEGAL SENTENCE\n\nPursuant to Florida Rule of Criminal Procedure 3.800(a)...\n\n[Draft content pending]",
     contentVersion: 1,
@@ -403,7 +401,7 @@ export const SEED_APPROVALS: ApprovalItem[] = [
     factTags: ["criminal_appeal", "illegal_sentence", "statutory_maximum", "motion"],
     confidenceScore: 0.92,
     assignedTo: "00000000-0000-0000-0000-000000000001",
-    assignedToName: "Kevan Burns",
+    assignedToName: "Supervising Attorney",
     requiredRole: "supervising_attorney",
     createdBy: "agent-research-001",
     createdByName: "Legal Research Agent",
@@ -414,7 +412,7 @@ export const SEED_APPROVALS: ApprovalItem[] = [
       {
         id: "rev-001",
         reviewerId: "00000000-0000-0000-0000-000000000003",
-        reviewerName: "Sarah Chen",
+        reviewerName: "Staff Attorney",
         reviewerRole: "paralegal",
         decision: "escalate",
         comment: "Citations verified against Westlaw. Statutory analysis is sound. Escalating to supervising attorney for final review before filing.",
@@ -429,11 +427,11 @@ export const SEED_APPROVALS: ApprovalItem[] = [
   {
     id: "appr-003-engagement",
     matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    matterTitle: "169 Creamer Drive — Post-Closing Proceeds Accounting",
+    matterTitle: "Property Matter â€” Post-Closing Proceeds Accounting",
     category: "client_communication",
-    title: "Client Engagement Letter — Troy Miller",
-    summary: "Contingency fee engagement letter for Troy Miller. Scope: breach of contract, equitable accounting, unjust enrichment, money had and received, reimbursement for improvements against Michael Walser. Estimated recovery: $143,300.",
-    content: "# CLIENT ENGAGEMENT LETTER\n\n## Troy Miller — 169 Creamer Drive Post-Closing Dispute\n\nDear Mr. Miller,\n\nThank you for retaining UNYKORN // LAW...\n\n[Draft content pending attorney review]",
+    title: "Client Engagement Letter â€” Claimant A",
+    summary: "Contingency fee engagement letter for Claimant A. Scope: breach of contract, equitable accounting, unjust enrichment, money had and received, reimbursement for improvements against Respondent B. Estimated recovery: $143,300.",
+    content: "# CLIENT ENGAGEMENT LETTER\n\n## Claimant A â€” Property Post-Closing Dispute\n\nDear Client,\n\nThank you for retaining UNYKORN // LAW...\n\n[Draft content pending attorney review]",
     contentVersion: 1,
     status: "in_review",
     priority: "high",
@@ -442,7 +440,7 @@ export const SEED_APPROVALS: ApprovalItem[] = [
     factTags: ["engagement_letter", "contingency_fee", "property_accounting", "client_onboarding"],
     confidenceScore: 0.90,
     assignedTo: "00000000-0000-0000-0000-000000000001",
-    assignedToName: "Kevan Burns",
+    assignedToName: "Supervising Attorney",
     requiredRole: "supervising_attorney",
     createdBy: "agent-drafter-001",
     createdByName: "Document Drafter Agent",
@@ -457,11 +455,11 @@ export const SEED_APPROVALS: ApprovalItem[] = [
   {
     id: "appr-004-certified-demand",
     matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    matterTitle: "169 Creamer Drive — Post-Closing Proceeds Accounting",
+    matterTitle: "Property Matter â€” Post-Closing Proceeds Accounting",
     category: "demand_letter",
-    title: "Certified Mail Demand — Michael Walser",
-    summary: "Formal 30-day certified mail demand to Michael Walser for accounting and distribution of post-closing proceeds. Cites GA § 23-2-70 (equitable accounting), details $65K improvements, $60K SBA carrying, $6,800 painting, less acknowledged $53,500 offsets. Threatens Forsyth County Superior Court filing.",
-    content: "# FORMAL DEMAND FOR ACCOUNTING AND DISTRIBUTION\n\n## VIA CERTIFIED MAIL — RETURN RECEIPT REQUESTED\n\nDear Mr. Walser,\n\nThis firm represents Troy Miller...\n\n[Full content in communications draft — pending final attorney review]",
+    title: "Certified Mail Demand â€” Respondent B",
+    summary: "Formal 30-day certified mail demand to Respondent B for accounting and distribution of post-closing proceeds. Cites GA Â§ 23-2-70 (equitable accounting), details $65K improvements, $60K SBA carrying, $6,800 painting, less acknowledged $53,500 offsets. Threatens Forsyth County Superior Court filing.",
+    content: "# FORMAL DEMAND FOR ACCOUNTING AND DISTRIBUTION\n\n## VIA CERTIFIED MAIL â€” RETURN RECEIPT REQUESTED\n\nDear Respondent,\n\nThis firm represents Claimant A...\n\n[Full content in communications draft â€” pending final attorney review]",
     contentVersion: 1,
     status: "requires_attorney_review",
     priority: "urgent",
@@ -470,15 +468,15 @@ export const SEED_APPROVALS: ApprovalItem[] = [
         id: "sc-005-ga-accounting",
         citationType: "statute",
         title: "Georgia Equitable Accounting",
-        reference: "GA § 23-2-70",
-        content: "Court may compel accounting between partners and cotenants — basis for demand",
+        reference: "GA Â§ 23-2-70",
+        content: "Court may compel accounting between partners and cotenants â€” basis for demand",
         jurisdiction: "Georgia",
       },
       {
         id: "sc-006-ga-cotenant",
         citationType: "statute",
         title: "Georgia Cotenant Partition",
-        reference: "GA § 44-6-160 et seq.",
+        reference: "GA Â§ 44-6-160 et seq.",
         content: "Cotenant rights to partition and accounting of property proceeds",
         jurisdiction: "Georgia",
       },
@@ -486,7 +484,7 @@ export const SEED_APPROVALS: ApprovalItem[] = [
         id: "sc-007-ga-contract-sol",
         citationType: "statute",
         title: "Georgia Written Contract Limitations",
-        reference: "GA § 9-3-24",
+        reference: "GA Â§ 9-3-24",
         content: "6-year limitation period on written contract claims",
         jurisdiction: "Georgia",
       },
@@ -495,7 +493,7 @@ export const SEED_APPROVALS: ApprovalItem[] = [
     factTags: ["certified_demand", "opposing_party", "30_day_cure", "property_accounting", "formal_demand"],
     confidenceScore: 0.88,
     assignedTo: "00000000-0000-0000-0000-000000000001",
-    assignedToName: "Kevan Burns",
+    assignedToName: "Supervising Attorney",
     requiredRole: "supervising_attorney",
     createdBy: "agent-drafter-001",
     createdByName: "Document Drafter Agent",
@@ -509,14 +507,14 @@ export const SEED_APPROVALS: ApprovalItem[] = [
   },
 ];
 
-// ── Active Workflow — Demo ──
+// â”€â”€ Active Workflow â€” Demo â”€â”€
 
 export const SEED_WORKFLOW_INTAKE: Workflow = {
   id: "wf-intake-creamer",
   matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  matterTitle: "169 Creamer Drive — Post-Closing Proceeds Accounting",
+  matterTitle: "Property Matter — Post-Closing Proceeds Accounting",
   workflowType: "case_intake",
-  title: "Creamer Drive — Case Intake & Evidence Gathering",
+  title: "Property Matter — Case Intake & Evidence Gathering",
   description: "Complete intake workflow including evidence gathering, conflict check, damages modeling, and filing preparation.",
   status: "active",
   tasks: [
@@ -530,7 +528,7 @@ export const SEED_WORKFLOW_INTAKE: Workflow = {
       priority: "high",
       dependsOn: [],
       inputs: [],
-      outputs: [{ type: "conflict_check_result", label: "Clear — no conflicts" }],
+      outputs: [{ type: "conflict_check_result", label: "Clear â€” no conflicts" }],
       requiresApproval: false,
       createdAt: "2026-04-07T00:00:00Z",
       completedAt: "2026-04-07T01:00:00Z",
@@ -606,14 +604,14 @@ export const SEED_WORKFLOW_INTAKE: Workflow = {
   updatedAt: "2026-04-07T12:00:00Z",
 };
 
-// ── Litigation Prep Workflow — Creamer Drive ──
+// â”€â”€ Litigation Prep Workflow â€” Creamer Drive â”€â”€
 
 export const SEED_WORKFLOW_LITIGATION: Workflow = {
   id: "wf-litigation-creamer",
   matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  matterTitle: "169 Creamer Drive — Post-Closing Proceeds Accounting",
+  matterTitle: "Property Matter — Post-Closing Proceeds Accounting",
   workflowType: "filing_preparation",
-  title: "Creamer Drive — Litigation Preparation & Filing",
+  title: "Property Matter — Litigation Preparation & Filing",
   description: "Prepare and file complaint in Forsyth County Superior Court if demand response deadline passes without satisfactory response.",
   status: "draft",
   tasks: [
@@ -636,7 +634,7 @@ export const SEED_WORKFLOW_LITIGATION: Workflow = {
       id: "task-lit-002-complaint",
       workflowId: "wf-litigation-creamer",
       matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      title: "Draft Complaint — Forsyth County Superior Court",
+      title: "Draft Complaint â€” Forsyth County Superior Court",
       taskType: "document_generation",
       assignedToAgent: "drafter-agent-001",
       status: "pending",
@@ -652,14 +650,14 @@ export const SEED_WORKFLOW_LITIGATION: Workflow = {
       id: "task-lit-003-jurisdiction",
       workflowId: "wf-litigation-creamer",
       matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      title: "Verify Personal Jurisdiction — GA Long-Arm (§ 9-10-91)",
+      title: "Verify Personal Jurisdiction â€” GA Long-Arm (Â§ 9-10-91)",
       taskType: "legal_research",
       assignedToAgent: "research-agent-001",
       status: "completed",
       priority: "high",
       dependsOn: [],
       inputs: [],
-      outputs: [{ type: "research_memo", label: "GA long-arm analysis — jurisdiction confirmed for nonresident who owned GA property" }],
+      outputs: [{ type: "research_memo", label: "GA long-arm analysis â€” jurisdiction confirmed for nonresident who owned GA property" }],
       requiresApproval: false,
       createdAt: "2026-04-07T04:00:00Z",
       completedAt: "2026-04-07T05:00:00Z",
@@ -677,7 +675,7 @@ export const SEED_WORKFLOW_LITIGATION: Workflow = {
       outputs: [],
       requiresApproval: false,
       createdAt: "2026-04-07T12:00:00Z",
-      notes: "Need Florida address for Michael Walser. May require registered agent or substituted service.",
+      notes: "Need Florida address for Respondent B. May require registered agent or substituted service.",
     },
     {
       id: "task-lit-005-filing-fee",
@@ -705,7 +703,7 @@ export const SEED_WORKFLOW_LITIGATION: Workflow = {
       priority: "normal",
       dependsOn: [],
       inputs: [],
-      outputs: [{ type: "research_memo", label: "FL Foreign Judgment Act § 55.501 — domestication procedure and homestead risks" }],
+      outputs: [{ type: "research_memo", label: "FL Foreign Judgment Act Â§ 55.501 â€” domestication procedure and homestead risks" }],
       requiresApproval: false,
       createdAt: "2026-04-07T04:30:00Z",
       completedAt: "2026-04-07T05:30:00Z",
@@ -714,7 +712,7 @@ export const SEED_WORKFLOW_LITIGATION: Workflow = {
       id: "task-lit-007-asset-search",
       workflowId: "wf-litigation-creamer",
       matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      title: "Respondent Asset Search — BestLyfe Group / Walser",
+      title: "Respondent Asset Search — Respondent B",
       taskType: "compliance_check",
       status: "pending",
       priority: "normal",
@@ -723,7 +721,7 @@ export const SEED_WORKFLOW_LITIGATION: Workflow = {
       outputs: [],
       requiresApproval: false,
       createdAt: "2026-04-07T12:00:00Z",
-      notes: "Investigate BestLyfe Group entity, FL Secretary of State filings, property records, business assets",
+      notes: "Investigate respondent entity, FL Secretary of State filings, property records, business assets",
     },
     {
       id: "task-lit-008-engagement",
@@ -750,18 +748,18 @@ export const SEED_WORKFLOW_LITIGATION: Workflow = {
   updatedAt: "2026-04-07T15:00:00Z",
 };
 
-// ── TRON Fraud Namespace (NTI-LEAVITT-2026-001) ──
+// â”€â”€ TRON Fraud Namespace (NTI-LEAVITT-2026-001) â”€â”€
 
 export const SEED_NAMESPACE_TRONFRAUD: Namespace = {
   slug: "tronfraud",
   matterId: "b2c3d4e5-f6a7-8901-bcde-f12345678901",
-  title: "NTI-LEAVITT-2026-001",
-  subtitle: "Cryptocurrency Fraud Recovery — TRON / ETH",
+  title: "NTI-2026-001",
+  subtitle: "Cryptocurrency Fraud Recovery â€” TRON / ETH",
   status: "active",
   createdAt: "2026-01-20T00:00:00Z",
   updatedAt: "2026-04-07T00:00:00Z",
   caseType: "crypto_fraud",
-  jurisdiction: "Federal — FBI IC3 / Multi-Chain",
+  jurisdiction: "Federal â€” FBI IC3 / Multi-Chain",
   statusSummary: "Active blockchain forensics tracing $36,150 across TRON and Ethereum networks. 14 wallets identified. Cross-chain bridge exits under investigation.",
   nextAction: "Complete forensic report and submit to FBI IC3",
   access: [
@@ -773,7 +771,7 @@ export const SEED_NAMESPACE_TRONFRAUD: Namespace = {
       permissions: ["view_overview", "view_timeline", "view_documents", "view_evidence", "view_status", "view_milestones", "view_financials", "view_strategy", "view_privileged"],
     },
     {
-      userId: "client-leavitt-001",
+      userId: "client-nti-001",
       role: "client",
       grantedBy: "00000000-0000-0000-0000-000000000001",
       grantedAt: "2026-01-20T00:00:00Z",
@@ -819,19 +817,19 @@ export const SEED_NAMESPACE_TRONFRAUD: Namespace = {
   packets: [],
 };
 
-// ── Creamer Drive Namespace (169 Creamer Dr) ──
+// â”€â”€ Creamer Drive Namespace (169 Creamer Dr) â”€â”€
 
 export const SEED_NAMESPACE_CREAMER: Namespace = {
   slug: "creamer",
   matterId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  title: "169 Creamer Drive",
+  title: "Property Dispute",
   subtitle: "Post-Closing Proceeds Accounting",
   status: "active",
   createdAt: "2026-04-07T00:00:00Z",
   updatedAt: "2026-04-07T00:00:00Z",
   caseType: "civil_joint_property_accounting",
   jurisdiction: "Forsyth County, GA / FL Enforcement Overlay",
-  statusSummary: "Pre-litigation — formal demand sent to respondent. Awaiting response within 30-day cure period. Damages model in development pending client documents.",
+  statusSummary: "Pre-litigation â€” formal demand sent to respondent. Awaiting response within 30-day cure period. Damages model in development pending client documents.",
   nextAction: "Follow up on demand letter response deadline",
   access: [
     {
@@ -842,7 +840,7 @@ export const SEED_NAMESPACE_CREAMER: Namespace = {
       permissions: ["view_overview", "view_timeline", "view_documents", "view_evidence", "view_status", "view_milestones", "view_financials", "view_strategy", "view_privileged"],
     },
     {
-      userId: "client-troy-miller-001",
+      userId: "client-claimant-a-001",
       role: "client",
       grantedBy: "00000000-0000-0000-0000-000000000001",
       grantedAt: "2026-04-07T00:00:00Z",
@@ -886,7 +884,7 @@ export const SEED_NAMESPACE_CREAMER: Namespace = {
     },
     {
       id: "ms-cr-complaint",
-      title: "Complaint Filed — Forsyth County Superior Court",
+      title: "Complaint Filed â€” Forsyth County Superior Court",
       status: "pending",
       targetDate: "2026-05-15",
       visibleToClient: true,
@@ -915,9 +913,9 @@ export const SEED_NAMESPACE_CREAMER: Namespace = {
       id: "d0a1b2c3-4567-4890-abcd-ef0000000001",
       namespaceSlug: "creamer",
       fromUserId: "00000000-0000-0000-0000-000000000001",
-      fromName: "Kevan Burns",
+      fromName: "Supervising Attorney",
       subject: "Welcome to Your Secure Client Portal",
-      body: "Troy,\n\nWelcome to your secure case portal at creamer.unykorn.org. Here you can:\n\n• Track case milestones in real-time\n• View status updates\n• Send secure messages to the legal team\n• Download case documents when available\n\nYour case reference is UNY-CIV-2026-003. Our agents have already completed the conflict check (clear) and started Georgia cotenant law research.\n\nNext step: please send us the documents listed in the separate email (especially the closing statement — it's critical).\n\n— Kevan Burns\nUNYKORN // LAW",
+      body: "Client,\n\nWelcome to your secure case portal. Here you can:\n\n• Track case milestones in real-time\n• View status updates\n• Send secure messages to the legal team\n• Download case documents when available\n\nYour case reference is UNY-CIV-2026-003. Our agents have already completed the conflict check (clear) and started Georgia cotenant law research.\n\nNext step: please send us the documents listed in the separate email (especially the closing statement — it's critical).\n\n— UNYKORN // LAW",
       attachments: [],
       sentAt: "2026-04-07T08:00:00Z",
       privileged: false,
@@ -927,8 +925,8 @@ export const SEED_NAMESPACE_CREAMER: Namespace = {
       namespaceSlug: "creamer",
       fromUserId: "00000000-0000-0000-0000-000000000001",
       fromName: "Legal Operations",
-      subject: "Case Strategy Summary — Pre-Litigation Phase",
-      body: "Troy,\n\nHere's where we stand on your case:\n\n✅ Conflict check — cleared\n✅ Georgia law research — 12 authorities support your claims\n✅ Demand email to Walser filed as evidence\n🔄 Formal demand letter — in attorney review\n🔄 Document collection — waiting on your records\n⏳ Damages model — pending your documents\n\nEstimated recovery: $143,300 (subject to verification)\n\nKey claims:\n1. Breach of Written Agreement — strong (6-year SOL)\n2. Equitable Accounting — strong\n3. Unjust Enrichment — moderate (4-year SOL)\n4. Money Had and Received — moderate\n5. Reimbursement for Improvements — moderate\n\nResponse deadline for demand: April 30, 2026\n\nWe'll update you as things progress.\n\n— Legal Ops",
+      subject: "Case Strategy Summary â€” Pre-Litigation Phase",
+      body: "Client,\n\nHere's where we stand on your case:\n\n✅ Conflict check — cleared\n✅ Georgia law research — 12 authorities support your claims\n✅ Demand email filed as evidence\n🔄 Formal demand letter — in attorney review\n🔄 Document collection — waiting on your records\n⏳ Damages model — pending your documents\n\nEstimated recovery: $143,300 (subject to verification)\n\nKey claims:\n1. Breach of Written Agreement — strong (6-year SOL)\n2. Equitable Accounting — strong\n3. Unjust Enrichment — moderate (4-year SOL)\n4. Money Had and Received — moderate\n5. Reimbursement for Improvements — moderate\n\nResponse deadline for demand: April 30, 2026\n\nWe'll update you as things progress.\n\n— Legal Ops",
       attachments: [],
       sentAt: "2026-04-07T14:00:00Z",
       privileged: true,
@@ -938,7 +936,7 @@ export const SEED_NAMESPACE_CREAMER: Namespace = {
     {
       id: "e0a1b2c3-4567-4890-abcd-ef0000000001",
       namespaceSlug: "creamer",
-      title: "Initial Case Package — Troy Miller",
+      title: "Initial Case Package — Claimant A",
       description: "Contains case summary, claim analysis, damages model overview, and filing readiness checklist",
       packetType: "case_summary",
       files: [
@@ -958,7 +956,7 @@ export const SEED_NAMESPACE_CREAMER: Namespace = {
       description: "List of 9 document categories needed from client to strengthen case and verify damages",
       packetType: "client_update",
       files: [
-        { filename: "Document_Request_Checklist_Troy_Miller.pdf", mimeType: "application/pdf", sizeBytes: 65000, hash: "e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6" },
+        { filename: "Document_Request_Checklist.pdf", mimeType: "application/pdf", sizeBytes: 65000, hash: "e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6" },
       ],
       generatedAt: "2026-04-07T10:30:00Z",
       generatedBy: "00000000-0000-0000-0000-000000000001",

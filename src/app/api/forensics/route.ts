@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SEED_FORENSIC_TRON } from "@/lib/data/seed-platform";
 
+const INTERNAL_TOKEN = process.env.FORENSICS_API_TOKEN;
+
+function checkAuth(request: NextRequest): boolean {
+  if (!INTERNAL_TOKEN) return false; // deny if no token configured
+  const auth = request.headers.get("authorization");
+  if (!auth?.startsWith("Bearer ")) return false;
+  return auth.slice(7) === INTERNAL_TOKEN;
+}
+
 // GET /api/forensics — list forensic cases or filter by matterId/chain/status
 export async function GET(request: NextRequest) {
+  if (!checkAuth(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const { searchParams } = request.nextUrl;
   const matterId = searchParams.get("matterId");
   const chain = searchParams.get("chain");
@@ -28,6 +40,9 @@ export async function GET(request: NextRequest) {
 
 // POST /api/forensics — create a new forensic case
 export async function POST(request: NextRequest) {
+  if (!checkAuth(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const body = await request.json();
 
   // Validate required fields

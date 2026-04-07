@@ -119,8 +119,6 @@ export default async function MatterOverview({ params }: { params: Promise<{ id:
                 <h3 className="font-serif text-xl font-bold mb-1">{p!.name}</h3>
                 <div className="text-sm text-[var(--text-muted)] space-y-1">
                   <p>State: {p!.currentState}</p>
-                  {p!.contact?.email && <p>Email: {p!.contact.email}</p>}
-                  {p!.contact?.phone && <p>Phone: {p!.contact.phone}</p>}
                 </div>
               </div>
             ))}
