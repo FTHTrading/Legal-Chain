@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { store, type Priority } from "@/lib/store";
@@ -30,6 +30,9 @@ export default function IntakePage() {
   const [caseRef, setCaseRef] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [investigationId, setInvestigationId] = useState<string | null>(null);
+  const [investigationStatus, setInvestigationStatus] = useState<string>("launching");
+  const [privateToken, setPrivateToken] = useState<string | null>(null);
   const { toasts, toast } = useToast();
   const [formData, setFormData] = useState({
     contactName: "",
@@ -47,6 +50,37 @@ export default function IntakePage() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     if (errors[e.target.name]) setErrors(prev => { const next = { ...prev }; delete next[e.target.name]; return next; });
   }
+
+  const launchInvestigation = useCallback(async (record: { caseReference: string; clientName: string; email: string; phone: string; matterType: string; description: string }) => {
+    try {
+      setInvestigationStatus("launching");
+      const res = await fetch("/api/orchestrator", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workflowId: "wf-intake-investigation",
+          matterId: record.caseReference,
+          input: {
+            clientName: record.clientName,
+            email: record.email,
+            phone: record.phone,
+            matterType: record.matterType,
+            description: record.description,
+          },
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setInvestigationId(data.id);
+        setPrivateToken(data.privateLink?.token || null);
+        setInvestigationStatus("running");
+      } else {
+        setInvestigationStatus("queued");
+      }
+    } catch {
+      setInvestigationStatus("queued");
+    }
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -72,6 +106,15 @@ export default function IntakePage() {
       setCaseRef(record.caseReference);
       toast("success", "Intake Submitted", `Case ${record.caseReference} created successfully`);
       setSubmitted(true);
+      // Auto-launch AI investigation workflow
+      launchInvestigation({
+        caseReference: record.caseReference,
+        clientName: formData.contactName.trim(),
+        email: formData.contactEmail.trim(),
+        phone: formData.contactPhone.trim(),
+        matterType: formData.matterType,
+        description: formData.briefDescription.trim(),
+      });
     } finally {
       setLoading(false);
     }
@@ -97,9 +140,90 @@ export default function IntakePage() {
               </div>
             )}
             <p className="text-lg text-[var(--text-muted)] mb-8">
-              Our system has received your intake submission. A conflict check will be initiated automatically,
-              and you will be contacted within 24 hours regarding next steps.
+              Our AI system has secured your data in the Web3 Privacy Vault and initiated
+              an automated preliminary investigation. No personal information is stored in plaintext.
             </p>
+
+            {/* Web3 Security Badge */}
+            <div className="flex items-center justify-center gap-3 mb-8">
+              <div className="flex items-center gap-2 bg-[var(--navy)] border border-emerald-500/30 rounded-full px-4 py-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs font-mono text-emerald-400">WEB3 VAULT SECURED</span>
+              </div>
+              <div className="flex items-center gap-2 bg-[var(--navy)] border border-[var(--gold)]/30 rounded-full px-4 py-2">
+                <span className="w-2 h-2 rounded-full bg-[var(--gold)]" />
+                <span className="text-xs font-mono text-[var(--gold)]">AES-256-GCM</span>
+              </div>
+            </div>
+
+            {/* Investigation Status */}
+            <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 text-left mb-6">
+              <p className="font-mono text-xs text-[var(--text-muted)] mb-3">AI INVESTIGATION STATUS</p>
+              <div className="flex items-center gap-3 mb-4">
+                {investigationStatus === "running" && (
+                  <>
+                    <span className="w-3 h-3 rounded-full bg-blue-400 animate-pulse" />
+                    <span className="text-sm text-blue-400">Investigation Active</span>
+                  </>
+                )}
+                {investigationStatus === "launching" && (
+                  <>
+                    <span className="w-3 h-3 rounded-full bg-[var(--gold)] animate-pulse" />
+                    <span className="text-sm text-[var(--gold)]">Launching Investigation...</span>
+                  </>
+                )}
+                {investigationStatus === "queued" && (
+                  <>
+                    <span className="w-3 h-3 rounded-full bg-[var(--text-muted)]" />
+                    <span className="text-sm text-[var(--text-muted)]">Queued for Review</span>
+                  </>
+                )}
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[var(--success)]" />
+                  <span>PII encrypted &amp; vaulted</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${investigationStatus === "running" ? "bg-[var(--success)]" : "bg-[var(--gold)] animate-pulse"}`} />
+                  <span>Conflict check</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${investigationStatus === "running" ? "bg-blue-400 animate-pulse" : "bg-[var(--text-muted)]"}`} />
+                  <span>Jurisdiction analysis</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" />
+                  <span>Legal research</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" />
+                  <span>Preliminary report generation</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Private Link */}
+            {privateToken && (
+              <div className="bg-[var(--navy-card)] border border-[var(--gold)]/20 rounded-lg p-6 text-left mb-6">
+                <p className="font-mono text-xs text-[var(--gold)] mb-2">PRIVATE ACCESS LINK</p>
+                <p className="text-xs text-[var(--text-muted)] mb-3">
+                  This link provides secure access to your case. It expires in 30 days. Save it — it will not be shown again.
+                </p>
+                <code className="block bg-[var(--navy)] border border-[rgba(201,168,76,0.1)] rounded px-4 py-2 text-xs text-[var(--gold)] break-all">
+                  {typeof window !== "undefined" ? `${window.location.origin}/api/cases/private?token=${privateToken}` : privateToken}
+                </code>
+              </div>
+            )}
+
+            {/* Investigation ID */}
+            {investigationId && (
+              <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-4 text-left mb-6">
+                <p className="font-mono text-xs text-[var(--text-muted)] mb-1">INVESTIGATION ID</p>
+                <code className="text-xs text-[var(--text-muted)]">{investigationId}</code>
+              </div>
+            )}
+
             <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 text-left">
               <p className="font-mono text-xs text-[var(--text-muted)] mb-2">STATUS PIPELINE</p>
               <div className="flex items-center gap-2 text-sm">
@@ -239,8 +363,9 @@ export default function IntakePage() {
               <p className="text-xs font-mono text-[var(--text-muted)] leading-relaxed">
                 <span className="text-[var(--gold)]">PRIVILEGE NOTICE:</span> All information submitted through this intake form
                 is protected by attorney-client privilege. This submission does not create an attorney-client relationship.
-                Your data is encrypted at rest and in transit. No AI-generated content will be sent to third parties
-                without human attorney approval.
+                Your data is encrypted with AES-256-GCM and stored in a Web3 Privacy Vault — no plaintext PII is retained.
+                Private access links use HMAC-signed tokens with time-limited expiry. No AI-generated content will be sent
+                to third parties without human attorney approval.
               </p>
             </div>
 

@@ -49,6 +49,7 @@ export default function Navbar() {
           </NavLink>
           <NavLink href="/intake" active={pathname === "/intake"}>Intake</NavLink>
           <NavLink href="/media" active={pathname === "/media"}>Media</NavLink>
+          <NavLink href="/subscribe" active={pathname === "/subscribe"}>Pricing</NavLink>
           <NavLink href="/#network" active={false}>Network</NavLink>
           <Link href="/intake"
             className="font-serif text-[0.8rem] font-semibold tracking-[0.1em] uppercase px-5 py-2 rounded-sm bg-[var(--gold)] text-[var(--midnight)] hover:bg-[var(--gold-light)] transition-colors no-underline">

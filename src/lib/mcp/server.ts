@@ -304,6 +304,218 @@ server.tool(
 
 // ── Resource: System Constitution ──
 
+// ── Tool: Launch Workflow ──
+
+server.tool(
+  "launch_workflow",
+  "Launch an AI investigation or case-building workflow. Auto-vaults all PII before agents see it.",
+  {
+    workflowId: z
+      .enum(["wf-intake-investigation", "wf-case-file-builder", "wf-full-defense"])
+      .describe("Which workflow to launch"),
+    matterId: z.string().describe("Matter ID for the case"),
+    input: z
+      .object({
+        clientName: z.string().optional(),
+        email: z.string().optional(),
+        phone: z.string().optional(),
+        matterType: z.string().optional(),
+        description: z.string().optional(),
+      })
+      .describe("Intake data — all PII will be encrypted before agents process it"),
+  },
+  async ({ workflowId, matterId, input }) => {
+    const { launchOrchestration } = await import("../orchestrator/orchestrator.js");
+    const { getWorkflow } = await import("../orchestrator/workflows.js");
+    const workflow = getWorkflow(workflowId);
+    if (!workflow) {
+      return {
+        content: [
+          { type: "text" as const, text: JSON.stringify({ error: `Workflow ${workflowId} not found` }) },
+        ],
+      };
+    }
+    const result = await launchOrchestration(workflow, input, matterId);
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify(
+            {
+              id: result.id,
+              status: result.status,
+              matterId: result.matterId,
+              workflowId: result.workflowId,
+              note: "All PII has been encrypted in the Web3 Vault. Agents see only vault references.",
+            },
+            null,
+            2
+          ),
+        },
+      ],
+    };
+  }
+);
+
+// ── Tool: Get Orchestration Status ──
+
+server.tool(
+  "get_orchestration_status",
+  "Get the status of a running workflow orchestration. Returns no PII — only step summaries.",
+  {
+    orchestrationId: z.string().describe("The orchestration ID to check"),
+  },
+  async ({ orchestrationId }) => {
+    const { getOrchestration } = await import("../orchestrator/orchestrator.js");
+    const result = getOrchestration(orchestrationId);
+    if (!result) {
+      return {
+        content: [
+          { type: "text" as const, text: JSON.stringify({ error: "Orchestration not found" }) },
+        ],
+      };
+    }
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// ── Tool: Get Vault Stats ──
+
+server.tool(
+  "get_vault_stats",
+  "Get aggregate statistics about the Web3 Privacy Vault — record counts, anchor status. No PII returned.",
+  {},
+  async () => {
+    const { getVaultStats } = await import("../privacy/vault.js");
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(getVaultStats(), null, 2) }],
+    };
+  }
+);
+
+// ── Tool: Create Private Link ──
+
+server.tool(
+  "create_private_link",
+  "Create a time-limited, HMAC-signed private link for secure case access.",
+  {
+    matterId: z.string().describe("Matter ID to create link for"),
+    scope: z
+      .enum([
+        "full_case",
+        "case_summary",
+        "investigation",
+        "documents",
+        "report_pdf",
+        "evidence",
+        "financial",
+        "defense_plan",
+      ])
+      .describe("Access scope for the link"),
+    expiresInHours: z.number().optional().describe("Link expiry in hours (default: 24)"),
+    maxUses: z.number().optional().describe("Maximum usage count (default: 10)"),
+  },
+  async ({ matterId, scope, expiresInHours, maxUses }) => {
+    const { createPrivateLink, buildPrivateLinkURL } = await import(
+      "../privacy/private-links.js"
+    );
+    const link = await createPrivateLink({
+      matterId,
+      scope: scope as import("../privacy/private-links.js").LinkScope,
+      createdBy: "mcp-server",
+      expiresInHours: expiresInHours || 24,
+      maxUses: maxUses || 10,
+    });
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify(
+            {
+              id: link.id,
+              token: link.token,
+              url: buildPrivateLinkURL(link.token, "https://law.unykorn.org"),
+              scope: link.scope,
+              expiresAt: link.expiresAt,
+              maxUses: link.maxUses,
+              warning: "This token grants access to case data. Share only with authorized parties.",
+            },
+            null,
+            2
+          ),
+        },
+      ],
+    };
+  }
+);
+
+// ── Tool: Generate Report ──
+
+server.tool(
+  "generate_report",
+  "Generate a professional legal report (preliminary investigation, case file, or case summary).",
+  {
+    reportType: z
+      .enum(["preliminary_investigation", "full_case_file", "case_summary", "defense_plan"])
+      .describe("Type of report to generate"),
+    matterId: z.string().describe("Matter ID for the report"),
+    orchestrationId: z.string().optional().describe("Orchestration ID for context"),
+  },
+  async ({ reportType, matterId, orchestrationId }) => {
+    const {
+      generatePreliminaryReport,
+      generateCaseFileReport,
+      generateCaseSummary,
+    } = await import("../reports/pdf-generator.js");
+    const { getOrchestration } = await import("../orchestrator/orchestrator.js");
+
+    const orchestration = orchestrationId ? getOrchestration(orchestrationId) : null;
+    const context: Record<string, unknown> = orchestration
+      ? { matterId, steps: JSON.stringify(orchestration) }
+      : { matterId };
+
+    const matterType = (context.matterType as string) || "general";
+
+    let report: import("../reports/pdf-generator.js").GeneratedReport;
+    switch (reportType) {
+      case "preliminary_investigation":
+        report = generatePreliminaryReport(matterId, matterType, context);
+        break;
+      case "full_case_file":
+        report = generateCaseFileReport(matterId, matterType, context);
+        break;
+      case "case_summary":
+        report = generateCaseSummary(matterId, matterType, "active");
+        break;
+      default:
+        report = generateCaseSummary(matterId, matterType, "active");
+    }
+
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: JSON.stringify(
+            {
+              id: report.id,
+              matterId,
+              reportType: report.reportType,
+              htmlLength: report.html.length,
+              generatedAt: report.generatedAt,
+              downloadUrl: `/api/reports?id=${report.id}&format=html`,
+              note: "Report contains no PII. Parties referenced by role only.",
+            },
+            null,
+            2
+          ),
+        },
+      ],
+    };
+  }
+);
+
 server.resource(
   "constitution",
   "legal-chain://constitution",

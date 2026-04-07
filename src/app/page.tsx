@@ -78,8 +78,11 @@ export default function Home() {
             <Link href="/intake" className="bg-[var(--gold)] text-[var(--midnight)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline">
               Get Free Case Review
             </Link>
-            <Link href="#process" className="border border-[var(--gold)] text-[var(--gold)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[rgba(201,168,76,0.1)] transition-colors no-underline">
-              See How It Works ↓
+            <Link href="/subscribe" className="border border-[var(--gold)] text-[var(--gold)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[rgba(201,168,76,0.1)] transition-colors no-underline">
+              See Pricing &amp; Plans
+            </Link>
+            <Link href="#process" className="text-[var(--text-muted)] px-8 py-3 font-serif text-sm tracking-[0.15em] uppercase hover:text-[var(--gold)] transition-colors no-underline">
+              How It Works ↓
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl">

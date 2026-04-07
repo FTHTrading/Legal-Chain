@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useStore, useAudit } from "@/lib/hooks";
 import { AGENT_NETWORK } from "@/lib/data/seed";
+import AgentChat from "@/components/ui/AgentChat";
 
 export default function OpsPage() {
   const stats = useStore();
@@ -133,6 +134,12 @@ export default function OpsPage() {
                 </p>
               </Link>
             ))}
+          </div>
+
+          {/* Agent Console */}
+          <div className="mt-12">
+            <h2 className="font-serif text-sm tracking-[0.2em] uppercase text-[var(--gold)] mb-6">AI AGENT CONSOLE</h2>
+            <AgentChat />
           </div>
 
           {/* Recent Activity Feed */}
