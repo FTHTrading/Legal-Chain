@@ -55,6 +55,8 @@ export default function IntakePage() {
     if (!formData.matterType) errs.matterType = "Case type is required";
     if (!formData.briefDescription.trim()) errs.briefDescription = "Case description is required";
     if (formData.contactEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contactEmail)) errs.contactEmail = "Invalid email address";
+    if (formData.contactPhone && !/^[\d\s\-().+]+$/.test(formData.contactPhone)) errs.contactPhone = "Invalid phone number";
+    if (formData.estimatedValue && (isNaN(Number(formData.estimatedValue)) || Number(formData.estimatedValue) < 0)) errs.estimatedValue = "Value must be a positive number";
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setErrors({});
     setLoading(true);

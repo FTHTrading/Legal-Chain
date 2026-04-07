@@ -3,6 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON } from "@/lib/data/seed";
+import MatterTabs from "@/components/law/MatterTabs";
 
 const ALL_MATTERS = [SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON];
 
@@ -44,16 +45,7 @@ export default async function MatterOverview({ params }: { params: Promise<{ id:
   const claimant = matter.parties.find((p) => p.role === "claimant");
   const respondent = matter.parties.find((p) => p.role === "respondent");
 
-  const tabs = [
-    { label: "Overview", href: `/law/matters/${id}`, active: true },
-    { label: "Claims", href: `/law/matters/${id}/claims` },
-    { label: "Ledger", href: `/law/matters/${id}/ledger` },
-    { label: "Evidence", href: `/law/matters/${id}/evidence` },
-    { label: "Documents", href: `/law/matters/${id}/documents` },
-    { label: "Jurisdiction", href: `/law/matters/${id}/jurisdiction` },
-    { label: "Recovery", href: `/law/matters/${id}/recovery` },
-    { label: "Timeline", href: `/law/matters/${id}/timeline` },
-  ];
+
 
   return (
     <>
@@ -90,18 +82,7 @@ export default async function MatterOverview({ params }: { params: Promise<{ id:
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex gap-1 mb-8 border-b border-[rgba(201,168,76,0.1)] overflow-x-auto">
-            {tabs.map((t) => (
-              <Link key={t.label} href={t.href}
-                className={`px-4 py-3 text-sm font-serif tracking-wider uppercase no-underline transition-colors whitespace-nowrap ${
-                  t.active
-                    ? "text-[var(--gold)] border-b-2 border-[var(--gold)]"
-                    : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
-                }`}>
-                {t.label}
-              </Link>
-            ))}
-          </div>
+          <MatterTabs matterId={id} />
 
           {/* Property Asset */}
           <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-8 mb-8">

@@ -6,6 +6,9 @@ import Footer from "@/components/layout/Footer";
 import { useCommunications, useToast } from "@/lib/hooks";
 import { store } from "@/lib/store";
 import { Modal, Button, ToastContainer } from "@/components/ui";
+import { SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON } from "@/lib/data/seed";
+
+const MATTERS = [SEED_MATTER_CREAMER, SEED_MATTER_DELCAMPO, SEED_MATTER_TRON];
 
 interface CommDraft {
   id: string;
@@ -66,7 +69,7 @@ export default function CommunicationsPage() {
   const [editModal, setEditModal] = useState<string | null>(null);
   const [editBody, setEditBody] = useState("");
   const [newDraftModal, setNewDraftModal] = useState(false);
-  const [newDraft, setNewDraft] = useState({ subject: "", to: "", channel: "email" as string, body: "", privileged: false });
+  const [newDraft, setNewDraft] = useState({ subject: "", to: "", channel: "email" as string, body: "", privileged: false, matterId: "" });
   const filtered = filter === "all" ? comms : comms.filter(c => c.channel === filter);
 
   const statusBadge = (status: string) => {
@@ -119,7 +122,7 @@ export default function CommunicationsPage() {
                 </button>
               ))}
             </div>
-            <button onClick={() => { setNewDraftModal(true); setNewDraft({ subject: "", to: "", channel: "email", body: "", privileged: false }); }} className="px-4 py-2 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono tracking-wider hover:bg-[var(--gold-light)] transition-colors cursor-pointer">
+            <button onClick={() => { setNewDraftModal(true); setNewDraft({ subject: "", to: "", channel: "email", body: "", privileged: false, matterId: "" }); }} className="px-4 py-2 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono tracking-wider hover:bg-[var(--gold-light)] transition-colors cursor-pointer">
               + NEW DRAFT
             </button>
           </div>
@@ -196,8 +199,9 @@ export default function CommunicationsPage() {
       <Modal open={!!editModal} onClose={() => setEditModal(null)} title="Edit Communication" size="lg" actions={<><Button variant="ghost" onClick={() => setEditModal(null)}>Cancel</Button><Button variant="primary" onClick={() => { if (editModal) { store.updateCommBody(editModal, editBody); toast("success", "Saved", "Communication updated"); setEditModal(null); } }}>Save</Button></>}>
         <textarea value={editBody} onChange={(e) => setEditBody(e.target.value)} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded-lg px-4 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)]/50 focus:outline-none focus:border-[var(--gold)]/50 min-h-[200px] resize-y font-mono" />
       </Modal>
-      <Modal open={newDraftModal} onClose={() => setNewDraftModal(false)} title="New Communication Draft" size="md" actions={<><Button variant="ghost" onClick={() => setNewDraftModal(false)}>Cancel</Button><Button variant="primary" onClick={() => { if (!newDraft.subject.trim() || !newDraft.to.trim()) return; store.createCommunication({ channel: newDraft.channel, subject: newDraft.subject, to: newDraft.to, privileged: newDraft.privileged, workProduct: false, matterId: "", body: newDraft.body }); toast("success", "Draft Created", `"${newDraft.subject}" created`); setNewDraftModal(false); }}>Create Draft</Button></>}>
+      <Modal open={newDraftModal} onClose={() => setNewDraftModal(false)} title="New Communication Draft" size="md" actions={<><Button variant="ghost" onClick={() => setNewDraftModal(false)}>Cancel</Button><Button variant="primary" onClick={() => { if (!newDraft.subject.trim() || !newDraft.to.trim()) return; store.createCommunication({ channel: newDraft.channel, subject: newDraft.subject, to: newDraft.to, privileged: newDraft.privileged, workProduct: false, matterId: newDraft.matterId, body: newDraft.body }); toast("success", "Draft Created", `"${newDraft.subject}" created`); setNewDraftModal(false); }}>Create Draft</Button></>}>
         <div className="space-y-3">
+          <div><label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Matter</label><select value={newDraft.matterId} onChange={(e) => setNewDraft(p => ({ ...p, matterId: e.target.value }))} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[var(--gold)]/50"><option value="">— Select Matter —</option>{MATTERS.map(m => (<option key={m.id} value={m.id}>{m.matterId} — {m.title}</option>))}</select></div>
           <div><label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Subject</label><input value={newDraft.subject} onChange={(e) => setNewDraft(p => ({ ...p, subject: e.target.value }))} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[var(--gold)]/50" /></div>
           <div><label className="block text-xs font-mono text-[var(--text-muted)] mb-1">To</label><input value={newDraft.to} onChange={(e) => setNewDraft(p => ({ ...p, to: e.target.value }))} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[var(--gold)]/50" /></div>
           <div><label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Type</label><select value={newDraft.channel} onChange={(e) => setNewDraft(p => ({ ...p, channel: e.target.value }))} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[var(--gold)]/50"><option value="email">Email</option><option value="letter">Letter</option><option value="secure_message">Secure Message</option></select></div>
