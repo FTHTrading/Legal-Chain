@@ -176,6 +176,9 @@ export class StateKernel {
     return { matterId, snapshotFingerprint: fp, takenAt: now, records: recs };
   }
 
+  /** All truth records (all versions). */
+  get allRecords(): TruthRecord[] { this.ensureLoaded(); return [...this.records]; }
+
   /** Total truth records (all versions). */
   get truthCount(): number { this.ensureLoaded(); return this.records.length; }
 

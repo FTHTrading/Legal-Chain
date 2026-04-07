@@ -273,6 +273,11 @@ export class ProofKernel {
 
   // ─── Stats ────────────────────────────────────────────────────────
 
+  get allArtifacts(): Artifact[] { this.ensureLoaded(); return [...this.artifacts]; }
+  get allManifests(): ProofManifest[] { this.ensureLoaded(); return [...this.manifests]; }
+  get allAnchors(): ProofAnchor[] { this.ensureLoaded(); return [...this.anchors]; }
+  get allLineage(): LineageRecord[] { this.ensureLoaded(); return [...this.lineage]; }
+
   get artifactCount(): number { this.ensureLoaded(); return this.artifacts.length; }
   get manifestCount(): number { this.ensureLoaded(); return this.manifests.length; }
   get anchorCount(): number { this.ensureLoaded(); return this.anchors.length; }

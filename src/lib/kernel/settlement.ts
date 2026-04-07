@@ -293,6 +293,11 @@ export class SettlementLedger {
 
   // ─── Stats ────────────────────────────────────────────────────────
 
+  get allPayments(): PaymentEvent[] { this.ensureLoaded(); return [...this.payments]; }
+  get allMilestones(): MilestoneGate[] { this.ensureLoaded(); return [...this.milestones]; }
+  get allRights(): RightsRecord[] { this.ensureLoaded(); return [...this.rights]; }
+  get allRevenue(): RevenueEvent[] { this.ensureLoaded(); return [...this.revenue]; }
+
   get paymentCount(): number { this.ensureLoaded(); return this.payments.length; }
   get pendingPayments(): number {
     this.ensureLoaded();
