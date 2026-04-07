@@ -1,21 +1,18 @@
+"use client";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
-import { ACTIVE_CASES, AGENT_NETWORK } from "@/lib/data/seed";
-import { SEED_APPROVALS, SEED_INTAKES, SEED_WORKFLOW_INTAKE } from "@/lib/data/seed-platform";
-
-export const metadata = {
-  title: "Operations Console — UNYKORN // LAW",
-  description: "Internal legal operations command center. Manage approvals, tasks, research, forensics, communications, and audit trails.",
-};
+import { useStore, useAudit } from "@/lib/hooks";
+import { AGENT_NETWORK } from "@/lib/data/seed";
 
 export default function OpsPage() {
-  const pendingApprovals = SEED_APPROVALS.filter(a =>
-    ["in_review", "requires_source_check", "requires_attorney_review"].includes(a.status)
-  ).length;
-  const urgentApprovals = SEED_APPROVALS.filter(a => a.priority === "urgent").length;
-  const activeIntakes = SEED_INTAKES.filter(i => !["accepted", "declined", "referred_out", "withdrawn"].includes(i.status)).length;
-  const activeTasks = SEED_WORKFLOW_INTAKE.tasks.filter(t => t.status === "in_progress" || t.status === "awaiting_approval").length;
+  const stats = useStore();
+  const auditEntries = useAudit();
+  const pendingApprovals = stats.pendingApprovals;
+  const urgentApprovals = stats.pendingApprovals > 0 ? 1 : 0;
+  const activeIntakes = stats.pendingIntakes;
+  const activeTasks = stats.activeTasks;
 
   return (
     <>
@@ -27,7 +24,7 @@ export default function OpsPage() {
             <div className="flex items-center gap-3 mb-4">
               <span className="w-2 h-2 rounded-full bg-[var(--success)] animate-pulse" />
               <span className="text-xs font-mono tracking-wider text-[var(--text-muted)]">
-                {ACTIVE_CASES.length} Active Matters · {AGENT_NETWORK.total} Agents · Chain {AGENT_NETWORK.chainId}
+                {stats.activeCases} Active Matters · {AGENT_NETWORK.total} Agents · Chain {AGENT_NETWORK.chainId}
               </span>
             </div>
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">OPERATIONS CONSOLE</p>
@@ -46,7 +43,7 @@ export default function OpsPage() {
               { label: "Pending Approvals", value: pendingApprovals, urgent: urgentApprovals > 0, urgentCount: urgentApprovals },
               { label: "Active Intakes", value: activeIntakes },
               { label: "Active Tasks", value: activeTasks },
-              { label: "Active Matters", value: ACTIVE_CASES.length },
+              { label: "Active Matters", value: stats.activeCases },
             ].map((stat) => (
               <div key={stat.label} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 text-center">
                 <p className="text-3xl font-serif font-bold text-[var(--gold)] mb-1">{stat.value}</p>
@@ -99,7 +96,7 @@ export default function OpsPage() {
                 description: "Draft, review, and send emails and secure messages. All outbound communications require approval before sending.",
                 href: "/ops/communications",
                 icon: "📧",
-                count: 0,
+                count: stats.pendingComms,
                 countLabel: "drafts",
               },
               {
@@ -107,7 +104,7 @@ export default function OpsPage() {
                 description: "Immutable audit trail of all system actions. Every document, approval, agent action, and user login is recorded.",
                 href: "/ops/audit",
                 icon: "📜",
-                count: 0,
+                count: stats.totalAuditEntries,
                 countLabel: "entries",
               },
             ].map((section) => (
@@ -140,30 +137,23 @@ export default function OpsPage() {
           <div className="mt-12 bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-8">
             <h2 className="font-serif text-sm tracking-[0.2em] uppercase text-[var(--gold)] mb-6">RECENT ACTIVITY</h2>
             <div className="space-y-4">
-              {[
-                { time: "2 min ago", action: "Motion to Correct Illegal Sentence escalated to attorney review", type: "approval", matter: "State v. Delcampo" },
-                { time: "15 min ago", action: "GA cotenant law research completed by Research Agent", type: "research", matter: "169 Creamer Drive" },
-                { time: "1 hour ago", action: "Formal demand letter draft submitted for approval", type: "document", matter: "169 Creamer Drive" },
-                { time: "3 hours ago", action: "TRON wallet TFake2...suspect1 traced — 47 transactions identified", type: "forensics", matter: "NTI-LEAVITT-2026-001" },
-                { time: "6 hours ago", action: "New intake submission from web form — crypto fraud screening", type: "intake", matter: "New Intake" },
-              ].map((event, i) => (
-                <div key={i} className="flex items-start gap-4 py-2 border-b border-[rgba(201,168,76,0.05)] last:border-0">
-                  <span className="text-xs font-mono text-[var(--text-muted)] w-20 shrink-0 mt-0.5">{event.time}</span>
+              {auditEntries.slice(-10).reverse().map((entry) => {
+                const ago = Math.round((Date.now() - new Date(entry.timestamp).getTime()) / 60000);
+                const timeLabel = ago < 1 ? "just now" : ago < 60 ? `${ago}m ago` : ago < 1440 ? `${Math.round(ago / 60)}h ago` : `${Math.round(ago / 1440)}d ago`;
+                const catColors: Record<string, string> = { approval: "text-orange-400 bg-orange-900/20", forensics: "text-red-400 bg-red-900/20", research: "text-blue-400 bg-blue-900/20", intake: "text-green-400 bg-green-900/20", workflow: "text-indigo-400 bg-indigo-900/20", communication: "text-cyan-400 bg-cyan-900/20" };
+                return (
+                <div key={entry.id} className="flex items-start gap-4 py-2 border-b border-[rgba(201,168,76,0.05)] last:border-0">
+                  <span className="text-xs font-mono text-[var(--text-muted)] w-20 shrink-0 mt-0.5">{timeLabel}</span>
                   <div className="flex-1">
-                    <p className="text-sm">{event.action}</p>
-                    <p className="text-xs font-mono text-[var(--gold)] mt-0.5">{event.matter}</p>
+                    <p className="text-sm">{entry.description}</p>
+                    <p className="text-xs font-mono text-[var(--gold)] mt-0.5">{entry.resourceType}: {entry.resourceId.slice(0, 8)}…</p>
                   </div>
-                  <span className={`text-xs font-mono px-2 py-0.5 rounded ${
-                    event.type === "approval" ? "text-orange-400 bg-orange-900/20" :
-                    event.type === "forensics" ? "text-red-400 bg-red-900/20" :
-                    event.type === "research" ? "text-blue-400 bg-blue-900/20" :
-                    event.type === "intake" ? "text-green-400 bg-green-900/20" :
-                    "text-[var(--gold)] bg-[var(--navy)]"
-                  }`}>
-                    {event.type}
+                  <span className={`text-xs font-mono px-2 py-0.5 rounded ${catColors[entry.category] || "text-[var(--gold)] bg-[var(--navy)]"}`}>
+                    {entry.category}
                   </span>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

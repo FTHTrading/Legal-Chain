@@ -3,16 +3,32 @@
 import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { SEED_APPROVALS } from "@/lib/data/seed-platform";
+import { useApprovals, useToast } from "@/lib/hooks";
+import { store } from "@/lib/store";
+import { Modal, Button, ToastContainer } from "@/components/ui";
 
 type FilterStatus = "all" | "in_review" | "requires_source_check" | "requires_attorney_review" | "approved" | "rejected";
 
 export default function ApprovalsPage() {
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
+  const [actionModal, setActionModal] = useState<{ id: string; action: "approve" | "reject" | "revise" } | null>(null);
+  const [actionComment, setActionComment] = useState("");
+  const { toasts, toast } = useToast();
+  const approvals = useApprovals();
 
   const filtered = statusFilter === "all"
-    ? SEED_APPROVALS
-    : SEED_APPROVALS.filter(a => a.status === statusFilter);
+    ? approvals
+    : approvals.filter(a => a.status === statusFilter);
+
+  function handleAction() {
+    if (!actionModal) return;
+    const { id, action } = actionModal;
+    if (action === "approve") { store.approveItem(id, actionComment); toast("success", "Approved", "Item has been approved"); }
+    else if (action === "reject") { if (!actionComment.trim()) return; store.rejectItem(id, actionComment); toast("warning", "Rejected", "Item has been rejected"); }
+    else { if (!actionComment.trim()) return; store.requestChanges(id, actionComment); toast("info", "Revision Requested", "Changes have been requested"); }
+    setActionModal(null);
+    setActionComment("");
+  }
 
   const statusBadge = (status: string) => {
     const colors: Record<string, string> = {
@@ -98,9 +114,9 @@ export default function ApprovalsPage() {
 
                     {/* Matter Link */}
                     <div className="flex items-center gap-4 text-xs font-mono text-[var(--text-muted)]">
-                      <span>Matter: <span className="text-[var(--gold)]">{item.matterId.slice(0, 8)}…</span></span>
+                      <span>Matter: <span className="text-[var(--gold)]">{(item.matterId ?? "").slice(0, 8)}…</span></span>
                       <span>Submitted: {new Date(item.createdAt).toLocaleDateString()}</span>
-                      <span>By: {item.createdByName}</span>
+                      <span>By: {item.submittedBy}</span>
                     </div>
 
                     {/* Provenance */}
@@ -113,11 +129,11 @@ export default function ApprovalsPage() {
                         </div>
                         <div>
                           <p className="text-[var(--text-muted)]">Source Citations</p>
-                          <p className="font-mono">{item.sourceCitations.length}</p>
+                          <p className="font-mono">{item.citations.length}</p>
                         </div>
                         <div>
                           <p className="text-[var(--text-muted)]">Agent Generated</p>
-                          <p className="font-mono">{item.createdByAgent ? "Yes" : "No"}</p>
+                          <p className="font-mono">{item.submittedBy.includes("Agent") ? "Yes" : "No"}</p>
                         </div>
                         <div>
                           <p className="text-[var(--text-muted)]">Reviews</p>
@@ -127,14 +143,14 @@ export default function ApprovalsPage() {
                     </div>
 
                     {/* Source Citations */}
-                    {item.sourceCitations.length > 0 && (
+                    {item.citations.length > 0 && (
                       <div className="mt-3 space-y-1">
                         <p className="text-xs font-mono text-[var(--gold)]">CITATIONS</p>
-                        {item.sourceCitations.map((cite, i) => (
+                        {item.citations.map((cite, i) => (
                           <div key={i} className="flex items-center gap-2 text-xs">
                             <span className="text-[var(--text-muted)] font-mono">[{cite.citationType}]</span>
-                            <span>{cite.title}</span>
-                            <span className="text-[var(--text-muted)]">{cite.reference}</span>
+                            <span>{cite.source}</span>
+                            <span className="text-[var(--text-muted)]">{cite.pinCite}</span>
                           </div>
                         ))}
                       </div>
@@ -145,13 +161,13 @@ export default function ApprovalsPage() {
                   <div className="flex flex-col gap-2 min-w-[160px]">
                     {item.status !== "approved" && item.status !== "rejected" && item.status !== "sent" && (
                       <>
-                        <button className="px-4 py-2 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono tracking-wider hover:bg-[var(--gold-light)] transition-colors cursor-pointer">
+                        <button onClick={() => { setActionModal({ id: item.id, action: "approve" }); setActionComment(""); }} className="px-4 py-2 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono tracking-wider hover:bg-[var(--gold-light)] transition-colors cursor-pointer">
                           APPROVE
                         </button>
-                        <button className="px-4 py-2 bg-transparent border border-red-800/30 text-red-400 rounded text-xs font-mono tracking-wider hover:bg-red-900/20 transition-colors cursor-pointer">
+                        <button onClick={() => { setActionModal({ id: item.id, action: "reject" }); setActionComment(""); }} className="px-4 py-2 bg-transparent border border-red-800/30 text-red-400 rounded text-xs font-mono tracking-wider hover:bg-red-900/20 transition-colors cursor-pointer">
                           REJECT
                         </button>
-                        <button className="px-4 py-2 bg-transparent border border-[rgba(201,168,76,0.2)] text-[var(--text-muted)] rounded text-xs font-mono tracking-wider hover:border-[var(--gold)] hover:text-white transition-colors cursor-pointer">
+                        <button onClick={() => { setActionModal({ id: item.id, action: "revise" }); setActionComment(""); }} className="px-4 py-2 bg-transparent border border-[rgba(201,168,76,0.2)] text-[var(--text-muted)] rounded text-xs font-mono tracking-wider hover:border-[var(--gold)] hover:text-white transition-colors cursor-pointer">
                           REQUEST REVISION
                         </button>
                       </>
@@ -184,6 +200,13 @@ export default function ApprovalsPage() {
         </div>
       </main>
       <Footer />
+      <Modal open={!!actionModal} onClose={() => setActionModal(null)} title={actionModal?.action === "approve" ? "Confirm Approval" : actionModal?.action === "reject" ? "Reject Item" : "Request Revision"} size="sm" actions={<><Button variant="ghost" onClick={() => setActionModal(null)}>Cancel</Button><Button variant={actionModal?.action === "reject" ? "danger" : "primary"} onClick={handleAction}>{actionModal?.action === "approve" ? "Approve" : actionModal?.action === "reject" ? "Reject" : "Request Changes"}</Button></>}>
+        <div className="space-y-3">
+          <p className="text-sm text-[var(--text-muted)]">{actionModal?.action === "approve" ? "Add optional comments:" : "Provide rationale (required):"}</p>
+          <textarea value={actionComment} onChange={(e) => setActionComment(e.target.value)} placeholder={actionModal?.action === "approve" ? "Optional comments..." : "Required rationale..."} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded-lg px-4 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)]/50 focus:outline-none focus:border-[var(--gold)]/50 min-h-[80px] resize-y" />
+        </div>
+      </Modal>
+      <ToastContainer toasts={toasts} />
     </>
   );
 }

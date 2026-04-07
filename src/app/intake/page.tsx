@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { store, type Priority } from "@/lib/store";
+import { useToast } from "@/lib/hooks";
+import { ToastContainer } from "@/components/ui";
 
 const MATTER_TYPES = [
   { value: "civil_property", label: "Civil — Property Dispute" },
@@ -24,6 +27,10 @@ const URGENCY_LEVELS = [
 
 export default function IntakePage() {
   const [submitted, setSubmitted] = useState(false);
+  const [caseRef, setCaseRef] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+  const { toasts, toast } = useToast();
   const [formData, setFormData] = useState({
     contactName: "",
     contactEmail: "",
@@ -38,11 +45,34 @@ export default function IntakePage() {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    if (errors[e.target.name]) setErrors(prev => { const next = { ...prev }; delete next[e.target.name]; return next; });
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    const errs: Record<string, string> = {};
+    if (!formData.contactName.trim()) errs.contactName = "Full name is required";
+    if (!formData.matterType) errs.matterType = "Case type is required";
+    if (!formData.briefDescription.trim()) errs.briefDescription = "Case description is required";
+    if (formData.contactEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contactEmail)) errs.contactEmail = "Invalid email address";
+    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+    setErrors({});
+    setLoading(true);
+    try {
+      const record = store.createIntake({
+        clientName: formData.contactName.trim(),
+        email: formData.contactEmail.trim(),
+        phone: formData.contactPhone.trim(),
+        matterType: formData.matterType,
+        urgency: formData.urgency as Priority,
+        description: formData.briefDescription.trim(),
+      });
+      setCaseRef(record.caseReference);
+      toast("success", "Intake Submitted", `Case ${record.caseReference} created successfully`);
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {
@@ -58,6 +88,12 @@ export default function IntakePage() {
             </div>
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-3">INTAKE RECEIVED</p>
             <h1 className="font-serif text-4xl font-bold mb-4">Your case is in the queue.</h1>
+            {caseRef && (
+              <div className="inline-block bg-[var(--navy-card)] border border-[var(--gold)]/20 rounded-lg px-6 py-3 mb-6">
+                <p className="text-xs text-[var(--text-muted)] mb-1">CASE REFERENCE</p>
+                <p className="text-xl font-mono text-[var(--gold)] font-bold">{caseRef}</p>
+              </div>
+            )}
             <p className="text-lg text-[var(--text-muted)] mb-8">
               Our system has received your intake submission. A conflict check will be initiated automatically,
               and you will be contacted within 24 hours regarding next steps.
@@ -78,6 +114,7 @@ export default function IntakePage() {
           </div>
         </main>
         <Footer />
+        <ToastContainer toasts={toasts} />
       </>
     );
   }
@@ -208,14 +245,16 @@ export default function IntakePage() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full py-4 px-8 bg-[var(--gold)] text-[var(--midnight)] font-serif font-bold text-lg rounded hover:bg-[var(--gold-light)] transition-colors cursor-pointer"
+              disabled={loading}
+              className="w-full py-4 px-8 bg-[var(--gold)] text-[var(--midnight)] font-serif font-bold text-lg rounded hover:bg-[var(--gold-light)] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              SUBMIT INTAKE
+              {loading ? "SUBMITTING..." : "SUBMIT INTAKE"}
             </button>
           </form>
         </div>
       </main>
       <Footer />
+      <ToastContainer toasts={toasts} />
     </>
   );
 }

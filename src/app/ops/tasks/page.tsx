@@ -1,14 +1,14 @@
+"use client";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { SEED_WORKFLOW_INTAKE } from "@/lib/data/seed-platform";
-
-export const metadata = {
-  title: "Task Manager — UNYKORN // LAW",
-  description: "Track workflow tasks, agent assignments, dependencies, and deadlines.",
-};
+import { useTasks, useToast } from "@/lib/hooks";
+import { store } from "@/lib/store";
+import { ToastContainer } from "@/components/ui";
 
 export default function TasksPage() {
-  const tasks = SEED_WORKFLOW_INTAKE.tasks;
+  const tasks = useTasks();
+  const { toasts, toast } = useToast();
   const completedCount = tasks.filter(t => t.status === "completed").length;
   const progressPct = Math.round((completedCount / tasks.length) * 100);
 
@@ -56,9 +56,9 @@ export default function TasksPage() {
           <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 mb-8">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="font-serif text-lg font-bold">{SEED_WORKFLOW_INTAKE.title}</h2>
+                <h2 className="font-serif text-lg font-bold">Case Intake & Evidence Gathering</h2>
                 <p className="text-xs font-mono text-[var(--text-muted)] mt-1">
-                  Type: {SEED_WORKFLOW_INTAKE.workflowType} · Matter: {SEED_WORKFLOW_INTAKE.matterId.slice(0, 8)}…
+                  Type: case_intake · {tasks.length} tasks
                 </p>
               </div>
               <div className="text-right">
@@ -116,9 +116,6 @@ export default function TasksPage() {
                       {task.assignedToAgent && (
                         <span>Agent: <span className="text-[var(--gold)]">{task.assignedToAgent.slice(0, 8)}…</span></span>
                       )}
-                      {task.requiresApproval && (
-                        <span className="text-orange-400">Requires Approval</span>
-                      )}
                       {task.dependsOn.length > 0 && (
                         <span>Depends on: {task.dependsOn.length} task(s)</span>
                       )}
@@ -128,6 +125,17 @@ export default function TasksPage() {
                     {task.completedAt && (
                       <div className="mt-2 text-xs font-mono text-green-400/70">
                         Completed: {new Date(task.completedAt).toLocaleString()}
+                      </div>
+                    )}
+                    {task.status !== "completed" && task.status !== "cancelled" && (
+                      <div className="flex gap-2 mt-3">
+                        {task.status === "pending" && (
+                          <button onClick={() => { store.updateTaskStatus(task.id, "in_progress"); toast("info", "Task Started", `"${task.title}" is now in progress`); }} className="px-3 py-1 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono hover:bg-[var(--gold-light)] transition-colors cursor-pointer">START</button>
+                        )}
+                        {(task.status === "in_progress" || task.status === "waiting_approval") && (
+                          <button onClick={() => { store.updateTaskStatus(task.id, "completed"); toast("success", "Task Completed", `"${task.title}" marked complete`); }} className="px-3 py-1 bg-green-800/30 text-green-400 rounded text-xs font-mono hover:bg-green-800/40 transition-colors cursor-pointer">COMPLETE</button>
+                        )}
+                        <button onClick={() => { store.updateTaskStatus(task.id, "blocked"); toast("warning", "Task Blocked", `"${task.title}" marked as blocked`); }} className="px-3 py-1 bg-transparent border border-red-800/30 text-red-400 rounded text-xs font-mono hover:bg-red-900/20 transition-colors cursor-pointer">BLOCK</button>
                       </div>
                     )}
                   </div>
@@ -147,6 +155,7 @@ export default function TasksPage() {
         </div>
       </main>
       <Footer />
+      <ToastContainer toasts={toasts} />
     </>
   );
 }

@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { useCommunications, useToast } from "@/lib/hooks";
+import { store } from "@/lib/store";
+import { Modal, Button, ToastContainer } from "@/components/ui";
 
 interface CommDraft {
   id: string;
@@ -57,12 +60,19 @@ const DEMO_COMMS: CommDraft[] = [
 ];
 
 export default function CommunicationsPage() {
+  const comms = useCommunications();
+  const { toasts, toast } = useToast();
   const [filter, setFilter] = useState<"all" | "email" | "letter" | "secure_message">("all");
-  const filtered = filter === "all" ? DEMO_COMMS : DEMO_COMMS.filter(c => c.type === filter);
+  const [editModal, setEditModal] = useState<string | null>(null);
+  const [editBody, setEditBody] = useState("");
+  const [newDraftModal, setNewDraftModal] = useState(false);
+  const [newDraft, setNewDraft] = useState({ subject: "", to: "", channel: "email" as string, body: "", privileged: false });
+  const filtered = filter === "all" ? comms : comms.filter(c => c.channel === filter);
 
   const statusBadge = (status: string) => {
     const m: Record<string, string> = {
       drafting: "text-gray-400 bg-gray-900/20",
+      draft: "text-gray-400 bg-gray-900/20",
       pending_review: "text-yellow-400 bg-yellow-900/20",
       approved: "text-green-400 bg-green-900/20",
       sent: "text-blue-400 bg-blue-900/20",
@@ -109,7 +119,7 @@ export default function CommunicationsPage() {
                 </button>
               ))}
             </div>
-            <button className="px-4 py-2 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono tracking-wider hover:bg-[var(--gold-light)] transition-colors cursor-pointer">
+            <button onClick={() => { setNewDraftModal(true); setNewDraft({ subject: "", to: "", channel: "email", body: "", privileged: false }); }} className="px-4 py-2 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono tracking-wider hover:bg-[var(--gold-light)] transition-colors cursor-pointer">
               + NEW DRAFT
             </button>
           </div>
@@ -119,7 +129,7 @@ export default function CommunicationsPage() {
             {filtered.map(comm => (
               <div key={comm.id} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 card-lift">
                 <div className="flex items-start gap-4">
-                  <span className="text-2xl shrink-0">{typeIcon(comm.type)}</span>
+                  <span className="text-2xl shrink-0">{typeIcon(comm.channel)}</span>
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
                       <span className={`text-xs font-mono px-2 py-0.5 rounded ${statusBadge(comm.status)}`}>
@@ -130,12 +140,12 @@ export default function CommunicationsPage() {
                           PRIVILEGED
                         </span>
                       )}
-                      <span className="text-xs font-mono text-[var(--text-muted)]">{comm.type.replace(/_/g, " ")}</span>
+                      <span className="text-xs font-mono text-[var(--text-muted)]">{comm.channel.replace(/_/g, " ")}</span>
                     </div>
                     <h3 className="font-serif text-base font-bold mb-1">{comm.subject}</h3>
                     <div className="flex items-center gap-4 text-xs font-mono text-[var(--text-muted)] mb-3">
                       <span>To: {comm.to}</span>
-                      <span>Matter: <span className="text-[var(--gold)]">{comm.matterName}</span></span>
+                      <span>Matter: <span className="text-[var(--gold)]">{comm.matterId}</span></span>
                       <span>{new Date(comm.createdAt).toLocaleDateString()}</span>
                     </div>
 
@@ -149,16 +159,16 @@ export default function CommunicationsPage() {
 
                   {/* Actions */}
                   <div className="flex flex-col gap-2 shrink-0">
-                    <button className="px-3 py-1.5 bg-transparent border border-[rgba(201,168,76,0.2)] text-[var(--text-muted)] rounded text-xs font-mono hover:border-[var(--gold)] hover:text-white transition-colors cursor-pointer">
+                    <button onClick={() => { setEditModal(comm.id); setEditBody(comm.body); }} className="px-3 py-1.5 bg-transparent border border-[rgba(201,168,76,0.2)] text-[var(--text-muted)] rounded text-xs font-mono hover:border-[var(--gold)] hover:text-white transition-colors cursor-pointer">
                       EDIT
                     </button>
-                    {comm.status === "drafting" && (
-                      <button className="px-3 py-1.5 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono hover:bg-[var(--gold-light)] transition-colors cursor-pointer">
+                    {comm.status === "draft" && (
+                      <button onClick={() => { store.updateCommStatus(comm.id, "pending_review"); toast("info", "Submitted", `"${comm.subject}" submitted for review`); }} className="px-3 py-1.5 bg-[var(--gold)] text-[var(--midnight)] rounded text-xs font-mono hover:bg-[var(--gold-light)] transition-colors cursor-pointer">
                         SUBMIT
                       </button>
                     )}
                     {comm.status === "pending_review" && (
-                      <button className="px-3 py-1.5 bg-green-800/30 text-green-400 rounded text-xs font-mono hover:bg-green-800/40 transition-colors cursor-pointer">
+                      <button onClick={() => { store.updateCommStatus(comm.id, "approved"); toast("success", "Approved", `"${comm.subject}" approved for dispatch`); }} className="px-3 py-1.5 bg-green-800/30 text-green-400 rounded text-xs font-mono hover:bg-green-800/40 transition-colors cursor-pointer">
                         APPROVE
                       </button>
                     )}
@@ -178,6 +188,19 @@ export default function CommunicationsPage() {
         </div>
       </main>
       <Footer />
+      <Modal open={!!editModal} onClose={() => setEditModal(null)} title="Edit Communication" size="lg" actions={<><Button variant="ghost" onClick={() => setEditModal(null)}>Cancel</Button><Button variant="primary" onClick={() => { if (editModal) { store.updateCommBody(editModal, editBody); toast("success", "Saved", "Communication updated"); setEditModal(null); } }}>Save</Button></>}>
+        <textarea value={editBody} onChange={(e) => setEditBody(e.target.value)} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded-lg px-4 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)]/50 focus:outline-none focus:border-[var(--gold)]/50 min-h-[200px] resize-y font-mono" />
+      </Modal>
+      <Modal open={newDraftModal} onClose={() => setNewDraftModal(false)} title="New Communication Draft" size="md" actions={<><Button variant="ghost" onClick={() => setNewDraftModal(false)}>Cancel</Button><Button variant="primary" onClick={() => { if (!newDraft.subject.trim() || !newDraft.to.trim()) return; store.createCommunication({ channel: newDraft.channel, subject: newDraft.subject, to: newDraft.to, privileged: newDraft.privileged, workProduct: false, matterId: "", body: newDraft.body }); toast("success", "Draft Created", `"${newDraft.subject}" created`); setNewDraftModal(false); }}>Create Draft</Button></>}>
+        <div className="space-y-3">
+          <div><label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Subject</label><input value={newDraft.subject} onChange={(e) => setNewDraft(p => ({ ...p, subject: e.target.value }))} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[var(--gold)]/50" /></div>
+          <div><label className="block text-xs font-mono text-[var(--text-muted)] mb-1">To</label><input value={newDraft.to} onChange={(e) => setNewDraft(p => ({ ...p, to: e.target.value }))} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[var(--gold)]/50" /></div>
+          <div><label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Type</label><select value={newDraft.channel} onChange={(e) => setNewDraft(p => ({ ...p, channel: e.target.value }))} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[var(--gold)]/50"><option value="email">Email</option><option value="letter">Letter</option><option value="secure_message">Secure Message</option></select></div>
+          <div><label className="block text-xs font-mono text-[var(--text-muted)] mb-1">Body</label><textarea value={newDraft.body} onChange={(e) => setNewDraft(p => ({ ...p, body: e.target.value }))} className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded px-3 py-2 text-sm text-[var(--text)] focus:outline-none focus:border-[var(--gold)]/50 min-h-[120px] resize-y" /></div>
+          <label className="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)]"><input type="checkbox" checked={newDraft.privileged} onChange={(e) => setNewDraft(p => ({ ...p, privileged: e.target.checked }))} /> Privileged Communication</label>
+        </div>
+      </Modal>
+      <ToastContainer toasts={toasts} />
     </>
   );
 }

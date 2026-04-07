@@ -1,10 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-
-export const metadata = {
-  title: "Audit Log — UNYKORN // LAW",
-  description: "Immutable audit trail of all system actions with cryptographic hash chain integrity.",
-};
+import { useAudit } from "@/lib/hooks";
 
 interface AuditEntry {
   id: string;
@@ -122,6 +121,14 @@ const DEMO_AUDIT: AuditEntry[] = [
 ];
 
 export default function AuditPage() {
+  const auditEntries = useAudit();
+  const [search, setSearch] = useState("");
+  const [catFilter, setCatFilter] = useState("all");
+  const categories = ["all", ...Array.from(new Set(auditEntries.map(e => e.category)))];
+  const filtered = auditEntries
+    .filter(e => catFilter === "all" || e.category === catFilter)
+    .filter(e => !search || e.description.toLowerCase().includes(search.toLowerCase()) || e.action.toLowerCase().includes(search.toLowerCase()));
+
   const categoryColor = (cat: string) => {
     const m: Record<string, string> = {
       approval: "text-orange-400 bg-orange-900/20",
@@ -139,6 +146,7 @@ export default function AuditPage() {
   const actorBadge = (type: string) => {
     const m: Record<string, string> = {
       user: "👤",
+      human: "👤",
       agent: "🤖",
       system: "⚙️",
     };
@@ -168,8 +176,22 @@ export default function AuditPage() {
             <div>
               <p className="text-sm font-bold text-green-400">Hash Chain Integrity: Verified</p>
               <p className="text-xs font-mono text-[var(--text-muted)]">
-                {DEMO_AUDIT.length} entries · Chain unbroken · Last verified: {new Date().toLocaleString()}
+                {filtered.length} entries · Chain unbroken · Last verified: {new Date().toLocaleString()}
               </p>
+            </div>
+          </div>
+
+          {/* Search + Filter */}
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
+            <div className="flex-1">
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search audit entries..." className="w-full bg-[var(--midnight)] border border-[var(--gold)]/20 rounded-lg px-4 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)]/50 focus:outline-none focus:border-[var(--gold)]/50" />
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {categories.map(c => (
+                <button key={c} onClick={() => setCatFilter(c)} className={`px-3 py-1 text-xs font-mono rounded transition-colors cursor-pointer ${catFilter === c ? "bg-[var(--gold)] text-[var(--midnight)]" : "text-[var(--text-muted)] hover:text-white"}`}>
+                  {c === "all" ? "ALL" : c.toUpperCase()}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -179,7 +201,7 @@ export default function AuditPage() {
             <div className="absolute left-[19px] top-0 bottom-0 w-px bg-[rgba(201,168,76,0.15)]" />
 
             <div className="space-y-1">
-              {DEMO_AUDIT.map((entry) => (
+              {filtered.map((entry) => (
                 <div key={entry.id} className="relative pl-12 py-3">
                   {/* Dot */}
                   <div className="absolute left-[14px] top-[18px] w-[12px] h-[12px] bg-[var(--navy-card)] border-2 border-[var(--gold)] rounded-full z-10" />
@@ -188,7 +210,7 @@ export default function AuditPage() {
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <span className="text-sm">{actorBadge(entry.actorType)}</span>
-                        <span className="text-xs font-mono font-bold">{entry.actorName}</span>
+                        <span className="text-xs font-mono font-bold">{entry.actor}</span>
                         <span className={`text-xs font-mono px-2 py-0.5 rounded ${categoryColor(entry.category)}`}>
                           {entry.category}
                         </span>
@@ -202,8 +224,8 @@ export default function AuditPage() {
                     </div>
                     <p className="text-sm text-[var(--text-muted)] mb-2">{entry.description}</p>
                     <div className="flex items-center gap-4 text-xs font-mono text-[var(--text-muted)]">
-                      {entry.matterName && (
-                        <span>Matter: <span className="text-[var(--gold)]">{entry.matterName}</span></span>
+                      {entry.resourceType && (
+                        <span>Matter: <span className="text-[var(--gold)]">{entry.resourceType}: {entry.resourceId.slice(0, 8)}\u2026</span></span>
                       )}
                       <span className="break-all">Hash: {entry.contentHash.slice(0, 16)}…</span>
                     </div>
