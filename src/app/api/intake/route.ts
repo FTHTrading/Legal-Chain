@@ -17,11 +17,19 @@ export async function GET() {
 // POST /api/intake — submit new intake
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  const { clientName, email, matterType, description } = body;
+  if (!clientName || !email || !matterType || !description) {
+    return NextResponse.json({ error: "Missing required fields: clientName, email, matterType, description" }, { status: 400 });
+  }
+  const id = crypto.randomUUID();
+  const caseReference = `INT-2026-${id.slice(0, 3).toUpperCase()}`;
   return NextResponse.json(
     {
       message: "Intake received — entering screening queue",
-      id: crypto.randomUUID(),
+      id,
+      caseReference,
       status: "new",
+      timestamp: new Date().toISOString(),
     },
     { status: 201 }
   );

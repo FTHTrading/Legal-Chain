@@ -1,14 +1,18 @@
+"use client";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Image from "next/image";
+import { useState } from "react";
 import { IMAGE_GALLERY, VIDEO_GALLERY } from "@/lib/data/seed";
 
-export const metadata = {
-  title: "Media Gallery — UNYKORN // LAW",
-  description: "Visual advocacy assets, campaign media, and legal documentation from the UNYKORN platform.",
-};
-
 export default function MediaPage() {
+  const [lightbox, setLightbox] = useState<typeof IMAGE_GALLERY[number] | null>(null);
+  const categories = ["all", ...Array.from(new Set(IMAGE_GALLERY.map(i => i.category)))];
+  const [filter, setFilter] = useState("all");
+
+  const filteredImages = filter === "all" ? IMAGE_GALLERY : IMAGE_GALLERY.filter(i => i.category === filter);
+
   return (
     <>
       <Navbar />
@@ -27,16 +31,29 @@ export default function MediaPage() {
 
           {/* Image Gallery */}
           <section className="mb-20">
-            <h2 className="font-serif text-xs tracking-[0.2em] uppercase text-[var(--gold)] mb-6">Images ({IMAGE_GALLERY.length})</h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-serif text-xs tracking-[0.2em] uppercase text-[var(--gold)]">Images ({filteredImages.length})</h2>
+              <div className="flex gap-2">
+                {categories.map(cat => (
+                  <button key={cat} onClick={() => setFilter(cat)} className={`text-xs font-mono tracking-wider uppercase px-3 py-1.5 rounded border transition-colors cursor-pointer ${
+                    filter === cat
+                      ? "bg-[var(--gold)] text-[var(--midnight)] border-[var(--gold)]"
+                      : "bg-transparent text-[var(--text-muted)] border-[rgba(201,168,76,0.2)] hover:border-[var(--gold)] hover:text-[var(--gold)]"
+                  }`}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {IMAGE_GALLERY.map((img) => (
-                <div key={img.id} className="relative aspect-video overflow-hidden rounded-lg border border-[rgba(201,168,76,0.1)] card-lift group">
+              {filteredImages.map((img) => (
+                <button key={img.id} onClick={() => setLightbox(img)} className="relative aspect-video overflow-hidden rounded-lg border border-[rgba(201,168,76,0.1)] card-lift group cursor-pointer bg-transparent p-0 text-left">
                   <Image src={img.file} alt={img.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--midnight)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                    <span className="font-serif text-sm font-semibold">{img.title}</span>
+                    <span className="font-serif text-sm font-semibold text-white">{img.title}</span>
                     <span className="text-xs text-[var(--text-muted)]">{img.category}</span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </section>
@@ -64,6 +81,23 @@ export default function MediaPage() {
           </section>
         </div>
       </main>
+
+      {/* Lightbox Modal */}
+      {lightbox && (
+        <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-8" onClick={() => setLightbox(null)}>
+          <button onClick={() => setLightbox(null)} className="absolute top-6 right-6 text-white text-3xl bg-transparent border-none cursor-pointer hover:text-[var(--gold)] transition-colors z-10">
+            &times;
+          </button>
+          <div className="relative max-w-[900px] max-h-[80vh] w-full aspect-video" onClick={(e) => e.stopPropagation()}>
+            <Image src={lightbox.file} alt={lightbox.title} fill className="object-contain rounded-lg" />
+          </div>
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+            <p className="font-serif text-lg font-semibold text-white">{lightbox.title}</p>
+            <p className="text-xs text-[var(--text-muted)] font-mono uppercase tracking-wider">{lightbox.category}</p>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </>
   );

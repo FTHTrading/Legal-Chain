@@ -1,14 +1,24 @@
+"use client";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { ACTIVE_CASES, SEED_MATTER_CREAMER } from "@/lib/data/seed";
-
-export const metadata = {
-  title: "Active Cases — UNYKORN // LAW",
-  description: "Track all active cases managed by the UNYKORN legal advocacy platform.",
-};
+import { useStore } from "@/lib/hooks";
+import { useState } from "react";
 
 export default function LawPage() {
+  const stats = useStore();
+  const [search, setSearch] = useState("");
+
+  const filtered = search.trim()
+    ? ACTIVE_CASES.filter(c =>
+        c.title.toLowerCase().includes(search.toLowerCase()) ||
+        c.description.toLowerCase().includes(search.toLowerCase()) ||
+        c.namespace.toLowerCase().includes(search.toLowerCase())
+      )
+    : ACTIVE_CASES;
+
   return (
     <>
       <Navbar />
@@ -18,23 +28,30 @@ export default function LawPage() {
           <div className="mb-16">
             <div className="flex items-center gap-3 mb-4">
               <span className="w-2 h-2 rounded-full bg-[var(--success)] animate-pulse" />
-              <span className="text-xs font-mono tracking-wider text-[var(--text-muted)]">3 Active Cases &middot; 350 Agents Deployed</span>
+              <span className="text-xs font-mono tracking-wider text-[var(--text-muted)]">{stats.activeCases} Active Cases &middot; {stats.agentCount} Agents Deployed</span>
             </div>
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Case Management</p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">
               ACTIVE<br /><span className="text-[var(--gold)]">OPERATIONS.</span>
             </h1>
-            <p className="text-lg text-[var(--text-muted)] max-w-2xl">
+            <p className="text-lg text-[var(--text-muted)] max-w-2xl mb-6">
               Every case under UNYKORN // LAW management. Real-time status, agent allocation, and blockchain-verified evidence chains.
             </p>
+            <input
+              type="text"
+              placeholder="Search cases..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full max-w-md bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:outline-none transition-colors"
+            />
           </div>
 
           {/* Case Cards */}
           <div className="grid gap-8 mb-16">
-            {ACTIVE_CASES.map((c) => {
+            {filtered.map((c) => {
               const href = c.id === "creamer-drive-169"
                 ? `/law/matters/${SEED_MATTER_CREAMER.id}`
-                : "#";
+                : `/portal/${c.namespace?.split(".")[0] || "marquis"}`;
 
               return (
                 <Link key={c.id} href={href} className="block no-underline bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-8 card-lift group">
@@ -70,9 +87,9 @@ export default function LawPage() {
           {/* Summary Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { label: "Active Matters", val: "3" },
-              { label: "Agents Deployed", val: "350" },
-              { label: "Claims Filed", val: "8" },
+              { label: "Active Matters", val: String(stats.activeCases) },
+              { label: "Agents Deployed", val: String(stats.agentCount) },
+              { label: "Pending Approvals", val: String(stats.pendingApprovals) },
               { label: "Total Recovery Target", val: "$1.18M" },
             ].map((s) => (
               <div key={s.label} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 text-center">

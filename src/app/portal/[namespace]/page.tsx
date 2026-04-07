@@ -1,20 +1,26 @@
+"use client";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { SEED_NAMESPACE_MARQUIS } from "@/lib/data/seed-platform";
+import { useCommunications, useApprovals } from "@/lib/hooks";
+import { use } from "react";
 
-export const metadata = {
-  title: "Client Portal — UNYKORN // LAW",
-};
-
-export default async function PortalPage({
+export default function PortalPage({
   params,
 }: {
   params: Promise<{ namespace: string }>;
 }) {
-  const { namespace: slug } = await params;
+  const { namespace: slug } = use(params);
+  const comms = useCommunications();
+  const approvals = useApprovals();
 
   // Demo: only "marquis" namespace has seed data
   const ns = slug === "marquis" ? SEED_NAMESPACE_MARQUIS : null;
+
+  // Pull live data for this namespace's matter
+  const matterComms = comms.filter(c => c.matterId === (ns as any)?.matterId || c.tags?.some(t => t.includes(slug)));
+  const matterApprovals = approvals.filter(a => a.matterId === (ns as any)?.matterId);
 
   if (!ns) {
     return (
@@ -120,19 +126,52 @@ export default async function PortalPage({
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-8">
               <h2 className="font-serif text-sm tracking-[0.2em] uppercase text-[var(--gold)] mb-4">DOCUMENTS</h2>
-              <p className="text-[var(--text-muted)]">
-                {ns.packets.length > 0
-                  ? `${ns.packets.length} download packets available`
-                  : "No documents available for download yet. Your legal team will publish case documents here as they become available."}
-              </p>
+              {matterApprovals.length > 0 ? (
+                <div className="space-y-3">
+                  {matterApprovals.map(a => (
+                    <div key={a.id} className="flex items-center justify-between py-2 border-b border-[rgba(201,168,76,0.06)] last:border-none">
+                      <div>
+                        <p className="text-sm font-medium">{a.title}</p>
+                        <p className="text-xs text-[var(--text-muted)]">{a.category} &middot; v{a.contentVersion}</p>
+                      </div>
+                      <span className={`text-xs font-mono tracking-wider uppercase ${
+                        a.status === "approved" || a.status === "filed" ? "text-[var(--success)]" : "text-[var(--gold)]"
+                      }`}>{a.status}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[var(--text-muted)]">
+                  {ns.packets.length > 0
+                    ? `${ns.packets.length} download packets available`
+                    : "No documents available for download yet. Your legal team will publish case documents here as they become available."}
+                </p>
+              )}
             </div>
             <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-8">
               <h2 className="font-serif text-sm tracking-[0.2em] uppercase text-[var(--gold)] mb-4">SECURE MESSAGES</h2>
-              <p className="text-[var(--text-muted)]">
-                {ns.messages.length > 0
-                  ? `${ns.messages.length} messages`
-                  : "No messages yet. Your legal team will communicate with you through this secure channel."}
-              </p>
+              {matterComms.length > 0 ? (
+                <div className="space-y-3">
+                  {matterComms.map(c => (
+                    <div key={c.id} className="flex items-center justify-between py-2 border-b border-[rgba(201,168,76,0.06)] last:border-none">
+                      <div>
+                        <p className="text-sm font-medium">{c.subject}</p>
+                        <p className="text-xs text-[var(--text-muted)]">{c.channel} &middot; {new Date(c.updatedAt).toLocaleDateString()}</p>
+                      </div>
+                      <span className={`text-xs font-mono tracking-wider uppercase ${
+                        c.status === "sent" || c.status === "delivered" ? "text-[var(--success)]" :
+                        c.privileged ? "text-red-400" : "text-[var(--gold)]"
+                      }`}>{c.privileged ? "⚖ " : ""}{c.status}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[var(--text-muted)]">
+                  {ns.messages.length > 0
+                    ? `${ns.messages.length} messages`
+                    : "No messages yet. Your legal team will communicate with you through this secure channel."}
+                </p>
+              )}
             </div>
           </div>
 

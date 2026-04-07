@@ -22,11 +22,17 @@ export async function GET(request: NextRequest) {
 // POST /api/approvals — submit item for approval
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  const { title, category, summary } = body;
+  if (!title || !category || !summary) {
+    return NextResponse.json({ error: "Missing required fields: title, category, summary" }, { status: 400 });
+  }
+  const id = crypto.randomUUID();
   return NextResponse.json(
     {
       message: "Item submitted to approval queue",
-      id: crypto.randomUUID(),
+      id,
       status: "draft",
+      timestamp: new Date().toISOString(),
     },
     { status: 201 }
   );

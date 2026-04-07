@@ -4,9 +4,39 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { ACTIVE_CASES, AGENT_NETWORK, IMAGE_GALLERY } from "@/lib/data/seed";
+import { store } from "@/lib/store";
+import { useStore } from "@/lib/hooks";
 
 export default function Home() {
+  const stats = useStore();
+  const [formData, setFormData] = useState({ firstName: "", lastName: "", email: "", phone: "", caseType: "", description: "" });
+  const [submitted, setSubmitted] = useState(false);
+  const [formError, setFormError] = useState("");
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setFormError("");
+    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() || !formData.caseType || !formData.description.trim()) {
+      setFormError("Please fill in all required fields.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setFormError("Please enter a valid email address.");
+      return;
+    }
+    store.createIntake({
+      clientName: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      matterType: formData.caseType,
+      urgency: "routine",
+      description: formData.description.trim(),
+    });
+    setSubmitted(true);
+  }
+
   return (
     <>
       <Navbar />
@@ -45,7 +75,7 @@ export default function Home() {
             The most advanced AI legal advocacy system ever built — 350 autonomous agents fighting for the falsely accused and those who cannot afford an attorney. Zero cost. x402 funded. Relentless.
           </p>
           <div className="flex flex-wrap gap-4 justify-center mb-12">
-            <Link href="#intake" className="bg-[var(--gold)] text-[var(--midnight)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline">
+            <Link href="/intake" className="bg-[var(--gold)] text-[var(--midnight)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline">
               Get Free Case Review
             </Link>
             <Link href="#process" className="border border-[var(--gold)] text-[var(--gold)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[rgba(201,168,76,0.1)] transition-colors no-underline">
@@ -54,10 +84,10 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl">
             {[
-              { num: "350", label: "AI Agents" },
+              { num: String(stats.agentCount), label: "AI Agents" },
               { num: "x402", label: "Pay Protocol" },
               { num: "$0", label: "Cost to You" },
-              { num: "3", label: "Active Cases" },
+              { num: String(stats.activeCases), label: "Active Cases" },
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <div className="font-serif text-3xl md:text-4xl font-bold text-[var(--gold)]">{s.num}</div>
@@ -151,7 +181,7 @@ export default function Home() {
             </h2>
             <div className="grid md:grid-cols-3 gap-8 mb-12">
               {ACTIVE_CASES.map((c) => (
-                <Link key={c.id} href={c.id === "creamer-drive-169" ? "/law/matters/a1b2c3d4-e5f6-7890-abcd-ef1234567890" : "/law"}
+                <Link key={c.id} href={c.id === "creamer-drive-169" ? "/law/matters/a1b2c3d4-e5f6-7890-abcd-ef1234567890" : `/portal/${c.namespace?.split(".")[0] || "marquis"}`}
                   className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.15)] rounded-lg p-8 card-lift no-underline block">
                   <div className="flex items-center justify-between mb-4">
                     <span className={`text-xs font-mono tracking-wider uppercase ${c.status === "investigation" ? "text-[var(--gold)]" : c.status === "appeal" ? "text-red-400" : "text-[var(--success)]"}`}>
@@ -359,28 +389,40 @@ export default function Home() {
               <p>&#10003; 350 AI agents active from first submission</p>
               <p className="text-[var(--gold)]">Direct line: law@unykorn.org</p>
             </div>
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {formError && (
+                <div className="bg-red-900/30 border border-red-500/30 rounded px-4 py-3 text-red-300 text-sm">{formError}</div>
+              )}
+              {submitted ? (
+                <div className="bg-[rgba(201,168,76,0.08)] border border-[var(--gold)] rounded-lg p-8 text-center">
+                  <div className="text-3xl mb-4">&#9878;</div>
+                  <h3 className="font-serif text-2xl font-bold text-[var(--gold)] mb-2">Case Review Submitted</h3>
+                  <p className="text-[var(--text-muted)] mb-4">Your intake has been received and assigned to our AI agents. You will hear from us within 24 hours.</p>
+                  <p className="text-xs font-mono text-[var(--gold)]">350 agents now reviewing your case</p>
+                </div>
+              ) : (
+                <>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">First Name</label>
-                  <input type="text" className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors" />
+                  <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">First Name *</label>
+                  <input type="text" value={formData.firstName} onChange={(e) => setFormData(p => ({ ...p, firstName: e.target.value }))} className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors" />
                 </div>
                 <div>
-                  <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Last Name</label>
-                  <input type="text" className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors" />
+                  <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Last Name *</label>
+                  <input type="text" value={formData.lastName} onChange={(e) => setFormData(p => ({ ...p, lastName: e.target.value }))} className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors" />
                 </div>
               </div>
               <div>
-                <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Email Address</label>
-                <input type="email" className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors" />
+                <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Email Address *</label>
+                <input type="email" value={formData.email} onChange={(e) => setFormData(p => ({ ...p, email: e.target.value }))} className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors" />
               </div>
               <div>
                 <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Phone (optional)</label>
-                <input type="tel" className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors" />
+                <input type="tel" value={formData.phone} onChange={(e) => setFormData(p => ({ ...p, phone: e.target.value }))} className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors" />
               </div>
               <div>
-                <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Case Type</label>
-                <select className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors">
+                <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Case Type *</label>
+                <select value={formData.caseType} onChange={(e) => setFormData(p => ({ ...p, caseType: e.target.value }))} className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors">
                   <option value="">Select your situation...</option>
                   <option value="criminal">Criminal Defense — Wrongful Charge</option>
                   <option value="appeal">Criminal Appeal — Excessive Sentence</option>
@@ -391,12 +433,14 @@ export default function Home() {
                 </select>
               </div>
               <div>
-                <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">What Happened — Tell Us Everything</label>
-                <textarea rows={6} className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors resize-none" placeholder="Describe the situation in plain language. No legal terms needed. Include any urgent dates or deadlines you know of." />
+                <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">What Happened — Tell Us Everything *</label>
+                <textarea rows={6} value={formData.description} onChange={(e) => setFormData(p => ({ ...p, description: e.target.value }))} className="w-full bg-[var(--navy-card)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none transition-colors resize-none" placeholder="Describe the situation in plain language. No legal terms needed. Include any urgent dates or deadlines you know of." />
               </div>
               <button type="submit" className="w-full bg-[var(--gold)] text-[var(--midnight)] py-4 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors cursor-pointer">
                 Submit Free Case Review →
               </button>
+                </>
+              )}
               <p className="text-center text-xs text-[var(--text-muted)]">Private · Confidential · $0 cost · law@unykorn.org</p>
             </form>
           </div>
