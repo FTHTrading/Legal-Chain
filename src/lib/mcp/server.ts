@@ -546,6 +546,105 @@ server.resource(
   }
 );
 
+// ── Tool: Beta Signup ──
+
+server.tool(
+  "beta_signup",
+  "Register a new beta tester for the UNYKORN // LAW platform. Returns invite code and position.",
+  {
+    email: z.string().describe("Email address of the beta tester"),
+    name: z.string().optional().describe("Name of the tester"),
+    role: z.string().optional().describe("Role: attorney, paralegal, law_student, developer, other"),
+    referralCode: z.string().optional().describe("Referral code from existing beta tester"),
+  },
+  async ({ email, name, role, referralCode }) => {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://law.unykorn.org";
+    const res = await fetch(`${appUrl}/api/beta/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, name, role, referralCode }),
+    });
+    const data = await res.json();
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+    };
+  }
+);
+
+// ── Tool: Generate Promotion Content ──
+
+server.tool(
+  "generate_promotion",
+  "Generate promotional content for the UNYKORN // LAW beta launch. Supports Twitter, LinkedIn, email, Reddit, Discord, and press releases.",
+  {
+    channel: z.enum(["twitter", "linkedin", "email", "reddit", "discord", "press_release"]).describe("Target channel"),
+    topic: z.string().optional().describe("Content topic (default: beta launch announcement)"),
+    tone: z.string().optional().describe("Tone: professional, bold, casual, urgent, inspirational"),
+    customPrompt: z.string().optional().describe("Additional context or instructions"),
+  },
+  async ({ channel, topic, tone, customPrompt }) => {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://law.unykorn.org";
+    const res = await fetch(`${appUrl}/api/beta/promote`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ channel, topic, tone, customPrompt }),
+    });
+    const data = await res.json();
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+    };
+  }
+);
+
+// ── Tool: Get Beta Stats ──
+
+server.tool(
+  "get_beta_stats",
+  "Get current beta signup statistics including total signups, spots remaining, and recent activity.",
+  {},
+  async () => {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://law.unykorn.org";
+    const res = await fetch(`${appUrl}/api/beta/signup`);
+    const data = await res.json();
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+    };
+  }
+);
+
+// ── Tool: Run Promotion Campaign ──
+
+server.tool(
+  "run_promotion_campaign",
+  "Generate a complete multi-channel promotion campaign for the beta launch. Creates content for all specified channels at once.",
+  {
+    channels: z.array(z.enum(["twitter", "linkedin", "email", "reddit", "discord", "press_release"])).describe("Channels to generate content for"),
+    topic: z.string().optional().describe("Campaign topic"),
+    tone: z.string().optional().describe("Campaign tone"),
+  },
+  async ({ channels, topic, tone }) => {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://law.unykorn.org";
+    const results: Record<string, unknown> = {};
+    for (const channel of channels) {
+      const res = await fetch(`${appUrl}/api/beta/promote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ channel, topic, tone }),
+      });
+      results[channel] = await res.json();
+    }
+    return {
+      content: [{
+        type: "text" as const,
+        text: JSON.stringify({
+          campaign: { topic, tone, channels: channels.length, generatedAt: new Date().toISOString() },
+          content: results,
+        }, null, 2),
+      }],
+    };
+  }
+);
+
 // ── Start Server ──
 
 async function main() {

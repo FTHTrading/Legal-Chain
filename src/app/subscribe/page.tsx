@@ -189,7 +189,7 @@ export default function SubscribePage() {
               <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Web3 Payments</p>
               <h2 className="font-serif text-3xl font-bold mb-3">Pay with Crypto</h2>
               <p className="font-serif text-sm text-[var(--text-muted)]">
-                Connect your wallet to pay with ATP or USDF on Apostle Chain (7332).
+                Connect your wallet to pay with USDC on Polygon, or ATP/USDF on Apostle Chain (7332).
                 x402 AI-to-AI payment protocol supported.
               </p>
             </div>
@@ -202,10 +202,10 @@ export default function SubscribePage() {
                 <ol className="space-y-3">
                   {[
                     "Connect your MetaMask or Web3 wallet",
-                    "Switch to Apostle Chain (ID: 7332)",
-                    "Choose a plan or à la carte service",
-                    "Pay with ATP, USDF, or traditional card",
-                    "Access activates instantly",
+                    "Choose Polygon (USDC) or Apostle Chain (ATP/USDF)",
+                    "Select a plan or à la carte service",
+                    "Sign the transaction in your wallet",
+                    "Access activates instantly after verification",
                   ].map((step, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm">
                       <span className="w-6 h-6 rounded-full border border-[var(--gold)] text-[var(--gold)] font-mono text-xs flex items-center justify-center flex-shrink-0">
@@ -217,6 +217,18 @@ export default function SubscribePage() {
                 </ol>
 
                 <div className="mt-6 pt-4 border-t border-[rgba(201,168,76,0.08)]">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex -space-x-1">
+                      {["USDC"].map((t) => (
+                        <span key={t} className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[rgba(38,117,217,0.15)] border border-[rgba(38,117,217,0.4)] font-mono text-[9px] text-blue-400">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="font-mono text-[10px] text-[var(--text-muted)]">
+                      Polygon Mainnet (Chain 137)
+                    </span>
+                  </div>
                   <div className="flex items-center gap-3">
                     <div className="flex -space-x-1">
                       {["ATP", "USDF"].map((t) => (
@@ -226,7 +238,7 @@ export default function SubscribePage() {
                       ))}
                     </div>
                     <span className="font-mono text-[10px] text-[var(--text-muted)]">
-                      Accepted on Apostle Chain 7332
+                      Apostle Chain (Chain 7332)
                     </span>
                   </div>
                 </div>
@@ -277,7 +289,7 @@ export default function SubscribePage() {
                 { q: "Can I cancel anytime?", a: "Yes. Cancel anytime from your billing portal. Your access continues through the end of your current billing period. No contract, no cancellation fees." },
                 { q: "What AI models power the agents?", a: "We use GPT-4o and Claude for analysis, with specialized model configs per agent team. Research agents use low-temperature for precision. Drafting agents use higher creativity settings. All calls go through our governance layer." },
                 { q: "Is my data secure?", a: "All case data is encrypted at rest and in transit. We maintain attorney-client privilege protections. The audit trail is immutable and hash-chained. Web3 records are anchored on Apostle Chain (7332)." },
-                { q: "Do I need a crypto wallet?", a: "No. Traditional card payments via Stripe work perfectly. Web3 wallet connection is optional for users who want to pay with ATP/USDF or anchor records on-chain." },
+                { q: "Do I need a crypto wallet?", a: "No. Traditional card payments via Stripe work perfectly. Web3 wallet connection is optional for users who want to pay with USDC on Polygon, or ATP/USDF on Apostle Chain, or anchor records on-chain." },
                 { q: "What à la carte services can I purchase without a subscription?", a: "Any individual service — research queries ($49), document drafts ($99), forensic traces ($199), case strategy ($149), or evidence analysis ($79) — can be purchased standalone with no subscription required." },
               ].map((faq) => (
                 <div key={faq.q} className="border-b border-[rgba(201,168,76,0.08)] pb-5">

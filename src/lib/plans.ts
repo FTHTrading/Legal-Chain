@@ -180,3 +180,20 @@ export const WEB3_CONFIG = {
   ],
   paymentWallet: process.env.NEXT_PUBLIC_PAYMENT_WALLET || "",
 } as const;
+
+export const POLYGON_CONFIG = {
+  chainId: 137,
+  chainName: "Polygon Mainnet",
+  rpcUrl: process.env.NEXT_PUBLIC_POLYGON_RPC || "https://polygon-rpc.com",
+  nativeCurrency: { name: "MATIC", symbol: "POL", decimals: 18 },
+  acceptedTokens: [
+    { symbol: "USDC", decimals: 6, label: "USD Coin", contract: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359" },
+  ],
+  paymentWallet: process.env.NEXT_PUBLIC_POLYGON_PAYMENT_WALLET || "",
+  blockExplorer: "https://polygonscan.com",
+} as const;
+
+export const SUPPORTED_CHAINS = [
+  { ...WEB3_CONFIG, id: "apostle" },
+  { ...POLYGON_CONFIG, id: "polygon" },
+] as const;
