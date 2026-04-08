@@ -56,7 +56,7 @@ Content below 0.60 confidence is automatically flagged for human review.
 
 ## Agent Network
 
-The system operates 350 AI agents organized into specialized teams (control, execution, intelligence, interface, document, forensic, communication, research, intake). All agent actions are:
+The system operates 26 AI agents organized into specialized teams (control, execution, intelligence, interface, document, forensic, communication, research, intake). All agent actions are:
 - Logged immutably in the audit trail
 - Inspectable by authorized users
 - Subject to human approval gates

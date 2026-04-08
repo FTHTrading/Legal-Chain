@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { AGENT_NETWORK } from "@/lib/data/seed";
 
 function SuccessContent() {
   const params = useSearchParams();
@@ -20,7 +21,7 @@ function SuccessContent() {
         </div>
         <h1 className="font-serif text-4xl font-bold mb-4">Welcome to UNYKORN // LAW</h1>
         <p className="font-serif text-lg text-[var(--text-muted)] mb-2">
-          Your subscription is active. All 350 AI agents are now at your service.
+          Your subscription is active. All {AGENT_NETWORK.total} AI agents are now at your service.
         </p>
         <p className="font-mono text-xs text-[var(--text-muted)] mb-8">
           {sessionId ? `Session: ${sessionId.slice(0, 20)}...` : "Payment confirmed"}

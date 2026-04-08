@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { AGENT_NETWORK } from "@/lib/data/seed";
 
 interface Message {
   id: string;
@@ -108,7 +109,7 @@ export default function AgentChat() {
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[500px]">
         {messages.length === 0 && (
           <div className="text-center text-[var(--text-muted)] text-sm py-12">
-            <p className="font-serif text-lg text-[var(--gold)] mb-2">350 Agents Standing By</p>
+            <p className="font-serif text-lg text-[var(--gold)] mb-2">{AGENT_NETWORK.total} Agents Standing By</p>
             <p>Ask a legal question, request case research, or draft a document.</p>
             <p className="mt-1 text-xs">Select a specific team or let the system auto-route.</p>
           </div>

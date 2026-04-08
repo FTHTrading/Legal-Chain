@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WalletConnect from "@/components/ui/WalletConnect";
 import { PLANS, ALA_CARTE, founderSpotsRemaining, isFounderSpotsAvailable } from "@/lib/plans";
+import { AGENT_NETWORK } from "@/lib/data/seed";
 
 export default function SubscribePage() {
   const [loading, setLoading] = useState<string | null>(null);
@@ -47,7 +48,7 @@ export default function SubscribePage() {
               <span className="text-[var(--gold)]">$25/month.</span>
             </h1>
             <p className="font-serif text-lg text-[var(--text-muted)] max-w-[600px] mx-auto mb-4">
-              350 autonomous AI agents. Full legal research. Document drafting.
+              {AGENT_NETWORK.total} autonomous AI agents. Full legal research. Document drafting.
               Forensic analysis. Web3 payments. Everything you need.
             </p>
             {founderAvailable && (
@@ -241,7 +242,7 @@ export default function SubscribePage() {
               <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">What You Get</p>
               <h2 className="font-serif text-3xl md:text-4xl font-bold mb-3">Full AI Legal System</h2>
               <p className="font-serif text-sm text-[var(--text-muted)]">
-                Every subscription unlocks the complete UNYKORN AI agent network — 350 agents working in concert.
+                Every subscription unlocks the complete UNYKORN AI agent network — {AGENT_NETWORK.total} agents working in concert.
               </p>
             </div>
 

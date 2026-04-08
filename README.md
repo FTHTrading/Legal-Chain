@@ -18,7 +18,7 @@
   <img src="https://img.shields.io/badge/Zod-4.3.6-3E67B1?style=flat-square" alt="Zod" />
   <img src="https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss" alt="Tailwind" />
   <img src="https://img.shields.io/badge/Chain-7332-c9a84c?style=flat-square" alt="Apostle Chain" />
-  <img src="https://img.shields.io/badge/Agents-350-c9a84c?style=flat-square" alt="350 Agents" />
+  <img src="https://img.shields.io/badge/Agents-26-c9a84c?style=flat-square" alt="26 Agents" />
   <img src="https://img.shields.io/badge/License-Proprietary-red?style=flat-square" alt="License" />
 </p>
 
@@ -46,7 +46,7 @@
 | 🔌 | [**API Routes**](#-api-routes) | 9 RESTful route handlers |
 | ⚙️ | [**Operations Console**](#-operations-console) | 7-panel ops dashboard |
 | 🔍 | [**Forensics Engine**](#-forensics-engine) | Web3 blockchain forensics |
-| 🤖 | [**Agent Network**](#-agent-network) | 350-agent MCP control plane |
+| 🤖 | [**Agent Network**](#-agent-network) | 26-agent MCP control plane |
 | 📜 | [**Constitution**](#-constitution) | System governance rules |
 | 🗂️ | [**Project Structure**](#-project-structure) | File tree |
 | 🚀 | [**Getting Started**](#-getting-started) | Install, build, deploy |
@@ -86,7 +86,7 @@
 │                               │                                     │
 │  ┌────────────────────────────┴───────────────────────────────────┐ │
 │  │              Apostle Chain 7332 · x402 Pay Rails               │ │
-│  │         350 Agents · ATP Settlement · Audit Anchoring          │ │
+│  │          26 Agents · ATP Settlement · Audit Anchoring          │ │
 │  └────────────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -252,7 +252,7 @@ Active case: **NTI-LEAVITT-2026-001** — TRON/ETH Cryptocurrency Fraud
 
 ## 🤖 Agent Network
 
-> **350 agents** on Apostle Chain 7332 · x402 pay rails · ATP settlement
+> **26 agents** on Apostle Chain 7332 · x402 pay rails · ATP settlement
 
 | Team | Count | Purpose |
 |:-----|:-----:|:--------|

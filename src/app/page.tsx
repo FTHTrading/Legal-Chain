@@ -276,14 +276,14 @@ export default function Home() {
           <div className="max-w-[1200px] mx-auto">
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">The Network</p>
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
-              350 RUNNERS.<br/><span className="text-[var(--gold)]">ZERO HESITATION.</span>
+              {AGENT_NETWORK.total} RUNNERS.<br/><span className="text-[var(--gold)]">ZERO HESITATION.</span>
             </h2>
             <p className="text-lg text-[var(--text-muted)] max-w-2xl mb-16">
               Autonomous AI agents holding sovereign ATP wallets on Apostle Chain 7332. Funded, registered, and operational.
             </p>
             <div className="grid grid-cols-3 md:grid-cols-6 gap-6 mb-16">
               {[
-                { val: "350", label: "Total Agents" },
+                { val: String(AGENT_NETWORK.total), label: "Total Agents" },
                 { val: "15", label: "Control Agents" },
                 { val: "x402", label: "Pay Protocol" },
                 { val: "7332", label: "Chain ID" },
@@ -334,7 +334,7 @@ export default function Home() {
                 { code: "x4", title: "x402 Pay Rail", desc: "Autonomous fee payment via x402 protocol on Apostle Chain 7332. Filing fees, research costs, expert witness fees — settled in microseconds.", badge: "x402 · ATP · CHAIN 7332" },
                 { code: "BF", title: "Blockchain Forensics", desc: "On-chain trace analysis across TRON, Ethereum, XRP Ledger, and Stellar. Court-ready evidence packaging.", badge: "TRON · ETH · XRP · XLM" },
                 { code: "MK", title: "AI Marketing Ops", desc: "Full agentic marketing and public advocacy team. Case documentation, media strategy, social operations — all AI-driven.", badge: "MCP · AGENTIC · ALWAYS ON" },
-                { code: "RE", title: "Agentic Research Engine", desc: "Research agents that never stop. Case law mining, expert witness ID, prosecutorial record review. Every angle explored.", badge: "350 AGENTS · 24/7" },
+                { code: "RE", title: "Agentic Research Engine", desc: "Research agents that never stop. Case law mining, expert witness ID, prosecutorial record review. Every angle explored.", badge: `${AGENT_NETWORK.total} AGENTS · 24/7` },
                 { code: "NS", title: "Sovereign Namespaces", desc: "Every client owns their case portal. A secured subdomain on unykorn.org — Web3-native. Your case, your data, your fortress.", badge: "WEB3 · SECURED · SOVEREIGN" },
               ].map((t) => (
                 <div key={t.code} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 card-lift">
@@ -360,7 +360,7 @@ export default function Home() {
                 { icon: "📄", title: "Your Rights When Falsely Charged", desc: "Constitutional protections from arrest through trial. 12-page plain-language guide." },
                 { icon: "🔍", title: "How to Challenge False Evidence", desc: "Suppression motions, chain of custody, digital forensics — explained simply." },
                 { icon: "⚖", title: "Understanding Criminal Proceedings", desc: "Arraignment through verdict — what to expect at every stage." },
-                { icon: "🤖", title: "The AI Legal Defense Guide 2026", desc: "How 350 AI agents work together to fight your case." },
+                { icon: "🤖", title: "The AI Legal Defense Guide 2026", desc: `How ${AGENT_NETWORK.total} AI agents work together to fight your case.` },
               ].map((r) => (
                 <div key={r.title} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 card-lift">
                   <span className="text-3xl mb-4 block">{r.icon}</span>
@@ -420,14 +420,14 @@ export default function Home() {
               YOUR FIGHT<br/><span className="text-[var(--gold)]">STARTS HERE.</span>
             </h2>
             <p className="text-lg text-[var(--text-muted)] mb-12">
-              Tell us what happened. No legal knowledge required. No cost. No obligation. Just the truth — and 350 agents ready to go.
+              Tell us what happened. No legal knowledge required. No cost. No obligation. Just the truth — and {AGENT_NETWORK.total} agents ready to go.
             </p>
             <div className="text-sm text-[var(--text-muted)] mb-8 space-y-1">
               <p>&#10003; Response within 24 hours guaranteed</p>
               <p>&#10003; Sovereign namespace provisioned immediately</p>
               <p>&#10003; $0 cost — x402 funded from day one</p>
               <p>&#10003; All documents downloadable for your family</p>
-              <p>&#10003; 350 AI agents active from first submission</p>
+              <p>&#10003; {AGENT_NETWORK.total} AI agents active from first submission</p>
               <p className="text-[var(--gold)]">Direct line: law@unykorn.org</p>
             </div>
             <form className="space-y-6" onSubmit={handleSubmit}>
@@ -439,7 +439,7 @@ export default function Home() {
                   <div className="text-3xl mb-4">&#9878;</div>
                   <h3 className="font-serif text-2xl font-bold text-[var(--gold)] mb-2">Case Review Submitted</h3>
                   <p className="text-[var(--text-muted)] mb-4">Your intake has been received and assigned to our AI agents. You will hear from us within 24 hours.</p>
-                  <p className="text-xs font-mono text-[var(--gold)]">350 agents now reviewing your case</p>
+                  <p className="text-xs font-mono text-[var(--gold)]">{AGENT_NETWORK.total} agents now reviewing your case</p>
                 </div>
               ) : (
                 <>

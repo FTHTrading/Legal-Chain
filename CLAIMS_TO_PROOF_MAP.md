@@ -12,7 +12,7 @@
 |-------|-----------|---------------|----------|
 | "AI-accelerated legal operations" | Code | Kernel modules, agent schemas, research workbench | ✅ |
 | "Under strict human supervision" | Policy + Code | Constitution §II.A, approval lifecycle, `requiredRole` field | ✅ |
-| "350 agents on Apostle Chain" | Seed data | `AGENT_NETWORK` in `seed.ts`, agent teams defined | ✅ |
+| "26 agents on Apostle Chain" | Seed data | `AGENT_NETWORK` in `seed.ts`, agent teams defined | ✅ |
 | "ATP settlement" | Code | `settlement.ts` — PaymentEvent with x402TxHash | ✅ |
 | "Audit anchoring" | Code | `audit.ts` schema, hash-chain in `store.ts` | ✅ |
 | "12 Zod schema modules" | File count | 15 files in `src/lib/schemas/` (12 domain + barrel + 2 scoring) | ✅ |

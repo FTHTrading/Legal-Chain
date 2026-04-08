@@ -366,7 +366,7 @@ function seedAudit(): AuditRecord[] {
     { id: uuidv4(), timestamp: new Date(now.getTime() - 1800000).toISOString(), action: "forensic_wallet_traced", category: "forensics", actor: "forensic-agent-001", actorType: "agent", resourceType: "wallet", resourceId: "TFake2victim", description: "Suspect wallet traced on TRON — $36,150 USDT flow identified", metadata: { chain: "TRON", amount: "$36,150", riskLevel: "critical" } },
     { id: uuidv4(), timestamp: new Date(now.getTime() - 900000).toISOString(), action: "task_completed", category: "workflow", actor: "intake-agent-001", actorType: "agent", resourceType: "task", resourceId: "TASK-001", description: "Initial case review task completed for intake pipeline", metadata: { workflowType: "intake_pipeline" } },
     { id: uuidv4(), timestamp: new Date(now.getTime() - 300000).toISOString(), action: "communication_drafted", category: "communication", actor: "comm-agent-001", actorType: "agent", resourceType: "communication", resourceId: "COMM-001", description: "Client update email drafted for TRON fraud investigation", metadata: { channel: "email", privileged: false } },
-    { id: uuidv4(), timestamp: new Date(now.getTime() - 60000).toISOString(), action: "agent_heartbeat", category: "system", actor: "system", actorType: "system", resourceType: "agent_network", resourceId: "network-7332", description: "Agent network health check — 350/350 agents responding", metadata: { totalAgents: 350, healthy: 350, chain: 7332 } },
+    { id: uuidv4(), timestamp: new Date(now.getTime() - 60000).toISOString(), action: "agent_heartbeat", category: "system", actor: "system", actorType: "system", resourceType: "agent_network", resourceId: "network-7332", description: `Agent network health check — ${AGENT_NETWORK.total}/${AGENT_NETWORK.total} agents responding`, metadata: { totalAgents: AGENT_NETWORK.total, healthy: AGENT_NETWORK.total, chain: 7332 } },
     // ── Troy Miller / Creamer Drive Audit Trail ──
     { id: uuidv4(), timestamp: new Date(now.getTime() - 86400000).toISOString(), action: "intake_created", category: "intake", actor: "kevan-burns", actorType: "human", resourceType: "intake", resourceId: "INT-2026-TROY", description: "New intake created: Troy Miller — 169 Creamer Drive property dispute ($143K est.)", metadata: { matterType: "civil_property", estimatedValue: 143300, client: "Troy Miller" } },
     { id: uuidv4(), timestamp: new Date(now.getTime() - 85800000).toISOString(), action: "conflict_check_initiated", category: "compliance", actor: "compliance-agent-001", actorType: "agent", resourceType: "intake", resourceId: "INT-2026-TROY", description: "Conflict check initiated — Troy Miller vs. Michael Walser / BestLyfe Group", metadata: { adverseParties: ["Michael Walser", "BestLyfe Group"] } },
@@ -833,7 +833,7 @@ class PlatformStore {
       totalComms: this._communications.length,
       pendingComms: this._communications.filter((c) => c.status === "draft" || c.status === "pending_review").length,
       totalAuditEntries: this._audit.length,
-      agentCount: AGENT_NETWORK.total || 350,
+      agentCount: AGENT_NETWORK.total || 26,
       activeCases: ACTIVE_CASES.length,
       notifications: this._notifications.filter((n) => !n.read).length,
       totalResearch: this._research.length,

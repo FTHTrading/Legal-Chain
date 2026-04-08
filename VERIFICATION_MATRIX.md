@@ -19,7 +19,7 @@
 | 7 | Evidence SHA-256 hashing | ✅ | Code review | `evidence-chain.ts` implements hash computation |
 | 8 | 7-state approval lifecycle | ✅ | Schema review | `approval.ts` defines 7+ status values |
 | 9 | 11 kernel modules | ✅ | File count | 11 files in `src/lib/kernel/` including orchestrator |
-| 10 | 350 agent network | ✅ | Seed data | `AGENT_NETWORK` in `seed.ts` defines agent teams |
+| 10 | 26 agent network | ✅ | Seed data | `AGENT_NETWORK` in `seed.ts` defines agent teams |
 | 11 | Apostle Chain 7332 integration | ✅ | Kernel review | `settlement.ts` defaults to chainId 7332 |
 | 12 | x402 pay rails | ✅ | Kernel review | `PaymentEvent.x402TxHash` field, settlement methods |
 | 13 | Client namespace portals | ✅ | Route + seed | 3 namespace seeds, `/portal/[namespace]` route |

@@ -5,6 +5,8 @@
  * first-100-signups special, and Web3 payment options.
  */
 
+import { AGENT_NETWORK } from "./data/seed";
+
 // ── Plan Types ──
 
 export interface Plan {
@@ -43,7 +45,7 @@ export const PLANS: Plan[] = [
     originalPrice: 99,
     interval: "month",
     features: [
-      "Full AI agent access (350 agents)",
+      `Full AI agent access (${AGENT_NETWORK.total} agents)`,
       "Unlimited case analysis",
       "RAG-powered legal research",
       "Document drafting & review",
@@ -67,7 +69,7 @@ export const PLANS: Plan[] = [
     price: 99,
     interval: "month",
     features: [
-      "Full AI agent access (350 agents)",
+      `Full AI agent access (${AGENT_NETWORK.total} agents)`,
       "Unlimited case analysis",
       "RAG-powered legal research",
       "Document drafting & review",
