@@ -7,7 +7,7 @@ import { store } from "./store";
 const SERVER_SNAPSHOT = {
   totalIntakes: 0, pendingIntakes: 0, totalApprovals: 0, pendingApprovals: 0,
   approvedCount: 0, totalTasks: 0, completedTasks: 0, activeTasks: 0,
-  totalComms: 0, pendingComms: 0, totalAuditEntries: 0, agentCount: 350,
+  totalComms: 0, pendingComms: 0, totalAuditEntries: 0, agentCount: 26,
   activeCases: 0, notifications: 0, totalResearch: 0,
 } as const;
 

@@ -1,4 +1,4 @@
-﻿import type { Matter } from "@/lib/schemas/matter";
+import type { Matter } from "@/lib/schemas/matter";
 
 export const SEED_MATTER_CREAMER: Matter = {
   id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
@@ -592,7 +592,7 @@ export const ACTIVE_CASES = [
 
 // Agent Network Data
 export const AGENT_NETWORK = {
-  total: 350,
+  total: 26,
   control: { count: 15, description: "Treasury, compliance, policy, and risk agents governing the network" },
   execution: { count: 7, description: "Runners wired to x402 rails for court filings, research, fees" },
   intelligence: { count: 2, description: "Deep research â€” case law mining, precedent analysis, strategy modeling" },

@@ -167,7 +167,62 @@ const DEFAULT_AGENTS: Agent[] = [
     version: "1.0.0",
     createdAt: new Date().toISOString(),
   },
+  // ── Expanded Agent Roster (20 additional specialized agents) ──
+  ...buildAgentBatch([
+    // Case Strategy Team
+    { id: "themis", name: "Themis — Claim Assessor", team: "case_strategy", mission: "Evaluate legal claims for viability, merit, and damages potential.", caps: [["claim_evaluation", "Assess claim strength and viability", false], ["damages_assessment", "Estimate potential damages", false], ["jurisdiction_check", "Verify jurisdictional requirements", false]], allowed: ["search_legal_knowledge", "get_matter_details", "get_case_list"], forbidden: ["File claims without review", "Contact opposing counsel"] },
+    { id: "mercury", name: "Mercury — Settlement Analyst", team: "case_strategy", mission: "Analyze settlement positions, model outcomes, and value dispute resolution paths.", caps: [["settlement_modeling", "Model settlement scenarios and outcomes", false], ["cost_benefit_analysis", "Analyze litigation vs. settlement cost-benefit", false], ["negotiation_strategy", "Develop negotiation frameworks", true]], allowed: ["search_legal_knowledge", "get_matter_details", "settlement_summary"], forbidden: ["Make settlement offers", "Bind parties to agreements"] },
+    // Legal Research Team
+    { id: "justicia", name: "Justicia — Statutory Interpreter", team: "legal_research", mission: "Interpret statutes, regulations, and administrative rules across jurisdictions.", caps: [["statutory_analysis", "Analyze statutes and regulatory frameworks", false], ["regulatory_mapping", "Map applicable regulations by jurisdiction", false], ["legislative_tracking", "Track pending legislative changes", false]], allowed: ["search_legal_knowledge", "get_matter_details"], forbidden: ["Draft legislation", "Lobby regulators"] },
+    { id: "precedent", name: "Precedent — Authority Mapper", team: "legal_research", mission: "Map precedent chains, identify controlling authority, and find distinguishing cases.", caps: [["precedent_chain", "Build precedent authority chains", false], ["authority_ranking", "Rank authority by jurisdiction and recency", false], ["distinguish_cases", "Identify distinguishing factors from adverse authority", false]], allowed: ["search_legal_knowledge", "get_case_list"], forbidden: ["Cite fabricated cases", "Misrepresent holdings"] },
+    // Evidence Analysis Team
+    { id: "chain-tracker", name: "Chain — Custody Tracker", team: "evidence_analysis", mission: "Track chain-of-custody for all evidence items and flag integrity gaps.", caps: [["custody_tracking", "Monitor evidence chain of custody", false], ["gap_detection", "Detect custody chain gaps or irregularities", false], ["timeline_reconstruction", "Reconstruct evidence handling timeline", false]], allowed: ["analyze_evidence", "get_matter_details"], forbidden: ["Modify custody records", "Destroy evidence metadata"] },
+    { id: "shield", name: "Shield — Privilege Screener", team: "evidence_analysis", mission: "Screen documents and communications for attorney-client privilege and work product.", caps: [["privilege_detection", "Detect potentially privileged content", true], ["redaction_recommendation", "Recommend redaction areas", true], ["privilege_log_entry", "Draft privilege log entries", true]], allowed: ["analyze_evidence", "search_legal_knowledge"], forbidden: ["Waive privilege", "Disclose privileged content", "Override attorney decisions"] },
+    // Document Drafting Team
+    { id: "brief", name: "Brief — Motion Drafter", team: "document_drafting", mission: "Draft motions, briefs, and court filings with proper formatting and citation.", caps: [["motion_drafting", "Draft motions to dismiss, compel, and suppress", true], ["brief_writing", "Draft appellate and trial briefs", true], ["citation_formatting", "Format legal citations per jurisdiction", false]], allowed: ["search_legal_knowledge", "get_matter_details", "get_case_list"], forbidden: ["File documents without review", "Sign pleadings", "E-file with courts"] },
+    { id: "clerk", name: "Clerk — Filing Coordinator", team: "document_drafting", mission: "Coordinate document assembly, filing requirements, and deadline tracking.", caps: [["filing_requirements", "Check filing requirements by court", false], ["document_assembly", "Assemble exhibit packages and appendices", false], ["deadline_tracking", "Track filing deadlines and extensions", false]], allowed: ["get_matter_details", "get_workflow_status"], forbidden: ["File documents", "Contact court clerks directly"] },
+    // Forensic Intelligence Team
+    { id: "nexus", name: "Nexus — Cluster Analyst", team: "forensic_intelligence", mission: "Identify related wallet clusters, entity connections, and fund flow patterns.", caps: [["cluster_analysis", "Identify related wallet clusters", false], ["entity_resolution", "Resolve entities across wallet addresses", false], ["fund_flow_mapping", "Map fund flow patterns across chains", false]], allowed: ["get_forensic_case", "search_legal_knowledge"], forbidden: ["Freeze accounts", "Contact exchanges", "File SARs"] },
+    { id: "signal", name: "Signal — Pattern Detector", team: "forensic_intelligence", mission: "Detect transaction patterns indicating fraud, laundering, or sanctions evasion.", caps: [["pattern_detection", "Detect suspicious transaction patterns", false], ["anomaly_scoring", "Score transactions for anomaly indicators", false], ["risk_profiling", "Build risk profiles from transaction history", false]], allowed: ["get_forensic_case", "search_legal_knowledge"], forbidden: ["Report to regulators", "Block transactions"] },
+    // Compliance Audit Team
+    { id: "warden", name: "Warden — Governance Monitor", team: "compliance_audit", mission: "Monitor all system operations for governance rule adherence and constitution compliance.", caps: [["rule_monitoring", "Monitor operations against governance rules", false], ["constitution_check", "Verify actions comply with system constitution", false], ["violation_reporting", "Generate governance violation reports", false]], allowed: ["get_kernel_stats", "get_agent_network", "get_workflow_status"], forbidden: ["Override governance rules", "Disable monitoring"] },
+    { id: "arbiter", name: "Arbiter — Ethics Reviewer", team: "compliance_audit", mission: "Review agent outputs for ethical compliance, bias detection, and fairness.", caps: [["ethics_review", "Review outputs for ethical compliance", false], ["bias_detection", "Detect potential bias in analysis", false], ["fairness_audit", "Audit recommendations for fairness", false]], allowed: ["get_kernel_stats", "get_approval_queue"], forbidden: ["Override ethical determinations", "Suppress violation reports"] },
+    // Client Communications Team
+    { id: "herald", name: "Herald — Communications Drafter", team: "client_communications", mission: "Draft client communications, status updates, and correspondence under attorney supervision.", caps: [["status_drafting", "Draft case status updates", true], ["correspondence", "Draft formal client correspondence", true], ["notification_assembly", "Assemble notification packages", true]], allowed: ["get_matter_details", "get_workflow_status"], forbidden: ["Send communications directly", "Disclose strategy to clients", "Contact adverse parties"] },
+    { id: "advocate", name: "Advocate — Advocacy Coordinator", team: "client_communications", mission: "Coordinate public advocacy, media responses, and community engagement for cases.", caps: [["media_response", "Draft media response frameworks", true], ["advocacy_planning", "Plan public advocacy campaigns", true], ["community_outreach", "Coordinate community support initiatives", true]], allowed: ["get_matter_details", "get_case_list"], forbidden: ["Issue public statements", "Contact media directly", "Make case commitments"] },
+    // Workflow Orchestration Team
+    { id: "triage", name: "Triage — Intake Scorer", team: "workflow_orchestration", mission: "Score incoming case intakes for urgency, complexity, and resource allocation.", caps: [["urgency_scoring", "Score case urgency based on deadlines and stakes", false], ["complexity_assessment", "Assess case complexity for resource planning", false], ["assignment_recommendation", "Recommend team and resource assignment", false]], allowed: ["get_case_list", "get_matter_details", "get_workflow_status"], forbidden: ["Accept or reject cases", "Commit resources"] },
+    { id: "conflict", name: "Conflict — Conflict Checker", team: "workflow_orchestration", mission: "Check for conflicts of interest across all matter parties and personnel.", caps: [["conflict_screening", "Screen new matters against existing parties", false], ["adverse_party_check", "Check for adverse party relationships", false], ["personnel_conflict", "Check for personnel conflicts of interest", false]], allowed: ["get_case_list", "get_matter_details"], forbidden: ["Waive conflicts", "Override conflict determinations"] },
+    { id: "calendar", name: "Calendar — Deadline Monitor", team: "workflow_orchestration", mission: "Monitor all case deadlines, statute of limitations, and filing windows.", caps: [["deadline_tracking", "Track court and administrative deadlines", false], ["sol_monitoring", "Monitor statute of limitations windows", false], ["alert_generation", "Generate deadline alerts and escalations", false]], allowed: ["get_matter_details", "get_workflow_status", "get_case_list"], forbidden: ["Extend deadlines unilaterally", "Waive filing requirements"] },
+    // Infrastructure Team
+    { id: "vault-ops", name: "Vault — Privacy Operations", team: "infrastructure", mission: "Manage privacy vault operations, encryption lifecycle, and access control.", caps: [["encryption_management", "Manage AES-256-GCM encryption operations", false], ["access_monitoring", "Monitor vault access patterns and anomalies", false], ["key_lifecycle", "Manage cryptographic key lifecycle", false]], allowed: ["get_kernel_stats"], forbidden: ["Decrypt without authorization", "Export encryption keys", "Disable encryption"] },
+    { id: "anchor", name: "Anchor — Chain Notarizer", team: "infrastructure", mission: "Anchor evidence hashes and audit records to blockchain for tamper-proof verification.", caps: [["hash_anchoring", "Anchor SHA-256 hashes to blockchain", false], ["verification", "Verify anchored records against chain state", false], ["chain_monitoring", "Monitor blockchain confirmations", false]], allowed: ["get_kernel_stats", "get_agent_network"], forbidden: ["Modify anchored records", "Bypass chain verification"] },
+    { id: "pulse", name: "Pulse — System Health Monitor", team: "infrastructure", mission: "Monitor system health, agent performance, and infrastructure reliability.", caps: [["health_monitoring", "Monitor all subsystem health metrics", false], ["performance_tracking", "Track agent response times and error rates", false], ["alerting", "Generate system health alerts", false]], allowed: ["get_kernel_stats", "get_agent_network", "get_workflow_status"], forbidden: ["Restart services without approval", "Modify system configuration"] },
+  ]),
 ];
+
+// Agent batch builder — reduces boilerplate for expanded roster
+function buildAgentBatch(defs: Array<{
+  id: string; name: string; team: Agent["team"]; mission: string;
+  caps: Array<[string, string, boolean]>; allowed: string[]; forbidden: string[];
+}>): Agent[] {
+  return defs.map(d => ({
+    id: `agent-${d.id}`,
+    name: d.name,
+    team: d.team,
+    mission: d.mission,
+    capabilities: d.caps.map(([n, desc, req]) => ({ name: n, description: desc, requiresApproval: req })),
+    allowedActions: d.allowed,
+    forbiddenActions: d.forbidden,
+    escalationTriggers: [{ condition: "Confidence below threshold", triggerType: "confidence_below_threshold" as const, threshold: 0.60, escalateTo: "supervising_attorney", notifyImmediately: false }],
+    tools: d.allowed,
+    status: "active" as const,
+    completedTasks: 0,
+    failedTasks: 0,
+    version: "1.0.0",
+    createdAt: new Date().toISOString(),
+  }));
+}
 
 // ── Public API ──
 

@@ -49,7 +49,7 @@ export default function Home() {
                 <span className="text-[var(--gold)]">NTI-LEAVITT-2026-001 &nbsp;/// &nbsp;$36,150 Crypto Fraud &nbsp;/// &nbsp;INVESTIGATION ACTIVE</span>
                 <span className="text-[var(--text-muted)]">State v. Delcampo &nbsp;/// &nbsp;Illegal Sentence &nbsp;/// &nbsp;APPEAL FILED — MAY 2026</span>
                 <span className="text-[var(--gold)]">169 Creamer Drive &nbsp;/// &nbsp;$1M Proceeds Dispute &nbsp;/// &nbsp;PRE-LITIGATION</span>
-                <span className="text-[var(--text-muted)]">350 AI Agents &nbsp;/// &nbsp;x402 Pay Rails &nbsp;/// &nbsp;$0 Cost to You &nbsp;/// &nbsp;24/7 Coverage</span>
+                <span className="text-[var(--text-muted)]">{AGENT_NETWORK.total} AI Agents &nbsp;/// &nbsp;x402 Pay Rails &nbsp;/// &nbsp;$0 Cost to You &nbsp;/// &nbsp;24/7 Coverage</span>
               </div>
             ))}
           </div>
@@ -60,7 +60,7 @@ export default function Home() {
           style={{ background: "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.04) 0%, transparent 70%), linear-gradient(180deg, var(--midnight) 0%, var(--navy) 100%)" }}>
           <div className="flex items-center gap-2 mb-8 text-xs font-mono tracking-wider text-[var(--text-muted)]">
             <span className="w-2 h-2 rounded-full bg-[var(--success)] animate-pulse" />
-            System Online &nbsp;&middot;&nbsp; 350 Agents Active &nbsp;&middot;&nbsp; x402 Protocol &nbsp;&middot;&nbsp; Chain 7332
+            System Online &nbsp;&middot;&nbsp; {AGENT_NETWORK.total} Agents Active &nbsp;&middot;&nbsp; x402 Protocol &nbsp;&middot;&nbsp; Chain 7332
           </div>
           <div className="relative mb-8">
             <Image src="/media/images/legal-helix-1.webp" alt="UNYKORN Legal DNA" width={200} height={200} className="rounded-full opacity-90" style={{ width: 200, height: "auto" }} />
@@ -72,7 +72,7 @@ export default function Home() {
           </h1>
           <div className="w-24 h-px bg-[var(--gold)] mx-auto mb-6 opacity-50" />
           <p className="text-xl md:text-2xl text-[var(--text-primary)] max-w-3xl leading-relaxed mb-10">
-            The most advanced AI legal advocacy system ever built — 350 autonomous agents fighting for the falsely accused and those who cannot afford an attorney. Zero cost. x402 funded. Relentless.
+            The most advanced AI legal advocacy system ever built — {AGENT_NETWORK.total} autonomous agents fighting for the falsely accused and those who cannot afford an attorney. Zero cost. x402 funded. Relentless.
           </p>
           <div className="flex flex-wrap gap-4 justify-center mb-12">
             <Link href="/intake" className="bg-[var(--gold)] text-[var(--midnight)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline">
@@ -105,7 +105,7 @@ export default function Home() {
           <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
             {[
               { icon: "△", title: "$0 Cost. Ever.", sub: "x402 autonomous funding" },
-              { icon: "▣", title: "350 AI Agents", sub: "Full deployment on your case" },
+              { icon: "▣", title: `${AGENT_NETWORK.total} AI Agents`, sub: "Full deployment on your case" },
               { icon: "◯", title: "24/7 Coverage", sub: "Agents never sleep" },
               { icon: "■", title: "Secure Portal", sub: "Your sovereign namespace" },
               { icon: "◆", title: "MCP Grade Systems", sub: "State-of-the-art AI stack" },
@@ -131,7 +131,7 @@ export default function Home() {
             </p>
             <div className="grid md:grid-cols-3 gap-8">
               {[
-                { num: "01", tag: "THE ACCUSED", title: "Falsely Accused & Fighting Back", text: "You did not do it — and we fight like we believe you until the case is closed. Our 350 AI agents launch immediately: pulling case law, reviewing every piece of evidence, modeling strategy, and building the most aggressive defense the technology can provide." },
+                { num: "01", tag: "THE ACCUSED", title: "Falsely Accused & Fighting Back", text: "You did not do it — and we fight like we believe you until the case is closed. Our AI agents launch immediately: pulling case law, reviewing every piece of evidence, modeling strategy, and building the most aggressive defense the technology can provide." },
                 { num: "02", tag: "ACCESS", title: "No Funds. No Problem. Period.", text: "A $500,000 defense budget should never determine the outcome of justice. Our AI runners operate on x402 pay rails — court filing fees, research subscriptions, forensic analysis, expert witness deposits — all funded autonomously. Your wallet stays closed." },
                 { num: "03", tag: "STANDARD", title: "Best in the Industry. For Everyone.", text: "The same MCP-grade agentic systems that institutional clients pay millions for — deployed in full for every single person we represent. No tiers. No second-class service. No case too small." },
               ].map((item) => (
@@ -162,7 +162,7 @@ export default function Home() {
               {[
                 { step: "01", title: "Submit", sub: "Tell us your story. We listen.", text: "Fill out the free case review form. No legal knowledge required. Our AI agents immediately begin triage — classifying charges, flagging urgent deadlines, identifying precedents, and assembling your defense resources. You hear back within 24 hours." },
                 { step: "02", title: "Namespace", sub: "Your sovereign case portal.", text: "Every client receives a private subdomain on unykorn.org — your own secured digital fortress. Case documents, evidence matrix, legal strategy, timelines, and agent activity reports live there. Accessible 24/7. Updated in real time." },
-                { step: "03", title: "Deploy", sub: "350 agents activate on your case.", text: "Research. Motions. Forensics. Public advocacy. MCP legal agents coordinate across every dimension of your defense simultaneously. x402 runners fund every operation automatically. We do not stop until your name is cleared." },
+                { step: "03", title: "Deploy", sub: "All agents activate on your case.", text: "Research. Motions. Forensics. Public advocacy. MCP legal agents coordinate across every dimension of your defense simultaneously. x402 runners fund every operation automatically. We do not stop until your name is cleared." },
               ].map((s) => (
                 <div key={s.step} className="relative bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-8 card-lift">
                   <div className="font-serif text-5xl font-bold text-[var(--gold)] opacity-20 absolute top-4 right-6">{s.step}</div>
