@@ -448,6 +448,58 @@ export default function ProofPage() {
             </div>
           </section>
 
+          {/* ═══ WHY WE'RE DIFFERENT ═══ */}
+          <section className="mb-16">
+            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Competitive Edge</p>
+            <h2 className="font-serif text-2xl font-bold mb-8">Why We&apos;re Not ChatGPT</h2>
+            <p className="text-[var(--text-muted)] mb-8 max-w-3xl">
+              Generic AI chatbots output markdown in a chat window. Our governed agent system produces court-ready PDFs with confidence scoring, escalation triggers, forbidden actions, audit trails, and human approval gates.
+            </p>
+
+            {/* Comparison Table */}
+            <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.15)] rounded-lg overflow-hidden mb-8">
+              <div className="grid grid-cols-3 text-xs font-mono tracking-wider uppercase">
+                <div className="px-6 py-3 bg-[rgba(201,168,76,0.04)] border-b border-r border-[rgba(201,168,76,0.1)] text-[var(--text-muted)]">Capability</div>
+                <div className="px-6 py-3 bg-[rgba(201,168,76,0.04)] border-b border-r border-[rgba(201,168,76,0.1)] text-red-400">ChatGPT / Generic AI</div>
+                <div className="px-6 py-3 bg-[rgba(201,168,76,0.04)] border-b border-[rgba(201,168,76,0.1)] text-[var(--gold)]">UNYKORN Agents</div>
+              </div>
+              {[
+                ["Output Format", "Markdown text in chat", "Court-standard PDF with caption, signature block, cert of service"],
+                ["Governance", "None — anything goes", "Forbidden actions, escalation triggers, approval gates"],
+                ["Confidence Scoring", "No scoring at all", "Every output scored 0-100% with uncertainty markers"],
+                ["Escalation", "No escalation", "Auto-escalate below 40%, flag for review below 60%"],
+                ["Forbidden Actions", "Can attempt anything asked", "Cannot file, sign, send to parties, or approve own work"],
+                ["Audit Trail", "No logging", "Hash-chained log with agent ID, timestamp, action, and result"],
+                ["Privacy", "Data sent to cloud provider", "AES-256-GCM vault — PII never reaches AI models"],
+                ["Document Quality", "Generic prose", "Jurisdiction-specific, type-aware legal drafting with citations"],
+                ["Human Oversight", "Optional, up to user", "Mandatory — no output leaves without attorney review"],
+              ].map(([cap, gpt, us], i) => (
+                <div key={i} className="grid grid-cols-3 text-sm border-b border-[rgba(255,255,255,0.04)] last:border-b-0">
+                  <div className="px-6 py-3 border-r border-[rgba(255,255,255,0.04)] font-bold text-[var(--text-primary)]">{cap}</div>
+                  <div className="px-6 py-3 border-r border-[rgba(255,255,255,0.04)] text-red-400/70">{gpt}</div>
+                  <div className="px-6 py-3 text-emerald-400/90">{us}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Document Generation CTA */}
+            <div className="bg-[rgba(201,168,76,0.04)] border border-[rgba(201,168,76,0.15)] rounded-lg p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div>
+                <h3 className="font-serif text-lg font-bold mb-1">See It In Action</h3>
+                <p className="text-sm text-[var(--text-muted)]">
+                  Generate a real legal document — motion, brief, or demand letter — with our AI agent pipeline.
+                  Court-standard PDF, confidence-scored, ready for attorney review.
+                </p>
+              </div>
+              <Link
+                href="/documents"
+                className="bg-[var(--gold)] text-[var(--midnight)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline whitespace-nowrap"
+              >
+                Generate Document
+              </Link>
+            </div>
+          </section>
+
           {/* ═══ SYSTEM INFO ═══ */}
           {health && (
             <section className="mb-16">
