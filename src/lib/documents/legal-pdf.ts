@@ -35,6 +35,7 @@ export interface DocumentRequest {
   agentName: string;          // Which agent drafted it
   confidenceScore: number;
   generatedAt: string;
+  attorneyName?: string;      // Name for signature block (personalized downloads)
 }
 
 export interface GeneratedDocument {
@@ -300,13 +301,14 @@ function drawSignatureBlock(ctx: DrawContext, req: DocumentRequest) {
   ctx.currentPage.drawLine({ start: { x: rightCol, y: ctx.y + 2 }, end: { x: rightCol + 200, y: ctx.y + 2 }, thickness: 0.5, color: BLACK });
   ctx.y -= LINE_HEIGHT + 2;
 
-  ctx.currentPage.drawText("[Attorney Name, Esq.]", { x: rightCol, y: ctx.y, size: 10, font: ctx.timesRoman, color: BLACK });
+  const attyDisplay = req.attorneyName ? `${req.attorneyName}, Esq.` : "[Attorney Name, Esq.]";
+  ctx.currentPage.drawText(attyDisplay, { x: rightCol, y: ctx.y, size: 10, font: ctx.timesRoman, color: BLACK });
   ctx.y -= LINE_HEIGHT;
   ctx.currentPage.drawText("Florida Bar No. [TBD]", { x: rightCol, y: ctx.y, size: 10, font: ctx.timesRoman, color: BLACK });
   ctx.y -= LINE_HEIGHT;
   ctx.currentPage.drawText("UNYKORN Law", { x: rightCol, y: ctx.y, size: 10, font: ctx.timesBold, color: BLACK });
   ctx.y -= LINE_HEIGHT;
-  ctx.currentPage.drawText("Counsel for Defendant", { x: rightCol, y: ctx.y, size: 10, font: ctx.timesRoman, color: BLACK });
+  ctx.currentPage.drawText(`Counsel for ${req.movingParty}`, { x: rightCol, y: ctx.y, size: 10, font: ctx.timesRoman, color: BLACK });
   ctx.y -= LINE_HEIGHT * 2;
 
   // Date line
@@ -331,7 +333,8 @@ function drawCertificateOfService(ctx: DrawContext, req: DocumentRequest) {
   const rightCol = PAGE_WIDTH / 2 + 20;
   ctx.currentPage.drawLine({ start: { x: rightCol, y: ctx.y + 2 }, end: { x: rightCol + 200, y: ctx.y + 2 }, thickness: 0.5, color: BLACK });
   ctx.y -= LINE_HEIGHT;
-  ctx.currentPage.drawText("[Attorney Name, Esq.]", { x: rightCol, y: ctx.y, size: 10, font: ctx.timesRoman, color: BLACK });
+  const certAtty = req.attorneyName ? `${req.attorneyName}, Esq.` : "[Attorney Name, Esq.]";
+  ctx.currentPage.drawText(certAtty, { x: rightCol, y: ctx.y, size: 10, font: ctx.timesRoman, color: BLACK });
   ctx.y -= LINE_HEIGHT * 2;
 }
 

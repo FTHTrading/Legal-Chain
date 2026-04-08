@@ -48,6 +48,7 @@ export default function DocumentsPage() {
   const [caseNumber, setCaseNumber] = useState("");
   const [court, setCourt] = useState("");
   const [jurisdiction, setJurisdiction] = useState("");
+  const [attorneyName, setAttorneyName] = useState("");
   const [movingParty, setMovingParty] = useState("Defendant");
   const [additionalContext, setAdditionalContext] = useState("");
   const [gen, setGen] = useState<GenerationState>({ status: "idle", progress: "", elapsed: 0 });
@@ -106,6 +107,7 @@ export default function DocumentsPage() {
           court: court.trim() || undefined,
           jurisdiction: jurisdiction.trim() || undefined,
           movingParty,
+          attorneyName: attorneyName.trim() || undefined,
           additionalContext: additionalContext.trim() || undefined,
         }),
       });
@@ -151,7 +153,7 @@ export default function DocumentsPage() {
       progressTimers.forEach(clearTimeout);
       setGen({ status: "error", progress: "", elapsed: 0, error: err instanceof Error ? err.message : "Network error" });
     }
-  }, [selectedType, caseCaption, caseNumber, court, jurisdiction, movingParty, additionalContext, gen.status]);
+  }, [selectedType, caseCaption, caseNumber, court, jurisdiction, movingParty, attorneyName, additionalContext, gen.status]);
 
   const resetForm = () => {
     if (gen.blobUrl) URL.revokeObjectURL(gen.blobUrl);
@@ -194,6 +196,66 @@ export default function DocumentsPage() {
                 <p className="text-xs text-[var(--text-muted)] leading-relaxed">{item.detail}</p>
               </div>
             ))}
+          </section>
+
+          {/* ═══ SAMPLE DOCUMENTS — One-Click Demo ═══ */}
+          <section className="mb-12">
+            <h2 className="font-serif text-xl font-bold mb-4">Try a Sample Document</h2>
+            <p className="text-sm text-[var(--text-muted)] mb-6">Generate a court-ready PDF instantly with pre-filled case details. See exactly what our AI agents produce.</p>
+            <div className="grid md:grid-cols-3 gap-4">
+              {[
+                {
+                  label: "Motion to Dismiss",
+                  type: "motion_to_dismiss",
+                  caption: "STATE OF FLORIDA v. JAMES MITCHELL",
+                  caseNum: "2026-CF-004821",
+                  courtName: "CIRCUIT COURT OF THE EIGHTEENTH JUDICIAL CIRCUIT",
+                  jurisdictionName: "IN AND FOR SEMINOLE COUNTY, FLORIDA",
+                  party: "Defendant",
+                  icon: "⚖",
+                },
+                {
+                  label: "Demand Letter",
+                  type: "demand_letter",
+                  caption: "APEX TECHNOLOGIES INC v. SILVERLINE PARTNERS LLC",
+                  caseNum: "2026-CV-001157",
+                  courtName: "UNITED STATES DISTRICT COURT, MIDDLE DISTRICT OF FLORIDA",
+                  jurisdictionName: "ORLANDO DIVISION",
+                  party: "Plaintiff",
+                  icon: "✉",
+                },
+                {
+                  label: "Legal Brief",
+                  type: "legal_brief",
+                  caption: "IN RE: ESTATE OF MARGARET THORNTON",
+                  caseNum: "2026-CP-000392",
+                  courtName: "PROBATE DIVISION, NINTH JUDICIAL CIRCUIT",
+                  jurisdictionName: "IN AND FOR ORANGE COUNTY, FLORIDA",
+                  party: "Petitioner",
+                  icon: "📋",
+                },
+              ].map((sample) => (
+                <button
+                  key={sample.type}
+                  onClick={() => {
+                    setSelectedType(sample.type);
+                    setCaseCaption(sample.caption);
+                    setCaseNumber(sample.caseNum);
+                    setCourt(sample.courtName);
+                    setJurisdiction(sample.jurisdictionName);
+                    setMovingParty(sample.party);
+                  }}
+                  className="text-left bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-5 hover:border-[var(--gold)] transition-all cursor-pointer group"
+                >
+                  <span className="text-2xl mb-2 block">{sample.icon}</span>
+                  <h3 className="font-serif text-sm font-bold text-[var(--gold)] mb-1 group-hover:text-[var(--gold-light)]">{sample.label}</h3>
+                  <p className="text-xs text-[var(--text-muted)] leading-relaxed mb-3">{sample.caption}</p>
+                  <span className="text-[10px] font-mono tracking-wider uppercase text-[var(--gold)] opacity-0 group-hover:opacity-100 transition-opacity">
+                    Click to fill form →
+                  </span>
+                </button>
+              ))}
+            </div>
           </section>
 
           <div className="grid lg:grid-cols-[1fr_400px] gap-8">
@@ -250,6 +312,19 @@ export default function DocumentsPage() {
                         placeholder="e.g. STATE OF FLORIDA v. JOHN DOE"
                         className="w-full bg-[var(--midnight)] border border-[rgba(201,168,76,0.2)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:outline-none transition-colors"
                       />
+                    </div>
+
+                    {/* Attorney / Your Name */}
+                    <div>
+                      <label className="text-xs font-mono tracking-wider uppercase text-[var(--text-muted)] mb-2 block">Your Name (for signature block)</label>
+                      <input
+                        type="text"
+                        value={attorneyName}
+                        onChange={(e) => setAttorneyName(e.target.value)}
+                        placeholder="e.g. Jane Smith"
+                        className="w-full bg-[var(--midnight)] border border-[rgba(201,168,76,0.2)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:outline-none transition-colors"
+                      />
+                      <span className="text-[10px] text-[var(--text-muted)] mt-1 block">Appears on signature block and certificate of service. Leave blank for placeholder.</span>
                     </div>
 
                     {/* Case Number + Court — two columns */}
