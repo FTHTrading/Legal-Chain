@@ -49,7 +49,7 @@ export default function Home() {
                 <span className="text-[var(--gold)]">NTI-LEAVITT-2026-001 &nbsp;/// &nbsp;$36,150 Crypto Fraud &nbsp;/// &nbsp;INVESTIGATION ACTIVE</span>
                 <span className="text-[var(--text-muted)]">State v. Delcampo &nbsp;/// &nbsp;Illegal Sentence &nbsp;/// &nbsp;APPEAL FILED — MAY 2026</span>
                 <span className="text-[var(--gold)]">169 Creamer Drive &nbsp;/// &nbsp;$1M Proceeds Dispute &nbsp;/// &nbsp;PRE-LITIGATION</span>
-                <span className="text-[var(--text-muted)]">{AGENT_NETWORK.total} AI Agents &nbsp;/// &nbsp;x402 Pay Rails &nbsp;/// &nbsp;$0 Cost to You &nbsp;/// &nbsp;24/7 Coverage</span>
+                <span className="text-[var(--text-muted)]">{AGENT_NETWORK.total} AI Agents &nbsp;/// &nbsp;x402 Pay Rails &nbsp;/// &nbsp;Free Case Review &nbsp;/// &nbsp;Hardship Access Available &nbsp;/// &nbsp;No One Turned Away</span>
               </div>
             ))}
           </div>
@@ -72,7 +72,7 @@ export default function Home() {
           </h1>
           <div className="w-24 h-px bg-[var(--gold)] mx-auto mb-6 opacity-50" />
           <p className="text-xl md:text-2xl text-[var(--text-primary)] max-w-3xl leading-relaxed mb-10">
-            The most advanced AI legal advocacy system ever built — {AGENT_NETWORK.total} autonomous agents fighting for the falsely accused and those who cannot afford an attorney. Zero cost. x402 funded. Relentless.
+            The most advanced AI legal advocacy system ever built — {AGENT_NETWORK.total} autonomous agents fighting for the falsely accused and those who cannot afford an attorney. Free case review. Hardship access available. No one turned away.
           </p>
           <div className="flex flex-wrap gap-4 justify-center mb-12">
             <Link href="/intake" className="bg-[var(--gold)] text-[var(--midnight)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline">
@@ -89,7 +89,7 @@ export default function Home() {
             {[
               { num: String(stats.agentCount), label: "AI Agents" },
               { num: "x402", label: "Pay Protocol" },
-              { num: "$0", label: "Cost to You" },
+              { num: "FREE", label: "Case Review" },
               { num: String(stats.activeCases), label: "Active Cases" },
             ].map((s) => (
               <div key={s.label} className="text-center">
@@ -104,10 +104,10 @@ export default function Home() {
         <section className="py-16 px-8 bg-[var(--navy)] border-y border-[rgba(201,168,76,0.1)]">
           <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
             {[
-              { icon: "△", title: "$0 Cost. Ever.", sub: "x402 autonomous funding" },
+              { icon: "△", title: "Free Case Review", sub: "Always free to get started" },
               { icon: "▣", title: `${AGENT_NETWORK.total} AI Agents`, sub: "Full deployment on your case" },
               { icon: "◯", title: "24/7 Coverage", sub: "Agents never sleep" },
-              { icon: "■", title: "Secure Portal", sub: "Your sovereign namespace" },
+              { icon: "■", title: "Hardship Access", sub: "No one turned away" },
               { icon: "◆", title: "MCP Grade Systems", sub: "State-of-the-art AI stack" },
             ].map((c) => (
               <div key={c.title} className="flex flex-col items-center gap-2">
@@ -132,7 +132,7 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 { num: "01", tag: "THE ACCUSED", title: "Falsely Accused & Fighting Back", text: "You did not do it — and we fight like we believe you until the case is closed. Our AI agents launch immediately: pulling case law, reviewing every piece of evidence, modeling strategy, and building the most aggressive defense the technology can provide." },
-                { num: "02", tag: "ACCESS", title: "No Funds. No Problem. Period.", text: "A $500,000 defense budget should never determine the outcome of justice. Our AI runners operate on x402 pay rails — court filing fees, research subscriptions, forensic analysis, expert witness deposits — all funded autonomously. Your wallet stays closed." },
+                { num: "02", tag: "ACCESS", title: "Affordable. Accessible. Always.", text: "Justice should never depend on your bank account. Our founders rate starts at just $25/month — and if even that is a hardship, apply for full access at no cost. No proof required. No one turned away. Ever." },
                 { num: "03", tag: "STANDARD", title: "Best in the Industry. For Everyone.", text: "The same MCP-grade agentic systems that institutional clients pay millions for — deployed in full for every single person we represent. No tiers. No second-class service. No case too small." },
               ].map((item) => (
                 <div key={item.num} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-8 card-lift">
@@ -313,9 +313,9 @@ export default function Home() {
             </div>
             <div className="mt-12 bg-[var(--navy-card)] border border-[rgba(201,168,76,0.15)] rounded-lg p-8 text-center">
               <div className="text-xs font-mono tracking-[0.2em] text-[var(--gold)] mb-4">x402 Pay Rail &middot; Apostle Chain 7332 &middot; ATP Reserve Token</div>
-              <h3 className="font-serif text-2xl font-bold mb-3">Agents pay your fees. No approval needed. No delay. No case lost.</h3>
+              <h3 className="font-serif text-2xl font-bold mb-3">x402 pay rails power our operations. You focus on your case.</h3>
               <p className="text-[var(--text-muted)] max-w-3xl mx-auto leading-relaxed">
-                The x402 protocol enables AI-to-AI micropayment transactions at machine speed. When a court filing deadline arrives, a research database requires ATP, or an expert witness needs a deposit — our execution agents authorize and settle in microseconds via Apostle Chain 7332.
+                The x402 protocol enables AI-to-AI micropayment transactions at machine speed. When a court filing deadline arrives, a research database requires ATP, or an expert witness needs a deposit — our execution agents authorize and settle in microseconds via Apostle Chain 7332. Platform access starts at $25/mo with hardship waivers available for those who need it.
               </p>
             </div>
           </div>
@@ -420,12 +420,13 @@ export default function Home() {
               YOUR FIGHT<br/><span className="text-[var(--gold)]">STARTS HERE.</span>
             </h2>
             <p className="text-lg text-[var(--text-muted)] mb-12">
-              Tell us what happened. No legal knowledge required. No cost. No obligation. Just the truth — and {AGENT_NETWORK.total} agents ready to go.
+              Tell us what happened. No legal knowledge required. No obligation. Free case review — and if you need full access, hardship waivers are available. No one turned away.
             </p>
             <div className="text-sm text-[var(--text-muted)] mb-8 space-y-1">
               <p>&#10003; Response within 24 hours guaranteed</p>
               <p>&#10003; Sovereign namespace provisioned immediately</p>
-              <p>&#10003; $0 cost — x402 funded from day one</p>
+              <p>&#10003; Free case review — always</p>
+              <p>&#10003; Hardship access available — no one turned away</p>
               <p>&#10003; All documents downloadable for your family</p>
               <p>&#10003; {AGENT_NETWORK.total} AI agents active from first submission</p>
               <p className="text-[var(--gold)]">Direct line: law@unykorn.org</p>
@@ -482,7 +483,7 @@ export default function Home() {
               </button>
                 </>
               )}
-              <p className="text-center text-xs text-[var(--text-muted)]">Private · Confidential · $0 cost · law@unykorn.org</p>
+              <p className="text-center text-xs text-[var(--text-muted)]">Private · Confidential · Free case review · Hardship access available · law@unykorn.org</p>
             </form>
           </div>
         </section>

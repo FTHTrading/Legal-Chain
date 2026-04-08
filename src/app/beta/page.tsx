@@ -85,8 +85,11 @@ function BetaContent() {
             {AGENT_NETWORK.total} AI agents. Court-standard documents. Blockchain forensics.
             Be one of the first 100 founders at <span className="text-[var(--gold)] font-bold">$25/mo forever</span>.
           </p>
-          <p className="font-mono text-xs text-[var(--text-muted)]">
+          <p className="font-mono text-xs text-[var(--text-muted)] mb-2">
             Standard price will be $99/mo after founders spots fill up.
+          </p>
+          <p className="font-serif text-sm text-emerald-400">
+            Can&apos;t afford it? <a href="/subscribe#hardship" className="underline hover:text-emerald-300 transition-colors">Apply for hardship access</a> — no one turned away.
           </p>
         </div>
       </section>

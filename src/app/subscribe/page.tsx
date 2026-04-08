@@ -10,6 +10,9 @@ import { AGENT_NETWORK } from "@/lib/data/seed";
 export default function SubscribePage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [email, setEmail] = useState("");
+  const [hardshipForm, setHardshipForm] = useState({ name: "", email: "", situation: "", caseType: "" });
+  const [hardshipSubmitted, setHardshipSubmitted] = useState(false);
+  const [hardshipError, setHardshipError] = useState("");
   const spotsLeft = founderSpotsRemaining();
   const founderAvailable = isFounderSpotsAvailable();
 
@@ -45,11 +48,14 @@ export default function SubscribePage() {
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-4">Pricing</p>
             <h1 className="font-serif text-4xl md:text-6xl font-bold leading-tight mb-6">
               AI-Powered Legal<br />Intelligence.<br />
-              <span className="text-[var(--gold)]">$25/month.</span>
+              <span className="text-[var(--gold)]">Starting at $25/month.</span>
             </h1>
             <p className="font-serif text-lg text-[var(--text-muted)] max-w-[600px] mx-auto mb-4">
               {AGENT_NETWORK.total} autonomous AI agents. Full legal research. Document drafting.
               Forensic analysis. Web3 payments. Everything you need.
+            </p>
+            <p className="font-serif text-sm text-emerald-400 mb-4">
+              Can&apos;t afford it? Apply for hardship access below — no one is turned away.
             </p>
             {founderAvailable && (
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--gold)] bg-[rgba(201,168,76,0.06)]">
@@ -285,6 +291,7 @@ export default function SubscribePage() {
             <h2 className="font-serif text-2xl font-bold text-center mb-10">Frequently Asked Questions</h2>
             <div className="space-y-6">
               {[
+                { q: "What if I can't afford a subscription?", a: "We believe access to legal tools should never depend on your financial situation. Apply for hardship access below — you'll get full platform access at no cost. No proof of income required. No documentation. No one is turned away." },
                 { q: "What happens after the first 100 founders spots fill up?", a: "The introductory $25/month rate is permanently locked for founders. After 100 spots fill, new subscribers pay the standard $99/month rate. Your founder pricing never increases." },
                 { q: "Can I cancel anytime?", a: "Yes. Cancel anytime from your billing portal. Your access continues through the end of your current billing period. No contract, no cancellation fees." },
                 { q: "What AI models power the agents?", a: "We use GPT-4o and Claude for analysis, with specialized model configs per agent team. Research agents use low-temperature for precision. Drafting agents use higher creativity settings. All calls go through our governance layer." },
@@ -298,6 +305,136 @@ export default function SubscribePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ═══ HARDSHIP ACCESS ═══ */}
+        <section id="hardship" className="py-20 px-8 border-t border-[rgba(201,168,76,0.08)]">
+          <div className="max-w-[700px] mx-auto">
+            <div className="text-center mb-10">
+              <p className="font-serif text-xs tracking-[0.4em] uppercase text-emerald-400 mb-2">No One Turned Away</p>
+              <h2 className="font-serif text-3xl md:text-4xl font-bold mb-3">
+                Hardship Access<br /><span className="text-emerald-400">Program</span>
+              </h2>
+              <p className="font-serif text-sm text-[var(--text-muted)] max-w-[500px] mx-auto">
+                Justice should not have a price tag. If you cannot afford a subscription, apply for
+                full platform access at no cost. No proof of income required. No documentation.
+                Simply tell us your situation.
+              </p>
+            </div>
+
+            {hardshipSubmitted ? (
+              <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-lg p-8 text-center">
+                <div className="text-3xl mb-4">&#10003;</div>
+                <h3 className="font-serif text-2xl font-bold text-emerald-400 mb-2">Application Received</h3>
+                <p className="text-[var(--text-muted)] mb-4">
+                  Your hardship access application has been submitted. You will receive full platform access
+                  within 24 hours at the email you provided. No one is turned away.
+                </p>
+                <p className="text-xs font-mono text-emerald-400">Direct line if urgent: law@unykorn.org</p>
+              </div>
+            ) : (
+              <form
+                className="bg-[var(--navy-card)] border border-emerald-500/15 rounded-lg p-8 space-y-6"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setHardshipError("");
+                  if (!hardshipForm.name.trim() || !hardshipForm.email.trim() || !hardshipForm.situation.trim()) {
+                    setHardshipError("Please fill in all required fields.");
+                    return;
+                  }
+                  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(hardshipForm.email)) {
+                    setHardshipError("Please enter a valid email address.");
+                    return;
+                  }
+                  try {
+                    const res = await fetch("/api/hardship/apply", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(hardshipForm),
+                    });
+                    if (!res.ok) {
+                      const data = await res.json().catch(() => ({}));
+                      setHardshipError(data.error || "Submission failed. Please email law@unykorn.org directly.");
+                      return;
+                    }
+                    setHardshipSubmitted(true);
+                  } catch {
+                    setHardshipError("Network error. Please email law@unykorn.org directly.");
+                  }
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="font-mono text-xs text-emerald-400 tracking-wider">100% OF APPLICATIONS APPROVED</span>
+                </div>
+
+                {hardshipError && (
+                  <div className="bg-red-900/30 border border-red-500/30 rounded px-4 py-3 text-red-300 text-sm">{hardshipError}</div>
+                )}
+
+                <div>
+                  <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Your Name *</label>
+                  <input
+                    type="text"
+                    value={hardshipForm.name}
+                    onChange={(e) => setHardshipForm((p) => ({ ...p, name: e.target.value }))}
+                    className="w-full bg-[var(--midnight)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-emerald-400 focus:outline-none transition-colors"
+                    placeholder="Full name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Email Address *</label>
+                  <input
+                    type="email"
+                    value={hardshipForm.email}
+                    onChange={(e) => setHardshipForm((p) => ({ ...p, email: e.target.value }))}
+                    className="w-full bg-[var(--midnight)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-emerald-400 focus:outline-none transition-colors"
+                    placeholder="your@email.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Case Type</label>
+                  <select
+                    value={hardshipForm.caseType}
+                    onChange={(e) => setHardshipForm((p) => ({ ...p, caseType: e.target.value }))}
+                    className="w-full bg-[var(--midnight)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-emerald-400 focus:outline-none transition-colors"
+                  >
+                    <option value="">Select if applicable...</option>
+                    <option value="criminal">Criminal Defense</option>
+                    <option value="appeal">Criminal Appeal</option>
+                    <option value="crypto">Crypto Fraud Recovery</option>
+                    <option value="civil">Civil Dispute</option>
+                    <option value="family">Family Law</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-serif text-xs tracking-[0.1em] uppercase text-[var(--text-muted)] mb-2">Tell Us Your Situation *</label>
+                  <textarea
+                    value={hardshipForm.situation}
+                    onChange={(e) => setHardshipForm((p) => ({ ...p, situation: e.target.value }))}
+                    rows={4}
+                    className="w-full bg-[var(--midnight)] border border-[rgba(201,168,76,0.2)] rounded px-4 py-3 text-[var(--text-primary)] focus:border-emerald-400 focus:outline-none resize-none transition-colors"
+                    placeholder="Briefly describe why you need hardship access. No financial proof or documentation is required."
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-emerald-500 text-white py-4 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-emerald-400 transition-colors cursor-pointer"
+                >
+                  Apply for Hardship Access
+                </button>
+
+                <p className="text-center text-xs text-[var(--text-muted)]">
+                  Private &middot; Confidential &middot; All applications approved &middot; Full access granted within 24 hours
+                </p>
+              </form>
+            )}
           </div>
         </section>
       </main>
