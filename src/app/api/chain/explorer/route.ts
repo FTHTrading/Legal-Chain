@@ -15,6 +15,7 @@ import {
   getAuditLog,
   isChainOnline,
 } from "@/lib/chain-sdk";
+import { getDemoData } from "@/lib/chain-demo-data";
 
 export const dynamic = "force-dynamic";
 
@@ -25,10 +26,14 @@ export async function GET(req: Request) {
 
   const online = await isChainOnline();
   if (!online) {
-    return NextResponse.json(
-      { error: "Chain explorer offline", online: false, data: [] },
-      { status: 503 }
-    );
+    const demo = getDemoData(tab).slice(0, limit);
+    return NextResponse.json({
+      online: false,
+      demo: true,
+      tab,
+      count: demo.length,
+      data: demo,
+    });
   }
 
   let data: unknown[] = [];

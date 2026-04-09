@@ -54,6 +54,7 @@ export default function ChainExplorer() {
   const [data, setData] = useState<ExplorerData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [demo, setDemo] = useState(false);
 
   // Fetch chain status
   useEffect(() => {
@@ -73,12 +74,15 @@ export default function ChainExplorer() {
       if (!res.ok) {
         setError(json.error || "Explorer unavailable");
         setData(null);
+        setDemo(false);
       } else {
         setData(json);
+        setDemo(json.demo === true);
       }
     } catch {
       setError("Failed to fetch chain data");
       setData(null);
+      setDemo(false);
     } finally {
       setLoading(false);
     }
@@ -89,6 +93,7 @@ export default function ChainExplorer() {
   }, [tab, fetchTab]);
 
   const online = status?.chain?.status === "online";
+  const showDemo = !online && demo;
 
   return (
     <>
@@ -97,9 +102,9 @@ export default function ChainExplorer() {
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-2">
-            <span className={`w-3 h-3 rounded-full ${online ? "bg-[var(--success)] animate-pulse" : "bg-[var(--danger)]"}`} />
+            <span className={`w-3 h-3 rounded-full ${online ? "bg-[var(--success)] animate-pulse" : showDemo ? "bg-[var(--gold)] animate-pulse" : "bg-[var(--danger)]"}`} />
             <span className="font-mono text-xs tracking-widest uppercase text-[var(--text-muted)]">
-              Legal-Chain {online ? "Online" : "Offline"} &middot; Substrate
+              Legal-Chain {online ? "Online" : showDemo ? "Demo Mode" : "Offline"} &middot; Substrate
             </span>
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-[var(--gold)] tracking-wide mb-3">
@@ -109,6 +114,14 @@ export default function ChainExplorer() {
             Real-time view of the Legal-Chain Substrate blockchain — every matter, piece of evidence,
             and document anchored on-chain with cryptographic proof.
           </p>
+          {showDemo && (
+            <div className="mt-4 bg-[rgba(201,168,76,0.08)] border border-[var(--gold)] rounded-lg px-5 py-3 inline-flex items-center gap-3">
+              <span className="text-[var(--gold)] text-sm font-mono">⬡</span>
+              <span className="text-sm text-[var(--text-muted)]">
+                Displaying sample case data. Connect the Substrate node to see live blockchain data.
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Stats Cards */}

@@ -205,16 +205,84 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ═══ VISUAL SHOWCASE ═══ */}
+        {/* ═══ THE LEGAL CHAIN ═══ */}
         <section className="py-24 px-8 bg-[var(--navy)]">
           <div className="max-w-[1200px] mx-auto">
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">The Legal Chain</p>
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
               WEB3 MEETS<br/><span className="text-[var(--gold)]">JUSTICE.</span>
             </h2>
-            <p className="text-lg text-[var(--text-muted)] max-w-2xl mb-16">
-              Where blockchain evidence preservation, AI advocacy, and autonomous legal intelligence converge.
+            <p className="text-lg text-[var(--text-muted)] max-w-2xl mb-8">
+              Legal-Chain is a purpose-built Substrate blockchain designed for one thing: making legal evidence
+              tamper-proof and court-admissible. Every document, witness statement, and filing is cryptographically
+              anchored on-chain with Merkle state proofs — creating an immutable record that no one can alter or deny.
             </p>
+            <p className="text-base text-[var(--text-muted)] max-w-2xl mb-16">
+              Built on Polkadot SDK with 8 specialized FRAME pallets, Legal-Chain provides sovereign infrastructure
+              for case management, evidence preservation, document anchoring, identity verification, approval workflows,
+              and a complete audit trail — all verifiable on-chain.
+            </p>
+
+            {/* Chain Feature Cards */}
+            <div className="grid md:grid-cols-4 gap-6 mb-12">
+              {[
+                { icon: "⬡", title: "Immutable Evidence", desc: "Every piece of evidence is hashed and anchored on-chain. Once recorded, it cannot be altered, deleted, or disputed." },
+                { icon: "📄", title: "Document Anchoring", desc: "Court filings, motions, and legal documents are cryptographically timestamped with verifiable Merkle proofs." },
+                { icon: "⚖", title: "Case Management", desc: "Full matter lifecycle on-chain — from intake through resolution. Every status change is permanently recorded." },
+                { icon: "🔐", title: "Audit Trail", desc: "Every action by every participant is logged immutably. Complete chain of custody for court admissibility." },
+              ].map((f) => (
+                <div key={f.title} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 card-lift">
+                  <span className="text-2xl mb-3 block">{f.icon}</span>
+                  <h3 className="font-serif text-base font-bold mb-2 text-[var(--text-primary)]">{f.title}</h3>
+                  <p className="text-sm text-[var(--text-muted)] leading-relaxed">{f.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Pallet Summary */}
+            <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.15)] rounded-lg p-8 mb-12">
+              <h3 className="font-serif text-xl font-bold text-[var(--gold)] mb-6">8 FRAME Pallets — Purpose-Built for Legal Operations</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { name: "pallet-matters", desc: "Case lifecycle & status" },
+                  { name: "pallet-evidence", desc: "Evidence anchoring & hashing" },
+                  { name: "pallet-documents", desc: "Document storage proofs" },
+                  { name: "pallet-audit", desc: "Immutable audit trail" },
+                  { name: "pallet-approvals", desc: "Multi-party sign-off" },
+                  { name: "pallet-identities", desc: "Participant verification" },
+                  { name: "pallet-access-control", desc: "Role-based permissions" },
+                  { name: "pallet-agent-policy", desc: "AI agent governance" },
+                ].map((p) => (
+                  <div key={p.name} className="text-center">
+                    <div className="font-mono text-xs text-[var(--gold)] mb-1">{p.name}</div>
+                    <div className="text-xs text-[var(--text-muted)]">{p.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="text-center">
+              <Link
+                href="/chain"
+                className="inline-block bg-[var(--gold)] text-[var(--midnight)] px-8 py-4 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline"
+              >
+                Explore the Chain →
+              </Link>
+              <p className="text-xs text-[var(--text-muted)] mt-4 font-mono">
+                Real-time block explorer &middot; Merkle proof verification &middot; Full audit visibility
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ VISUAL SHOWCASE ═══ */}
+        <section className="py-24 px-8">
+          <div className="max-w-[1200px] mx-auto">
+            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Media Gallery</p>
+            <h2 className="font-serif text-4xl md:text-5xl font-bold mb-16">
+              SEE THE<br/><span className="text-[var(--gold)]">EVIDENCE.</span>
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {IMAGE_GALLERY.slice(0, 6).map((img) => (
                 <div key={img.id} className="relative aspect-video overflow-hidden rounded-lg border border-[rgba(201,168,76,0.1)] card-lift group">

@@ -6,6 +6,7 @@
 
 import { NextResponse } from "next/server";
 import { getChainHealth, getChainStats } from "@/lib/chain-sdk";
+import { DEMO_STATS } from "@/lib/chain-demo-data";
 
 export const dynamic = "force-dynamic";
 
@@ -22,16 +23,7 @@ export async function GET() {
       proof_service: health.proofOnline,
       rpc: health.substrate,
     },
-    stats: stats ?? {
-      latest_block: 0,
-      total_matters: 0,
-      total_evidence: 0,
-      total_documents: 0,
-      total_approvals: 0,
-      total_identities: 0,
-      total_audit_entries: 0,
-      chain_healthy: false,
-    },
+    stats: stats ?? DEMO_STATS,
     timestamp: new Date().toISOString(),
   });
 }
