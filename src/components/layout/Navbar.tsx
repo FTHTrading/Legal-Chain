@@ -38,6 +38,7 @@ export default function Navbar() {
     { href: "/chain", label: "Chain Explorer" },
     { href: "/media", label: "Media & Evidence" },
     { href: "/documents", label: "Documents" },
+    { href: "/documents/demo", label: "Doc Demo ✦" },
     { href: "/proof", label: "Proof" },
     { href: "/beta", label: "Beta" },
   ];

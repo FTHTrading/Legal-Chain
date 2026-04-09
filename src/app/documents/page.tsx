@@ -171,7 +171,12 @@ export default function DocumentsPage() {
 
           {/* ═══ HEADER ═══ */}
           <div className="mb-12">
-            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Document Generator</p>
+            <div className="flex items-center gap-3 mb-2">
+              <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)]">Document Generator</p>
+              <Link href="/documents/demo" className="inline-block px-2.5 py-0.5 text-[10px] font-mono tracking-widest uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full no-underline hover:bg-emerald-500/20 transition-colors">
+                View Live Demo →
+              </Link>
+            </div>
             <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">
               COURT-READY<br /><span className="text-[var(--gold)]">DOCUMENTS.</span>
             </h1>
