@@ -49,7 +49,7 @@ export default function Home() {
                 <span className="text-[var(--gold)]">NTI-LEAVITT-2026-001 &nbsp;/// &nbsp;$36,150 Crypto Fraud &nbsp;/// &nbsp;INVESTIGATION ACTIVE</span>
                 <span className="text-[var(--text-muted)]">State v. Delcampo &nbsp;/// &nbsp;Illegal Sentence &nbsp;/// &nbsp;APPEAL FILED — MAY 2026</span>
                 <span className="text-[var(--gold)]">169 Creamer Drive &nbsp;/// &nbsp;$1M Proceeds Dispute &nbsp;/// &nbsp;PRE-LITIGATION</span>
-                <span className="text-[var(--text-muted)]">{AGENT_NETWORK.total} AI Agents &nbsp;/// &nbsp;x402 Pay Rails &nbsp;/// &nbsp;Free Case Review &nbsp;/// &nbsp;Hardship Access Available &nbsp;/// &nbsp;No One Turned Away</span>
+                <span className="text-[var(--text-muted)]">{AGENT_NETWORK.total} AI Agents &nbsp;/// &nbsp;x402 Pay Rails &nbsp;/// &nbsp;Free Case Review &nbsp;/// &nbsp;Hardship Access Available</span>
               </div>
             ))}
           </div>
@@ -67,12 +67,12 @@ export default function Home() {
           </div>
           <p className="font-serif text-sm tracking-[0.4em] uppercase text-[var(--gold)] mb-4">UNYKORN // LAW</p>
           <h1 className="font-serif text-5xl md:text-7xl font-bold leading-tight mb-6">
-            COME AS ACCUSED.<br/>
-            <span className="text-[var(--gold)]">LEAVE AS VINDICATED.</span>
+            ATTORNEY-SUPERVISED<br/>
+            <span className="text-[var(--gold)]">AI LEGAL OPERATIONS.</span>
           </h1>
           <div className="w-24 h-px bg-[var(--gold)] mx-auto mb-6 opacity-50" />
           <p className="text-xl md:text-2xl text-[var(--text-primary)] max-w-3xl leading-relaxed mb-10">
-            The most advanced AI legal advocacy system ever built — {AGENT_NETWORK.total} autonomous agents fighting for the falsely accused and those who cannot afford an attorney. Free case review. Hardship access available. No one turned away.
+            {AGENT_NETWORK.total} AI agents supporting attorney-supervised case preparation, evidence review, document drafting, and blockchain forensics. Free case review. Hardship access available.
           </p>
           <div className="flex flex-wrap gap-4 justify-center mb-12">
             <Link href="/intake" className="bg-[var(--gold)] text-[var(--midnight)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline">
@@ -107,8 +107,8 @@ export default function Home() {
               { icon: "△", title: "Free Case Review", sub: "Always free to get started" },
               { icon: "▣", title: `${AGENT_NETWORK.total} AI Agents`, sub: "Full deployment on your case" },
               { icon: "◯", title: "24/7 Coverage", sub: "Agents never sleep" },
-              { icon: "■", title: "Hardship Access", sub: "No one turned away" },
-              { icon: "◆", title: "MCP Grade Systems", sub: "State-of-the-art AI stack" },
+              { icon: "■", title: "Hardship Access", sub: "Reduced-cost options available" },
+              { icon: "◆", title: "Governed AI Stack", sub: "Attorney-supervised workflow" },
             ].map((c) => (
               <div key={c.title} className="flex flex-col items-center gap-2">
                 <span className="text-3xl text-[var(--gold)]">{c.icon}</span>
@@ -122,18 +122,18 @@ export default function Home() {
         {/* ═══ WHO WE FIGHT FOR ═══ */}
         <section className="py-24 px-8">
           <div className="max-w-[1200px] mx-auto">
-            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Who We Fight For</p>
+            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Who We Serve</p>
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
-              WE EXIST<br/><span className="text-[var(--gold)]">FOR ONE REASON.</span>
+              BUILT FOR PEOPLE<br/><span className="text-[var(--gold)]">WHO NEED IT MOST.</span>
             </h2>
             <p className="text-lg text-[var(--text-muted)] max-w-2xl mb-16">
-              Every person charged without cause deserves the most powerful legal intelligence on the planet. That is why we exist.
+              People facing criminal charges, appeals, crypto fraud, and document-heavy disputes deserve better tools and faster preparation.
             </p>
             <div className="grid md:grid-cols-3 gap-8">
               {[
-                { num: "01", tag: "THE ACCUSED", title: "Falsely Accused & Fighting Back", text: "You did not do it — and we fight like we believe you until the case is closed. Our AI agents launch immediately: pulling case law, reviewing every piece of evidence, modeling strategy, and building the most aggressive defense the technology can provide." },
-                { num: "02", tag: "ACCESS", title: "Affordable. Accessible. Always.", text: "Justice should never depend on your bank account. Our founders rate starts at just $25/month — and if even that is a hardship, apply for full access at no cost. No proof required. No one turned away. Ever." },
-                { num: "03", tag: "STANDARD", title: "Best in the Industry. For Everyone.", text: "The same MCP-grade agentic systems that institutional clients pay millions for — deployed in full for every single person we represent. No tiers. No second-class service. No case too small." },
+                { num: "01", tag: "DEFENSE", title: "Criminal Defense & Appeals", text: "AI agents assist with case law research, evidence review, strategy modeling, and document preparation — all under attorney supervision. Faster evidence review. Stronger documentation. Better case organization." },
+                { num: "02", tag: "ACCESS", title: "Affordable. Accessible.", text: "Platform access starts at $25/month. If that is a hardship, apply for reduced-cost access — we review every application and work to accommodate those in need." },
+                { num: "03", tag: "STANDARD", title: "Consistent Quality for Every Case.", text: "Every client gets the same AI-assisted workflow: structured research, governed document drafting, evidence organization, and blockchain-anchored audit trails. No case too small for proper preparation." },
               ].map((item) => (
                 <div key={item.num} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-8 card-lift">
                   <div className="flex items-center gap-3 mb-4">
@@ -153,16 +153,16 @@ export default function Home() {
           <div className="max-w-[1200px] mx-auto">
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">The Process</p>
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
-              INTAKE TO<br/><span className="text-[var(--gold)]">VINDICATION.</span>
+              INTAKE TO<br/><span className="text-[var(--gold)]">RESOLUTION.</span>
             </h2>
             <p className="text-lg text-[var(--text-muted)] max-w-2xl mb-16">
-              Three phases. Total coverage. Simple for your family — powered by the most advanced AI legal system ever deployed.
+              Three phases. Structured workflow. Simple for your family — supported by attorney-supervised AI agents.
             </p>
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 { step: "01", title: "Submit", sub: "Tell us your story. We listen.", text: "Fill out the free case review form. No legal knowledge required. Our AI agents immediately begin triage — classifying charges, flagging urgent deadlines, identifying precedents, and assembling your defense resources. You hear back within 24 hours." },
-                { step: "02", title: "Namespace", sub: "Your sovereign case portal.", text: "Every client receives a private subdomain on unykorn.org — your own secured digital fortress. Case documents, evidence matrix, legal strategy, timelines, and agent activity reports live there. Accessible 24/7. Updated in real time." },
-                { step: "03", title: "Deploy", sub: "All agents activate on your case.", text: "Research. Motions. Forensics. Public advocacy. MCP legal agents coordinate across every dimension of your defense simultaneously. x402 runners fund every operation automatically. We do not stop until your name is cleared." },
+                { step: "02", title: "Portal", sub: "Your private case workspace.", text: "Each client receives a private authenticated portal. Case documents, evidence, timelines, and status updates are organized there. Accessible 24/7 with secure login." },
+                { step: "03", title: "Assist", sub: "AI agents support your case.", text: "Research, document drafting, forensics, and evidence organization. AI agents work under attorney supervision across your case. All outbound actions require human sign-off before execution." },
               ].map((s) => (
                 <div key={s.step} className="relative bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-8 card-lift">
                   <div className="font-serif text-5xl font-bold text-[var(--gold)] opacity-20 absolute top-4 right-6">{s.step}</div>
@@ -178,9 +178,9 @@ export default function Home() {
         {/* ═══ ACTIVE CASES ═══ */}
         <section className="py-24 px-8">
           <div className="max-w-[1200px] mx-auto">
-            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Case Results</p>
+            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Active Matters</p>
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-16">
-              WE FIGHT.<br/><span className="text-[var(--gold)]">WE WIN.</span>
+              CURRENT<br/><span className="text-[var(--gold)]">CASES.</span>
             </h2>
             <div className="grid md:grid-cols-3 gap-8 mb-12">
               {ACTIVE_CASES.map((c) => (
@@ -344,7 +344,7 @@ export default function Home() {
           <div className="max-w-[1200px] mx-auto">
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">The Network</p>
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
-              {AGENT_NETWORK.total} RUNNERS.<br/><span className="text-[var(--gold)]">ZERO HESITATION.</span>
+              {AGENT_NETWORK.total} AI AGENTS.<br/><span className="text-[var(--gold)]">ALWAYS OPERATIONAL.</span>
             </h2>
             <p className="text-lg text-[var(--text-muted)] max-w-2xl mb-16">
               Autonomous AI agents holding sovereign ATP wallets on Apostle Chain 7332. Funded, registered, and operational.
@@ -356,7 +356,7 @@ export default function Home() {
                 { val: "x402", label: "Pay Protocol" },
                 { val: "7332", label: "Chain ID" },
                 { val: "ATP", label: "Reserve Token" },
-                { val: "∞", label: "Fight Capacity" },
+                { val: "24/7", label: "Uptime" },
               ].map((s) => (
                 <div key={s.label} className="text-center bg-[var(--navy-card)] rounded-lg p-4 border border-[rgba(201,168,76,0.1)]">
                   <div className="font-serif text-2xl font-bold text-[var(--gold)]">{s.val}</div>
@@ -394,7 +394,7 @@ export default function Home() {
           <div className="max-w-[1200px] mx-auto">
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Technology Stack</p>
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-16">
-              BEST IN<br/><span className="text-[var(--gold)]">THE INDUSTRY.</span>
+              WHAT POWERS<br/><span className="text-[var(--gold)]">THE PLATFORM.</span>
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {[
@@ -403,7 +403,7 @@ export default function Home() {
                 { code: "BF", title: "Blockchain Forensics", desc: "On-chain trace analysis across TRON, Ethereum, XRP Ledger, and Stellar. Court-ready evidence packaging.", badge: "TRON · ETH · XRP · XLM" },
                 { code: "MK", title: "AI Marketing Ops", desc: "Full agentic marketing and public advocacy team. Case documentation, media strategy, social operations — all AI-driven.", badge: "MCP · AGENTIC · ALWAYS ON" },
                 { code: "RE", title: "Agentic Research Engine", desc: "Research agents that never stop. Case law mining, expert witness ID, prosecutorial record review. Every angle explored.", badge: `${AGENT_NETWORK.total} AGENTS · 24/7` },
-                { code: "NS", title: "Sovereign Namespaces", desc: "Every client owns their case portal. A secured subdomain on unykorn.org — Web3-native. Your case, your data, your fortress.", badge: "WEB3 · SECURED · SOVEREIGN" },
+                { code: "NS", title: "Client Portals", desc: "Each client gets a private authenticated workspace for case documents, evidence, status updates, and communications.", badge: "AUTHENTICATED · PRIVATE" },
               ].map((t) => (
                 <div key={t.code} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6 card-lift">
                   <div className="font-mono text-xs text-[var(--gold)] opacity-60 mb-2">{t.code}</div>
@@ -446,7 +446,7 @@ export default function Home() {
           <div className="max-w-[1200px] mx-auto">
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Active Namespaces</p>
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-16">
-              YOUR CASE.<br/><span className="text-[var(--gold)]">YOUR FORTRESS.</span>
+              SAMPLE<br/><span className="text-[var(--gold)]">CASE PORTALS.</span>
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-[var(--navy-card)] border border-[var(--success)] rounded-lg p-6">
@@ -485,18 +485,19 @@ export default function Home() {
           <div className="max-w-[800px] mx-auto">
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Open a Case</p>
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
-              YOUR FIGHT<br/><span className="text-[var(--gold)]">STARTS HERE.</span>
+              START YOUR<br/><span className="text-[var(--gold)]">CASE REVIEW.</span>
             </h2>
             <p className="text-lg text-[var(--text-muted)] mb-12">
-              Tell us what happened. No legal knowledge required. No obligation. Free case review — and if you need full access, hardship waivers are available. No one turned away.
+              Tell us what happened. No legal knowledge required. No obligation. Free initial case review. Hardship access considered on request.
             </p>
             <div className="text-sm text-[var(--text-muted)] mb-8 space-y-1">
               <p>&#10003; Response within 24 hours guaranteed</p>
-              <p>&#10003; Sovereign namespace provisioned immediately</p>
-              <p>&#10003; Free case review — always</p>
-              <p>&#10003; Hardship access available — no one turned away</p>
+              <p>&#10003; Private case portal provisioned after review</p>
+              <p>&#10003; Free initial case review</p>
+              <p>&#10003; Hardship access considered on request</p>
               <p>&#10003; All documents downloadable for your family</p>
               <p>&#10003; {AGENT_NETWORK.total} AI agents active from first submission</p>
+              <p>&#10003; All AI-generated content reviewed by attorney before any action</p>
               <p className="text-[var(--gold)]">Direct line: law@unykorn.org</p>
             </div>
             <form className="space-y-6" onSubmit={handleSubmit}>

@@ -19,7 +19,7 @@ export default function Footer() {
               <span className="text-[var(--text-primary)] font-normal">{"// LAW"}</span>
             </div>
             <p className="text-[var(--text-muted)] text-sm leading-relaxed">
-              {stats.agentCount} AI agents. Zero cost. Fighting for the falsely accused and those without resources since 2026.
+              AI-assisted legal operations platform. {stats.agentCount} agents supporting attorney-supervised case preparation, evidence review, and document drafting.
             </p>
             <p className="text-[var(--gold)] mt-4 text-sm">law@unykorn.org</p>
           </div>
@@ -65,11 +65,11 @@ export default function Footer() {
 
           {/* Case Portals */}
           <div>
-            <h4 className="font-serif text-xs font-semibold tracking-[0.15em] uppercase text-[var(--gold)] mb-4">Case Portals</h4>
+            <h4 className="font-serif text-xs font-semibold tracking-[0.15em] uppercase text-[var(--gold)] mb-4">Sample Portals</h4>
             <div className="flex flex-col gap-2">
-              <Link href="/portal/tronfraud" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">tronfraud.unykorn.org</Link>
-              <Link href="/portal/marquis" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">marquis.unykorn.org</Link>
-              <Link href="/portal/creamer" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">creamer.unykorn.org</Link>
+              <Link href="/portal/tronfraud" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">tronfraud (demo)</Link>
+              <Link href="/portal/marquis" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">marquis (demo)</Link>
+              <Link href="/portal/creamer" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">creamer (demo)</Link>
               <Link href="/intake" className="text-[var(--gold)] text-sm hover:text-[var(--gold-light)] transition-colors no-underline">Open New Case</Link>
             </div>
           </div>
@@ -79,15 +79,19 @@ export default function Footer() {
         <div className="border-t border-[rgba(201,168,76,0.1)] pt-6 mb-6">
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
             <a href="https://needai.unykorn.org" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(52,211,153,0.2)] bg-[rgba(52,211,153,0.04)] hover:bg-[rgba(52,211,153,0.1)] transition-colors no-underline">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-mono text-emerald-400 tracking-wider">NEED AI</span>
-              <span className="text-[var(--text-muted)]">Powered — 7 LAW Numbers Active</span>
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(201,168,76,0.15)] bg-[rgba(201,168,76,0.03)] hover:bg-[rgba(201,168,76,0.08)] transition-colors no-underline">
+              <span className="font-mono text-[var(--text-muted)] tracking-wider">NEED AI</span>
+              <span className="text-[var(--text-muted)]">&mdash; AI phone answering (separate service)</span>
             </a>
-            <a href={telLink(AI_LINE.numeric)}
-              className="font-mono text-[var(--gold)] no-underline hover:text-[var(--gold-light)] transition-colors">
-              Call {AI_LINE.vanity}: {AI_LINE.numeric}
-            </a>
+          </div>
+        </div>
+
+        {/* Legal Disclaimers */}
+        <div className="border-t border-[rgba(201,168,76,0.1)] pt-6 mb-6">
+          <div className="max-w-4xl mx-auto text-center space-y-2 text-[10px] text-[var(--text-muted)] leading-relaxed">
+            <p><strong className="text-[var(--text-muted)]">AI Disclosure:</strong> This platform uses artificial intelligence to assist with legal research, document drafting, and case preparation. All AI-generated work products are reviewed by a licensed attorney before any filing or external communication.</p>
+            <p><strong className="text-[var(--text-muted)]">No Attorney-Client Relationship:</strong> Browsing this website does not create an attorney-client relationship. An attorney-client relationship is established only by a signed engagement agreement. Information submitted through intake forms is treated as confidential under our duty to prospective clients (ABA Model Rule 1.18).</p>
+            <p><strong className="text-[var(--text-muted)]">Jurisdiction:</strong> Services described on this site may not be available in all jurisdictions. Results vary by case and are not guaranteed.</p>
           </div>
         </div>
 
@@ -102,7 +106,7 @@ export default function Footer() {
             <span>&middot;</span>
             <span>ATP Reserve</span>
             <span>&middot;</span>
-            <a href="https://needai.unykorn.org" target="_blank" rel="noopener noreferrer" className="text-emerald-400 no-underline hover:text-emerald-300">NEED AI</a>
+            <a href="https://needai.unykorn.org" target="_blank" rel="noopener noreferrer" className="text-[var(--text-muted)] no-underline hover:text-[var(--gold)]">NEED AI</a>
           </div>
         </div>
       </div>

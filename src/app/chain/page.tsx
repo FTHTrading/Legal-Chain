@@ -225,7 +225,7 @@ export default function ChainExplorer() {
           <InfoCard
             title="Substrate Node"
             items={[
-              ["RPC", status?.chain?.rpc || "ws://localhost:9944"],
+              ["RPC", status?.chain?.rpc || "Not publicly available"],
               ["Runtime", "legal-chain-runtime"],
               ["Pallets", "8 (matters, evidence, documents, audit, approvals, identities, access-control, agent-policy)"],
             ]}
@@ -233,7 +233,7 @@ export default function ChainExplorer() {
           <InfoCard
             title="Explorer API"
             items={[
-              ["Endpoint", process.env.NEXT_PUBLIC_EXPLORER_URL || "http://localhost:8300"],
+              ["Endpoint", process.env.NEXT_PUBLIC_EXPLORER_URL || "Not publicly available"],
               ["Status", status?.chain?.explorer ? "Online" : "Offline"],
               ["Database", "PostgreSQL (indexed)"],
             ]}
@@ -241,7 +241,7 @@ export default function ChainExplorer() {
           <InfoCard
             title="Proof Service"
             items={[
-              ["Endpoint", process.env.NEXT_PUBLIC_PROOF_URL || "http://localhost:8400"],
+              ["Endpoint", process.env.NEXT_PUBLIC_PROOF_URL || "Not publicly available"],
               ["Status", status?.chain?.proof_service ? "Online" : "Offline"],
               ["Verification", "Merkle state proofs"],
             ]}

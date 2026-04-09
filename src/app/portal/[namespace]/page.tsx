@@ -52,6 +52,18 @@ export default function PortalPage({
       <Navbar />
       <main className="flex-1 pt-[104px] pb-16 px-8">
         <div className="max-w-[1200px] mx-auto">
+          {/* Sample Data Banner */}
+          <div className="mb-8 bg-amber-900/20 border border-amber-500/40 rounded-lg px-6 py-4 flex items-start gap-3">
+            <span className="text-amber-400 text-lg mt-0.5">⚠</span>
+            <div>
+              <p className="text-amber-400 font-mono text-xs tracking-wider font-bold mb-1">SAMPLE DATA — DEMONSTRATION ONLY</p>
+              <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+                This portal displays sample case data for demonstration purposes. It does not contain real client information.
+                Actual client portals are authenticated and accessible only to authorized parties.
+              </p>
+            </div>
+          </div>
+
           {/* Portal Header */}
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-4">
@@ -59,8 +71,9 @@ export default function PortalPage({
               <span className={`text-xs font-mono tracking-wider uppercase ${statusColor}`}>{ns.status}</span>
               <span className="text-xs font-mono text-[var(--text-muted)]">·</span>
               <span className="text-xs font-mono text-[var(--text-muted)]">{ns.caseType.replace(/_/g, " ")}</span>
+              <span className="text-xs font-mono text-amber-400 tracking-wider">· DEMO</span>
             </div>
-            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">CLIENT PORTAL</p>
+            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">CLIENT PORTAL — SAMPLE</p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold mb-2">{ns.title}</h1>
             {ns.subtitle && <p className="text-xl text-[var(--text-muted)]">{ns.subtitle}</p>}
             {ns.jurisdiction && (

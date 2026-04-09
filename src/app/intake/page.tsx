@@ -257,8 +257,10 @@ export default function IntakePage() {
               BEGIN YOUR<br /><span className="text-[var(--gold)]">CASE.</span>
             </h1>
             <p className="text-lg text-[var(--text-muted)] max-w-2xl">
-              Submit your case details below. All information is protected by attorney-client privilege.
-              Our AI intake system will screen, conflict-check, and route your matter to the appropriate team.
+              Submit your case details below. Information you provide will be treated as confidential
+              under our duty to prospective clients (ABA Model Rule 1.18). Submitting this form does not
+              create an attorney-client relationship. Our AI intake system will screen, conflict-check,
+              and route your matter to the appropriate team for review.
             </p>
           </div>
 

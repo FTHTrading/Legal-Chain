@@ -55,7 +55,7 @@ export default function SubscribePage() {
               Forensic analysis. Web3 payments. Everything you need.
             </p>
             <p className="font-serif text-sm text-emerald-400 mb-4">
-              Can&apos;t afford it? Apply for hardship access below — no one is turned away.
+              Can&apos;t afford it? Apply for hardship access below — we work to accommodate everyone.
             </p>
             {founderAvailable && (
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--gold)] bg-[rgba(201,168,76,0.06)]">
@@ -291,7 +291,7 @@ export default function SubscribePage() {
             <h2 className="font-serif text-2xl font-bold text-center mb-10">Frequently Asked Questions</h2>
             <div className="space-y-6">
               {[
-                { q: "What if I can't afford a subscription?", a: "We believe access to legal tools should never depend on your financial situation. Apply for hardship access below — you'll get full platform access at no cost. No proof of income required. No documentation. No one is turned away." },
+                { q: "What if I can't afford a subscription?", a: "We believe access to legal tools should never depend on your financial situation. Apply for hardship access below — we review every application and work to accommodate those in need. Income documentation is not required." },
                 { q: "What happens after the first 100 founders spots fill up?", a: "The introductory $25/month rate is permanently locked for founders. After 100 spots fill, new subscribers pay the standard $99/month rate. Your founder pricing never increases." },
                 { q: "Can I cancel anytime?", a: "Yes. Cancel anytime from your billing portal. Your access continues through the end of your current billing period. No contract, no cancellation fees." },
                 { q: "What AI models power the agents?", a: "We use GPT-4o and Claude for analysis, with specialized model configs per agent team. Research agents use low-temperature for precision. Drafting agents use higher creativity settings. All calls go through our governance layer." },
@@ -312,13 +312,13 @@ export default function SubscribePage() {
         <section id="hardship" className="py-20 px-8 border-t border-[rgba(201,168,76,0.08)]">
           <div className="max-w-[700px] mx-auto">
             <div className="text-center mb-10">
-              <p className="font-serif text-xs tracking-[0.4em] uppercase text-emerald-400 mb-2">No One Turned Away</p>
+              <p className="font-serif text-xs tracking-[0.4em] uppercase text-emerald-400 mb-2">Access for All</p>
               <h2 className="font-serif text-3xl md:text-4xl font-bold mb-3">
                 Hardship Access<br /><span className="text-emerald-400">Program</span>
               </h2>
               <p className="font-serif text-sm text-[var(--text-muted)] max-w-[500px] mx-auto">
                 Justice should not have a price tag. If you cannot afford a subscription, apply for
-                full platform access at no cost. No proof of income required. No documentation.
+                reduced-cost or complimentary platform access. Income documentation is not required.
                 Simply tell us your situation.
               </p>
             </div>
@@ -328,8 +328,8 @@ export default function SubscribePage() {
                 <div className="text-3xl mb-4">&#10003;</div>
                 <h3 className="font-serif text-2xl font-bold text-emerald-400 mb-2">Application Received</h3>
                 <p className="text-[var(--text-muted)] mb-4">
-                  Your hardship access application has been submitted. You will receive full platform access
-                  within 24 hours at the email you provided. No one is turned away.
+                  Your hardship access application has been submitted. We review every application
+                  and you will hear back within 24 hours at the email you provided.
                 </p>
                 <p className="text-xs font-mono text-emerald-400">Direct line if urgent: law@unykorn.org</p>
               </div>
@@ -366,7 +366,7 @@ export default function SubscribePage() {
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="font-mono text-xs text-emerald-400 tracking-wider">100% OF APPLICATIONS APPROVED</span>
+                  <span className="font-mono text-xs text-emerald-400 tracking-wider">WE REVIEW EVERY APPLICATION</span>
                 </div>
 
                 {hardshipError && (
@@ -431,7 +431,7 @@ export default function SubscribePage() {
                 </button>
 
                 <p className="text-center text-xs text-[var(--text-muted)]">
-                  Private &middot; Confidential &middot; All applications approved &middot; Full access granted within 24 hours
+                  Private &middot; Confidential &middot; Every application reviewed &middot; Response within 24 hours
                 </p>
               </form>
             )}
