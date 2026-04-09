@@ -63,14 +63,15 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Case Portals */}
+          {/* Supervising Counsel */}
           <div>
-            <h4 className="font-serif text-xs font-semibold tracking-[0.15em] uppercase text-[var(--gold)] mb-4">Sample Portals</h4>
-            <div className="flex flex-col gap-2">
-              <Link href="/portal/tronfraud" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">tronfraud (demo)</Link>
-              <Link href="/portal/marquis" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">marquis (demo)</Link>
-              <Link href="/portal/creamer" className="text-[var(--text-muted)] text-sm font-mono hover:text-[var(--gold)] transition-colors no-underline">creamer (demo)</Link>
-              <Link href="/intake" className="text-[var(--gold)] text-sm hover:text-[var(--gold-light)] transition-colors no-underline">Open New Case</Link>
+            <h4 className="font-serif text-xs font-semibold tracking-[0.15em] uppercase text-[var(--gold)] mb-4">Supervising Counsel</h4>
+            <div className="flex flex-col gap-2 text-sm text-[var(--text-muted)]">
+              <span className="font-semibold text-[var(--text-primary)]">Kevan D. Burns</span>
+              <span>Principal &middot; UNYKORN Legal Operations</span>
+              <span>Norcross, GA</span>
+              <span className="text-[var(--gold)]">law@unykorn.org</span>
+              <p className="text-[10px] mt-2 leading-relaxed">Licensed attorneys are engaged on a per-matter basis. Supervising counsel details are provided upon engagement.</p>
             </div>
           </div>
         </div>

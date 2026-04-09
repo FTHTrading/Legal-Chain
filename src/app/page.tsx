@@ -160,7 +160,7 @@ export default function Home() {
             </p>
             <div className="grid md:grid-cols-3 gap-8">
               {[
-                { step: "01", title: "Submit", sub: "Tell us your story. We listen.", text: "Fill out the free case review form. No legal knowledge required. Our AI agents immediately begin triage — classifying charges, flagging urgent deadlines, identifying precedents, and assembling your defense resources. You hear back within 24 hours." },
+                { step: "01", title: "Submit", sub: "Tell us your story. We listen.", text: "Fill out the free case review form. No legal knowledge required. Our AI agents assist with triage — classifying charges, flagging urgent deadlines, identifying precedents, and assembling your defense resources. We aim to respond within 24 hours." },
                 { step: "02", title: "Portal", sub: "Your private case workspace.", text: "Each client receives a private authenticated portal. Case documents, evidence, timelines, and status updates are organized there. Accessible 24/7 with secure login." },
                 { step: "03", title: "Assist", sub: "AI agents support your case.", text: "Research, document drafting, forensics, and evidence organization. AI agents work under attorney supervision across your case. All outbound actions require human sign-off before execution." },
               ].map((s) => (
@@ -184,8 +184,8 @@ export default function Home() {
             </h2>
             <div className="grid md:grid-cols-3 gap-8 mb-12">
               {ACTIVE_CASES.map((c) => (
-                <Link key={c.id} href={c.id === "creamer-drive-169" ? "/law/matters/a1b2c3d4-e5f6-7890-abcd-ef1234567890" : `/portal/${c.namespace?.split(".")[0] || "marquis"}`}
-                  className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.15)] rounded-lg p-8 card-lift no-underline block">
+                <div key={c.id}
+                  className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.15)] rounded-lg p-8">
                   <div className="flex items-center justify-between mb-4">
                     <span className={`text-xs font-mono tracking-wider uppercase ${c.status === "investigation" ? "text-[var(--gold)]" : c.status === "appeal" ? "text-red-400" : "text-[var(--success)]"}`}>
                       {c.status.replace("_", " ")}
@@ -199,7 +199,7 @@ export default function Home() {
                     <span className="font-serif text-2xl font-bold text-[var(--gold)]">{c.amount}</span>
                     <span className="text-xs font-mono text-[var(--text-muted)]">{c.namespace}</span>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>
@@ -441,41 +441,33 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ═══ NAMESPACES ═══ */}
+        {/* ═══ CLIENT PORTALS ═══ */}
         <section className="py-24 px-8 bg-[var(--navy)]">
-          <div className="max-w-[1200px] mx-auto">
-            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Active Namespaces</p>
-            <h2 className="font-serif text-4xl md:text-5xl font-bold mb-16">
-              SAMPLE<br/><span className="text-[var(--gold)]">CASE PORTALS.</span>
+          <div className="max-w-[1200px] mx-auto text-center">
+            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">Client Access</p>
+            <h2 className="font-serif text-4xl md:text-5xl font-bold mb-8">
+              PRIVATE<br/><span className="text-[var(--gold)]">CASE PORTALS.</span>
             </h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-[var(--navy-card)] border border-[var(--success)] rounded-lg p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="w-2 h-2 rounded-full bg-[var(--success)]" />
-                  <span className="text-xs font-mono text-[var(--success)] tracking-wider">Active</span>
+            <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto mb-12">
+              Each client receives a private, authenticated case portal after engagement. Portals include case documents, evidence timelines, status updates, and secure communications — accessible 24/7.
+            </p>
+            <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+              {[
+                { icon: "🔐", title: "Authenticated Access", desc: "Unique login credentials issued after signed engagement agreement." },
+                { icon: "📁", title: "Case Workspace", desc: "Documents, evidence, timelines, and filings organized in one place." },
+                { icon: "📊", title: "Status Updates", desc: "Real-time case status and activity feed updated by AI agents and counsel." },
+              ].map((f) => (
+                <div key={f.title} className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6">
+                  <span className="text-2xl mb-3 block">{f.icon}</span>
+                  <h3 className="font-serif text-base font-bold mb-2 text-[var(--text-primary)]">{f.title}</h3>
+                  <p className="text-sm text-[var(--text-muted)] leading-relaxed">{f.desc}</p>
                 </div>
-                <h3 className="font-mono text-lg font-bold text-[var(--gold)] mb-1">tronfraud.unykorn.org</h3>
-                <p className="text-sm text-[var(--text-muted)]">NTI-LEAVITT-2026-001 &middot; Crypto Fraud &middot; $36,150</p>
-                <div className="text-xs font-mono text-[var(--text-muted)] mt-3">TRON / ETH &middot; Blockchain Forensics</div>
-              </div>
-              <Link href="/cases/delcampo" className="bg-[var(--navy-card)] border border-red-400 rounded-lg p-6 block no-underline hover:border-red-300 transition-colors card-lift">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                  <span className="text-xs font-mono text-red-400 tracking-wider">Urgent — May 10, 2026</span>
-                </div>
-                <h3 className="font-mono text-lg font-bold text-[var(--gold)] mb-1">State v. Delcampo</h3>
-                <p className="text-sm text-[var(--text-muted)]">Case #202300001348 &middot; Criminal Appeal &middot; Illegal Sentence</p>
-                <div className="text-xs font-mono text-[var(--text-muted)] mt-3">F.S. 784.045 &middot; 20yr on 15yr max &middot; 10 Contradictions &middot; Blockchain Anchored</div>
+              ))}
+            </div>
+            <div className="mt-10">
+              <Link href="/intake" className="bg-[var(--gold)] text-[var(--midnight)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline">
+                Request a Case Review →
               </Link>
-              <div className="bg-[var(--navy-card)] border border-[var(--gold)] rounded-lg p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="w-2 h-2 rounded-full bg-[var(--gold)]" />
-                  <span className="text-xs font-mono text-[var(--gold)] tracking-wider">Pre-Litigation</span>
-                </div>
-                <h3 className="font-mono text-lg font-bold text-[var(--gold)] mb-1">creamer.unykorn.org</h3>
-                <p className="text-sm text-[var(--text-muted)]">169 Creamer Drive &middot; GA/FL &middot; ~$1M</p>
-                <div className="text-xs font-mono text-[var(--text-muted)] mt-3">Joint Venture &middot; Post-Closing Accounting</div>
-              </div>
             </div>
           </div>
         </section>
@@ -491,12 +483,12 @@ export default function Home() {
               Tell us what happened. No legal knowledge required. No obligation. Free initial case review. Hardship access considered on request.
             </p>
             <div className="text-sm text-[var(--text-muted)] mb-8 space-y-1">
-              <p>&#10003; Response within 24 hours guaranteed</p>
-              <p>&#10003; Private case portal provisioned after review</p>
+              <p>&#10003; We aim to respond within 24 hours</p>
+              <p>&#10003; Private case portal provisioned after engagement</p>
               <p>&#10003; Free initial case review</p>
               <p>&#10003; Hardship access considered on request</p>
               <p>&#10003; All documents downloadable for your family</p>
-              <p>&#10003; {AGENT_NETWORK.total} AI agents active from first submission</p>
+              <p>&#10003; AI agents assigned to support your case after review</p>
               <p>&#10003; All AI-generated content reviewed by attorney before any action</p>
               <p className="text-[var(--gold)]">Direct line: law@unykorn.org</p>
             </div>
@@ -508,8 +500,8 @@ export default function Home() {
                 <div className="bg-[rgba(201,168,76,0.08)] border border-[var(--gold)] rounded-lg p-8 text-center">
                   <div className="text-3xl mb-4">&#9878;</div>
                   <h3 className="font-serif text-2xl font-bold text-[var(--gold)] mb-2">Case Review Submitted</h3>
-                  <p className="text-[var(--text-muted)] mb-4">Your intake has been received and assigned to our AI agents. You will hear from us within 24 hours.</p>
-                  <p className="text-xs font-mono text-[var(--gold)]">{AGENT_NETWORK.total} agents now reviewing your case</p>
+                  <p className="text-[var(--text-muted)] mb-4">Your intake has been received. Our team will review your submission and follow up as soon as possible.</p>
+                  <p className="text-xs font-mono text-[var(--gold)]">AI-assisted review in progress</p>
                 </div>
               ) : (
                 <>
