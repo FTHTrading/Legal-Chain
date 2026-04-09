@@ -51,6 +51,7 @@ export default function Navbar() {
           <NavLink href="/media" active={pathname === "/media"}>Media</NavLink>
           <NavLink href="/documents" active={pathname === "/documents"}>Documents</NavLink>
           <NavLink href="/proof" active={pathname === "/proof"}>Proof</NavLink>
+          <NavLink href="/chain" active={pathname.startsWith("/chain")}>Chain</NavLink>
           <NavLink href="/beta" active={pathname === "/beta"}>Beta</NavLink>
           <NavLink href="/subscribe" active={pathname === "/subscribe"}>Pricing</NavLink>
           <NavLink href="/#network" active={false}>Network</NavLink>

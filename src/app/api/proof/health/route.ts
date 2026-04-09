@@ -11,6 +11,7 @@ import { truthKernel } from "@/lib/kernel";
 import { getVaultStats } from "@/lib/privacy/vault";
 import { getOrchestratorStats } from "@/lib/orchestrator/orchestrator";
 import { listWorkflows } from "@/lib/orchestrator/workflows";
+import { getChainHealth, getChainStats } from "@/lib/chain-sdk";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export async function GET() {
   const vault = getVaultStats();
   const orchestrator = getOrchestratorStats();
   const workflows = listWorkflows();
+  const [chainHealth, chainStats] = await Promise.all([getChainHealth(), getChainStats()]);
 
   const aiConfigured =
     !!process.env.OPENAI_API_KEY || !!process.env.ANTHROPIC_API_KEY;
@@ -65,6 +67,15 @@ export async function GET() {
         workflowCount: workflows.length,
         totalOrchestrations: orchestrator.totalOrchestrations,
         totalStepsExecuted: orchestrator.totalStepsExecuted,
+      },
+      chain: {
+        status: chainHealth.explorerOnline ? "online" : "offline",
+        explorer: chainHealth.explorerOnline,
+        proofService: chainHealth.proofOnline,
+        rpc: chainHealth.substrate,
+        blockHeight: chainStats?.latest_block ?? 0,
+        totalMatters: chainStats?.total_matters ?? 0,
+        totalEvidence: chainStats?.total_evidence ?? 0,
       },
     },
     agents: runtime.agents,
