@@ -9,6 +9,8 @@ type Tab = "blocks" | "matters" | "evidence" | "documents" | "approvals" | "iden
 interface ChainStatus {
   chain: { status: string; explorer: boolean; proof_service: boolean; rpc: string };
   stats: {
+    total_blocks: number;
+    total_events: number;
     latest_block: number;
     total_matters: number;
     total_evidence: number;
@@ -16,7 +18,6 @@ interface ChainStatus {
     total_approvals: number;
     total_identities: number;
     total_audit_entries: number;
-    chain_healthy: boolean;
   };
   timestamp: string;
 }

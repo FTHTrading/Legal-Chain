@@ -4,6 +4,8 @@
  */
 
 export const DEMO_STATS = {
+  total_blocks: 247,
+  total_events: 0,
   latest_block: 247,
   total_matters: 3,
   total_evidence: 12,
@@ -11,7 +13,6 @@ export const DEMO_STATS = {
   total_approvals: 5,
   total_identities: 6,
   total_audit_entries: 34,
-  chain_healthy: false,
 };
 
 export const DEMO_BLOCKS = [

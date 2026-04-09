@@ -91,6 +91,8 @@ export interface ChainAuditEntry {
 }
 
 export interface ChainStats {
+  total_blocks: number;
+  total_events: number;
   latest_block: number;
   total_matters: number;
   total_evidence: number;
@@ -98,7 +100,6 @@ export interface ChainStats {
   total_approvals: number;
   total_identities: number;
   total_audit_entries: number;
-  chain_healthy: boolean;
 }
 
 export interface ProofBundle {
@@ -132,61 +133,61 @@ async function chainFetch<T>(path: string, base = EXPLORER_API): Promise<T | nul
 // ─── Explorer API Methods ───────────────────────────────────────────────────
 
 export async function getChainStats(): Promise<ChainStats | null> {
-  return chainFetch<ChainStats>("/api/stats");
+  return chainFetch<ChainStats>("/v1/stats");
 }
 
 export async function getLatestBlocks(limit = 20): Promise<ChainBlock[]> {
-  return (await chainFetch<ChainBlock[]>(`/api/blocks?limit=${limit}`)) ?? [];
+  return (await chainFetch<ChainBlock[]>(`/v1/blocks?limit=${limit}`)) ?? [];
 }
 
 export async function getBlock(numberOrHash: string | number): Promise<ChainBlock | null> {
-  return chainFetch<ChainBlock>(`/api/blocks/${numberOrHash}`);
+  return chainFetch<ChainBlock>(`/v1/blocks/${numberOrHash}`);
 }
 
 export async function getMatters(limit = 50): Promise<ChainMatter[]> {
-  return (await chainFetch<ChainMatter[]>(`/api/matters?limit=${limit}`)) ?? [];
+  return (await chainFetch<ChainMatter[]>(`/v1/matters?limit=${limit}`)) ?? [];
 }
 
 export async function getMatter(id: string): Promise<ChainMatter | null> {
-  return chainFetch<ChainMatter>(`/api/matters/${id}`);
+  return chainFetch<ChainMatter>(`/v1/matters/${id}`);
 }
 
 export async function getEvidence(matterId?: string, limit = 50): Promise<ChainEvidence[]> {
   const q = matterId ? `?matter_id=${matterId}&limit=${limit}` : `?limit=${limit}`;
-  return (await chainFetch<ChainEvidence[]>(`/api/evidence${q}`)) ?? [];
+  return (await chainFetch<ChainEvidence[]>(`/v1/evidence${q}`)) ?? [];
 }
 
 export async function getDocuments(matterId?: string, limit = 50): Promise<ChainDocument[]> {
   const q = matterId ? `?matter_id=${matterId}&limit=${limit}` : `?limit=${limit}`;
-  return (await chainFetch<ChainDocument[]>(`/api/documents${q}`)) ?? [];
+  return (await chainFetch<ChainDocument[]>(`/v1/documents${q}`)) ?? [];
 }
 
 export async function getApprovals(limit = 50): Promise<ChainApproval[]> {
-  return (await chainFetch<ChainApproval[]>(`/api/approvals?limit=${limit}`)) ?? [];
+  return (await chainFetch<ChainApproval[]>(`/v1/approvals?limit=${limit}`)) ?? [];
 }
 
 export async function getIdentities(limit = 50): Promise<ChainIdentity[]> {
-  return (await chainFetch<ChainIdentity[]>(`/api/identities?limit=${limit}`)) ?? [];
+  return (await chainFetch<ChainIdentity[]>(`/v1/identities?limit=${limit}`)) ?? [];
 }
 
 export async function getAuditLog(limit = 100): Promise<ChainAuditEntry[]> {
-  return (await chainFetch<ChainAuditEntry[]>(`/api/audit?limit=${limit}`)) ?? [];
+  return (await chainFetch<ChainAuditEntry[]>(`/v1/audit?limit=${limit}`)) ?? [];
 }
 
 export async function getAuditForSubject(subjectType: string, subjectId: string): Promise<ChainAuditEntry[]> {
-  return (await chainFetch<ChainAuditEntry[]>(`/api/audit/${subjectType}/${subjectId}`)) ?? [];
+  return (await chainFetch<ChainAuditEntry[]>(`/v1/audit/${subjectType}/${subjectId}`)) ?? [];
 }
 
 // ─── Proof Service Methods ──────────────────────────────────────────────────
 
 export async function getProof(storageKey: string, blockHash?: string): Promise<ProofBundle | null> {
   const q = blockHash ? `?block=${blockHash}` : "";
-  return chainFetch<ProofBundle>(`/api/proof/${storageKey}${q}`, PROOF_SERVICE);
+  return chainFetch<ProofBundle>(`/v1/proof/${storageKey}${q}`, PROOF_SERVICE);
 }
 
 export async function verifyProof(bundle: ProofBundle): Promise<{ valid: boolean; details: string } | null> {
   try {
-    const res = await fetch(`${PROOF_SERVICE}/api/verify`, {
+    const res = await fetch(`${PROOF_SERVICE}/v1/verify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(bundle),
@@ -203,7 +204,7 @@ export async function verifyProof(bundle: ProofBundle): Promise<{ valid: boolean
 
 export async function isChainOnline(): Promise<boolean> {
   try {
-    const res = await fetch(`${EXPLORER_API}/api/stats`, {
+    const res = await fetch(`${EXPLORER_API}/health`, {
       signal: AbortSignal.timeout(3000),
     });
     return res.ok;
@@ -215,7 +216,9 @@ export async function isChainOnline(): Promise<boolean> {
 export async function getChainHealth() {
   const [explorerOnline, proofOnline] = await Promise.all([
     isChainOnline(),
-    chainFetch<{ status: string }>("/health", PROOF_SERVICE).then((r) => r !== null),
+    fetch(`${PROOF_SERVICE}/health`, { signal: AbortSignal.timeout(3000) })
+      .then((r) => r.ok)
+      .catch(() => false),
   ]);
   return { explorerOnline, proofOnline, substrate: SUBSTRATE_RPC };
 }
