@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Scale, FileCheck, FileText, Shield, Calendar, BarChart3, Phone, Zap } from 'lucide-react';
-import { AI_LINE, telLink } from '@/lib/legal-numbers';
+import { Scale, FileCheck, FileText, Shield, Calendar, BarChart3, Phone, Zap, ExternalLink } from 'lucide-react';
+import { AI_LINE, LEGAL_NUMBERS, telLink } from '@/lib/legal-numbers';
 import { ToastProvider, toast } from '@/components/widgets';
 import { Copy } from 'lucide-react';
 
@@ -13,6 +13,7 @@ const WIDGETS = [
     href: '/rapid-intake',
     icon: FileCheck,
     accent: '#34d399',
+    numberId: 'law-888',
   },
   {
     title: 'Demand Letter Generator',
@@ -20,6 +21,7 @@ const WIDGETS = [
     href: '/demand-letter',
     icon: FileText,
     accent: '#60a5fa',
+    numberId: 'law-888-763',
   },
   {
     title: 'Crypto Recovery Intake',
@@ -27,6 +29,7 @@ const WIDGETS = [
     href: '/crypto-recovery',
     icon: Shield,
     accent: '#a78bfa',
+    numberId: 'law-888-974',
   },
   {
     title: 'Evidence Timeline',
@@ -34,6 +37,7 @@ const WIDGETS = [
     href: '/evidence-timeline',
     icon: Calendar,
     accent: '#fbbf24',
+    numberId: 'law-888-649',
   },
   {
     title: 'Client Status Portal',
@@ -41,6 +45,7 @@ const WIDGETS = [
     href: '/client-status',
     icon: BarChart3,
     accent: '#f472b6',
+    numberId: 'law-833',
   },
 ];
 
@@ -62,7 +67,10 @@ export default function WidgetsLauncherPage() {
             </h1>
           </div>
           <p className="text-sm max-w-md mx-auto" style={{ color: 'var(--text-muted)' }}>
-            Legal intelligence widgets. Each solves one thing. Fast, clean, working.
+            5 legal tools. Each solves one thing. Fast, clean, AI-powered.
+          </p>
+          <p className="text-[10px] mt-2 font-mono" style={{ color: 'var(--text-muted)' }}>
+            Every tool has a dedicated AI phone line — call or use online
           </p>
         </div>
 
@@ -87,11 +95,12 @@ export default function WidgetsLauncherPage() {
         </div>
 
         {/* Widget Grid */}
-        <div className="max-w-3xl mx-auto w-full px-4 pb-16 flex-1">
+        <div className="max-w-3xl mx-auto w-full px-4 pb-8 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {WIDGETS.map((w) => (
-              <Link key={w.href} href={w.href} className="no-underline">
-                <div className="glass-panel glass-panel-hover p-6 h-full flex flex-col cursor-pointer card-lift">
+            {WIDGETS.map((w) => {
+              const num = LEGAL_NUMBERS.find(n => n.id === w.numberId);
+              return (
+                <div key={w.href} className="glass-panel glass-panel-hover p-6 flex flex-col card-lift">
                   <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
                     style={{ background: `${w.accent}15` }}>
                     <w.icon size={20} style={{ color: w.accent }} />
@@ -102,12 +111,52 @@ export default function WidgetsLauncherPage() {
                   <p className="text-xs flex-1" style={{ color: 'var(--text-muted)' }}>
                     {w.description}
                   </p>
-                  <div className="mt-4 text-xs font-medium flex items-center gap-1" style={{ color: w.accent }}>
-                    Open →
+                  {num && (
+                    <a href={telLink(num.numeric)}
+                      className="mt-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] font-mono no-underline transition-colors"
+                      style={{ background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.15)', color: '#34d399' }}>
+                      <Phone size={10} />
+                      <span>{num.vanity}</span>
+                      <span className="ml-auto text-[9px] opacity-60">AI</span>
+                    </a>
+                  )}
+                  <div className="mt-3 flex items-center gap-2">
+                    <Link href={w.href} className="text-xs font-medium flex items-center gap-1 no-underline" style={{ color: w.accent }}>
+                      Open Tool →
+                    </Link>
                   </div>
                 </div>
-              </Link>
-            ))}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* NEED AI Banner */}
+        <div className="max-w-3xl mx-auto w-full px-4 pb-8">
+          <div className="glass-panel p-5">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-xs font-mono tracking-widest text-emerald-400">NEED AI POWERED</span>
+                </div>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  Every tool is backed by an AI phone line that answers 24/7. Call the number on any tool card — or call 888-LAW for general legal AI.
+                </p>
+              </div>
+              <a href="https://needai.unykorn.org" target="_blank" rel="noopener noreferrer"
+                className="glass-button-outline px-4 py-2 text-xs flex items-center gap-2 no-underline whitespace-nowrap">
+                <ExternalLink size={12} /> needai.unykorn.org
+              </a>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-4">
+              {LEGAL_NUMBERS.filter(n => n.category === 'law-routing' && n.active).map(n => (
+                <a key={n.id} href={telLink(n.numeric)}
+                  className="glass-button-outline px-2 py-1 text-[10px] font-mono flex items-center gap-1 no-underline">
+                  <Phone size={8} /> {n.vanity}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -121,6 +170,11 @@ export default function WidgetsLauncherPage() {
             <a href={telLink(AI_LINE.numeric)} className="hover:text-[var(--gold)] transition-colors no-underline"
               style={{ color: 'var(--text-muted)' }}>
               {AI_LINE.vanity}: {AI_LINE.numeric}
+            </a>
+            <span>·</span>
+            <a href="https://needai.unykorn.org" target="_blank" rel="noopener noreferrer"
+              className="text-emerald-400 no-underline hover:text-emerald-300 transition-colors font-mono">
+              NEED AI
             </a>
           </div>
         </footer>
