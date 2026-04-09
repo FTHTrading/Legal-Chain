@@ -52,7 +52,7 @@ export default function LawPage() {
               const href = c.id === "creamer-drive-169"
                 ? `/law/matters/${SEED_MATTER_CREAMER.id}`
                 : c.id === "state-v-delcampo"
-                ? `/law/matters/${SEED_MATTER_DELCAMPO.id}`
+                ? `/cases/delcampo`
                 : c.id === "nti-leavitt-2026-001"
                 ? `/law/matters/${SEED_MATTER_TRON.id}`
                 : `/portal/${c.namespace?.split(".")[0] || "marquis"}`;

@@ -458,15 +458,15 @@ export default function Home() {
                 <p className="text-sm text-[var(--text-muted)]">NTI-LEAVITT-2026-001 &middot; Crypto Fraud &middot; $36,150</p>
                 <div className="text-xs font-mono text-[var(--text-muted)] mt-3">TRON / ETH &middot; Blockchain Forensics</div>
               </div>
-              <div className="bg-[var(--navy-card)] border border-red-400 rounded-lg p-6">
+              <Link href="/cases/delcampo" className="bg-[var(--navy-card)] border border-red-400 rounded-lg p-6 block no-underline hover:border-red-300 transition-colors card-lift">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="w-2 h-2 rounded-full bg-red-400" />
+                  <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
                   <span className="text-xs font-mono text-red-400 tracking-wider">Urgent — May 10, 2026</span>
                 </div>
-                <h3 className="font-mono text-lg font-bold text-[var(--gold)] mb-1">marquis.unykorn.org</h3>
-                <p className="text-sm text-[var(--text-muted)]">State v. Delcampo &middot; Criminal Defense &middot; Appeal</p>
-                <div className="text-xs font-mono text-[var(--text-muted)] mt-3">F.S. 784.045 &middot; Illegal Sentence</div>
-              </div>
+                <h3 className="font-mono text-lg font-bold text-[var(--gold)] mb-1">State v. Delcampo</h3>
+                <p className="text-sm text-[var(--text-muted)]">Case #202300001348 &middot; Criminal Appeal &middot; Illegal Sentence</p>
+                <div className="text-xs font-mono text-[var(--text-muted)] mt-3">F.S. 784.045 &middot; 20yr on 15yr max &middot; 10 Contradictions &middot; Blockchain Anchored</div>
+              </Link>
               <div className="bg-[var(--navy-card)] border border-[var(--gold)] rounded-lg p-6">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="w-2 h-2 rounded-full bg-[var(--gold)]" />
