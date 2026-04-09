@@ -132,7 +132,7 @@ export default function IntakePage() {
               </svg>
             </div>
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-3">INTAKE RECEIVED</p>
-            <h1 className="font-serif text-4xl font-bold mb-4">Your case is in the queue.</h1>
+            <h1 className="font-serif text-4xl font-bold mb-4">Your submission is in the queue.</h1>
             {caseRef && (
               <div className="inline-block bg-[var(--navy-card)] border border-[var(--gold)]/20 rounded-lg px-6 py-3 mb-6">
                 <p className="text-xs text-[var(--text-muted)] mb-1">CASE REFERENCE</p>
@@ -194,7 +194,7 @@ export default function IntakePage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" />
-                  <span>Legal research</span>
+                  <span>Public records research</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[var(--text-muted)]" />
@@ -252,15 +252,15 @@ export default function IntakePage() {
         <div className="max-w-[900px] mx-auto">
           {/* Header */}
           <div className="mb-12">
-            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">CLIENT INTAKE</p>
+            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">SUBMIT YOUR SITUATION</p>
             <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">
-              BEGIN YOUR<br /><span className="text-[var(--gold)]">CASE.</span>
+              TELL US YOUR<br /><span className="text-[var(--gold)]">SITUATION.</span>
             </h1>
             <p className="text-lg text-[var(--text-muted)] max-w-2xl">
-              Submit your case details below. Information you provide will be treated as confidential
-              under our duty to prospective clients (ABA Model Rule 1.18). Submitting this form does not
-              create an attorney-client relationship. Our AI intake system will screen, conflict-check,
-              and route your matter to the appropriate team for review.
+              Submit your details below. Your information is encrypted and kept confidential.
+              We are not a law firm, and submitting this form does not create an attorney-client
+              relationship. Our AI system will organize your information, identify relevant
+              public records, and prepare a preliminary summary for your review.
             </p>
           </div>
 
@@ -363,11 +363,11 @@ export default function IntakePage() {
             {/* Privilege Notice */}
             <div className="bg-[var(--navy)] border border-[rgba(201,168,76,0.08)] rounded-lg p-6">
               <p className="text-xs font-mono text-[var(--text-muted)] leading-relaxed">
-                <span className="text-[var(--gold)]">PRIVILEGE NOTICE:</span> All information submitted through this intake form
-                is protected by attorney-client privilege. This submission does not create an attorney-client relationship.
-                Your data is encrypted with AES-256-GCM and stored in a Web3 Privacy Vault — no plaintext PII is retained.
-                Private access links use HMAC-signed tokens with time-limited expiry. No AI-generated content will be sent
-                to third parties without human attorney approval.
+                <span className="text-[var(--gold)]">CONFIDENTIALITY NOTICE:</span> All information submitted through this form
+                is kept strictly confidential. This submission does not create an attorney-client relationship.
+                We are not a law firm and do not provide legal advice. Your data is encrypted with AES-256-GCM
+                and stored in a Web3 Privacy Vault — no plaintext PII is retained. Private access links use
+                HMAC-signed tokens with time-limited expiry.
               </p>
             </div>
 

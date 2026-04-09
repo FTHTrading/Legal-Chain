@@ -16,10 +16,10 @@ export default function Footer() {
           <div>
             <div className="font-serif text-lg font-bold tracking-[0.12em] uppercase mb-4">
               <span className="text-[var(--gold)]">UNYKORN</span>{" "}
-              <span className="text-[var(--text-primary)] font-normal">{"// LAW"}</span>
+              <span className="text-[var(--text-primary)] font-normal">{"// ADVOCACY"}</span>
             </div>
             <p className="text-[var(--text-muted)] text-sm leading-relaxed">
-              AI-assisted legal operations platform. {stats.agentCount} agents supporting attorney-supervised case preparation, evidence review, and document drafting.
+              AI-powered legal advocacy and case-support platform. {stats.agentCount} agents supporting research, evidence organization, document assembly, and referrals.
             </p>
             <p className="text-[var(--gold)] mt-4 text-sm">law@unykorn.org</p>
           </div>
@@ -63,15 +63,15 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Supervising Counsel */}
+          {/* About */}
           <div>
-            <h4 className="font-serif text-xs font-semibold tracking-[0.15em] uppercase text-[var(--gold)] mb-4">Supervising Counsel</h4>
+            <h4 className="font-serif text-xs font-semibold tracking-[0.15em] uppercase text-[var(--gold)] mb-4">About</h4>
             <div className="flex flex-col gap-2 text-sm text-[var(--text-muted)]">
-              <span className="font-semibold text-[var(--text-primary)]">Kevan D. Burns</span>
-              <span>Principal &middot; UNYKORN Legal Operations</span>
+              <span className="font-semibold text-[var(--text-primary)]">UNYKORN</span>
+              <span>Legal Advocacy &amp; Case Support</span>
               <span>Norcross, GA</span>
               <span className="text-[var(--gold)]">law@unykorn.org</span>
-              <p className="text-[10px] mt-2 leading-relaxed">Licensed attorneys are engaged on a per-matter basis. Supervising counsel details are provided upon engagement.</p>
+              <p className="text-[10px] mt-2 leading-relaxed">We are not a law firm and do not provide legal advice. Where appropriate, users may be referred to licensed counsel.</p>
             </div>
           </div>
         </div>
@@ -90,15 +90,15 @@ export default function Footer() {
         {/* Legal Disclaimers */}
         <div className="border-t border-[rgba(201,168,76,0.1)] pt-6 mb-6">
           <div className="max-w-4xl mx-auto text-center space-y-2 text-[10px] text-[var(--text-muted)] leading-relaxed">
-            <p><strong className="text-[var(--text-muted)]">AI Disclosure:</strong> This platform uses artificial intelligence to assist with legal research, document drafting, and case preparation. All AI-generated work products are reviewed by a licensed attorney before any filing or external communication.</p>
-            <p><strong className="text-[var(--text-muted)]">No Attorney-Client Relationship:</strong> Browsing this website does not create an attorney-client relationship. An attorney-client relationship is established only by a signed engagement agreement. Information submitted through intake forms is treated as confidential under our duty to prospective clients (ABA Model Rule 1.18).</p>
-            <p><strong className="text-[var(--text-muted)]">Jurisdiction:</strong> Services described on this site may not be available in all jurisdictions. Results vary by case and are not guaranteed.</p>
+            <p><strong className="text-[var(--text-muted)]">Important Notice:</strong> We are a legal advocacy and case-support platform. We are not a law firm, do not provide legal advice, and do not represent clients. No attorney-client relationship is created by using this site or submitting information. Where appropriate, users may be referred to licensed counsel.</p>
+            <p><strong className="text-[var(--text-muted)]">AI Disclosure:</strong> This platform uses artificial intelligence to assist with research, document organization, and case preparation. AI-generated materials are informational tools and should be reviewed by a licensed attorney before any legal action.</p>
+            <p><strong className="text-[var(--text-muted)]">Jurisdiction:</strong> Services described on this site may not be available in all jurisdictions. Results vary by situation and are not guaranteed.</p>
           </div>
         </div>
 
         <div className="border-t border-[rgba(201,168,76,0.1)] pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-[var(--text-muted)] text-xs tracking-[0.05em]">
-            &copy; 2026 UNYKORN &middot; All Rights Reserved &middot; Autonomous AI Legal Intelligence
+            &copy; 2026 UNYKORN &middot; All Rights Reserved &middot; AI-Powered Legal Advocacy &amp; Case Support
           </p>
           <div className="flex items-center gap-4 text-[var(--text-muted)] text-xs font-mono">
             <span>x402 Protocol</span>

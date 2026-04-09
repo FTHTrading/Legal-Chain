@@ -594,8 +594,8 @@ export const ACTIVE_CASES = [
 export const AGENT_NETWORK = {
   total: 26,
   control: { count: 15, description: "Treasury, compliance, policy, and risk agents governing the network" },
-  execution: { count: 7, description: "Runners wired to x402 rails for court filings, research, fees" },
-  intelligence: { count: 2, description: "Deep research â€” case law mining, precedent analysis, strategy modeling" },
+  execution: { count: 7, description: "Runners wired to x402 rails for research, document organization, and fee processing" },
+  intelligence: { count: 2, description: "Deep research — public records mining, precedent analysis, issue spotting" },
   interface: { count: 2, description: "Client namespace management, marketing, advocacy operations" },
   chainId: 7332,
   protocol: "x402",

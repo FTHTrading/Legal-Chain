@@ -47,11 +47,11 @@ export default function SubscribePage() {
           <div className="max-w-[900px] mx-auto">
             <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-4">Pricing</p>
             <h1 className="font-serif text-4xl md:text-6xl font-bold leading-tight mb-6">
-              AI-Powered Legal<br />Intelligence.<br />
+              AI-Powered Advocacy<br />Tools.<br />
               <span className="text-[var(--gold)]">Starting at $25/month.</span>
             </h1>
             <p className="font-serif text-lg text-[var(--text-muted)] max-w-[600px] mx-auto mb-4">
-              {AGENT_NETWORK.total} autonomous AI agents. Full legal research. Document drafting.
+              {AGENT_NETWORK.total} autonomous AI agents. Public records research. Document organization.
               Forensic analysis. Web3 payments. Everything you need.
             </p>
             <p className="font-serif text-sm text-emerald-400 mb-4">
@@ -161,7 +161,7 @@ export default function SubscribePage() {
               <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">À La Carte</p>
               <h2 className="font-serif text-3xl md:text-4xl font-bold">Individual Services</h2>
               <p className="font-serif text-sm text-[var(--text-muted)] mt-2">
-                Need a single service? Purchase individual AI-powered legal services without a subscription.
+                Need a single service? Purchase individual AI-powered advocacy tools without a subscription.
               </p>
             </div>
 
@@ -258,7 +258,7 @@ export default function SubscribePage() {
           <div className="max-w-[1200px] mx-auto">
             <div className="text-center mb-12">
               <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">What You Get</p>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold mb-3">Full AI Legal System</h2>
+              <h2 className="font-serif text-3xl md:text-4xl font-bold mb-3">Full AI Advocacy Platform</h2>
               <p className="font-serif text-sm text-[var(--text-muted)]">
                 Every subscription unlocks the complete UNYKORN AI agent network — {AGENT_NETWORK.total} agents working in concert.
               </p>
@@ -266,14 +266,14 @@ export default function SubscribePage() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: "⚖️", title: "Case Strategy", desc: "Atlas AI analyzes claims for viability, risk, and optimal litigation strategy with real-time precedent mapping." },
-                { icon: "📚", title: "Legal Research", desc: "Lexis AI conducts deep case law, statute, and regulation research with RAG-powered citation finding." },
-                { icon: "🔍", title: "Evidence Analysis", desc: "Sentinel AI classifies evidence, checks authenticity, screens for privilege, and tracks chain of custody." },
-                { icon: "📝", title: "Document Drafting", desc: "Scribe AI drafts demand letters, motions, briefs, and filings with confidence scoring and attorney review." },
+                { icon: "⚖️", title: "Issue Analysis", desc: "Atlas AI analyzes situations for viability, risk, and strategic options with real-time precedent mapping." },
+                { icon: "📚", title: "Public Records Research", desc: "Lexis AI conducts deep public records, statute, and regulation research with RAG-powered citation finding." },
+                { icon: "🔍", title: "Evidence Organization", desc: "Sentinel AI classifies evidence, checks authenticity, organizes timelines, and tracks chain of custody." },
+                { icon: "📝", title: "Document Organization", desc: "Scribe AI assembles document templates and self-help forms with confidence scoring for your review." },
                 { icon: "🔗", title: "Blockchain Forensics", desc: "Trace funds across TRON, Ethereum, and Polygon. Identify suspect wallets and recovery paths." },
-                { icon: "🛡️", title: "Compliance Engine", desc: "Automated conflict checks, privilege screening, and regulatory compliance with full audit trail." },
-                { icon: "⛓️", title: "Web3 Integration", desc: "Apostle Chain (7332) for immutable legal records. x402 protocol for AI-to-AI payment processing." },
-                { icon: "📊", title: "Operations Dashboard", desc: "Real-time case tracking, task management, communications, and AI agent performance monitoring." },
+                { icon: "🛡️", title: "Compliance Engine", desc: "Automated conflict checks, data screening, and regulatory compliance with full audit trail." },
+                { icon: "⛓️", title: "Web3 Integration", desc: "Apostle Chain (7332) for immutable records. x402 protocol for AI-to-AI payment processing." },
+                { icon: "📊", title: "Operations Dashboard", desc: "Real-time tracking, task management, communications, and AI agent performance monitoring." },
               ].map((cap) => (
                 <div key={cap.title} className="rounded-lg border border-[rgba(201,168,76,0.1)] bg-[rgba(201,168,76,0.02)] p-5">
                   <div className="text-2xl mb-3">{cap.icon}</div>
@@ -295,9 +295,9 @@ export default function SubscribePage() {
                 { q: "What happens after the first 100 founders spots fill up?", a: "The introductory $25/month rate is permanently locked for founders. After 100 spots fill, new subscribers pay the standard $99/month rate. Your founder pricing never increases." },
                 { q: "Can I cancel anytime?", a: "Yes. Cancel anytime from your billing portal. Your access continues through the end of your current billing period. No contract, no cancellation fees." },
                 { q: "What AI models power the agents?", a: "We use GPT-4o and Claude for analysis, with specialized model configs per agent team. Research agents use low-temperature for precision. Drafting agents use higher creativity settings. All calls go through our governance layer." },
-                { q: "Is my data secure?", a: "All case data is encrypted at rest and in transit. We maintain attorney-client privilege protections. The audit trail is immutable and hash-chained. Web3 records are anchored on Apostle Chain (7332)." },
+                { q: "Is my data secure?", a: "All data is encrypted at rest and in transit with strict confidentiality protections. The audit trail is immutable and hash-chained. Web3 records are anchored on Apostle Chain (7332)." },
                 { q: "Do I need a crypto wallet?", a: "No. Traditional card payments via Stripe work perfectly. Web3 wallet connection is optional for users who want to pay with USDC on Polygon, or ATP/USDF on Apostle Chain, or anchor records on-chain." },
-                { q: "What à la carte services can I purchase without a subscription?", a: "Any individual service — research queries ($49), document drafts ($99), forensic traces ($199), case strategy ($149), or evidence analysis ($79) — can be purchased standalone with no subscription required." },
+                { q: "What à la carte services can I purchase without a subscription?", a: "Any individual service — research queries ($49), document templates ($99), forensic traces ($199), issue analysis ($149), or evidence organization ($79) — can be purchased standalone with no subscription required." },
               ].map((faq) => (
                 <div key={faq.q} className="border-b border-[rgba(201,168,76,0.08)] pb-5">
                   <h3 className="font-serif text-sm font-bold text-[var(--text-primary)] mb-2">{faq.q}</h3>
@@ -329,7 +329,7 @@ export default function SubscribePage() {
                 <h3 className="font-serif text-2xl font-bold text-emerald-400 mb-2">Application Received</h3>
                 <p className="text-[var(--text-muted)] mb-4">
                   Your hardship access application has been submitted. We review every application
-                  and you will hear back within 24 hours at the email you provided.
+                  and we aim to respond promptly at the email you provided.
                 </p>
                 <p className="text-xs font-mono text-emerald-400">Direct line if urgent: law@unykorn.org</p>
               </div>
@@ -431,7 +431,7 @@ export default function SubscribePage() {
                 </button>
 
                 <p className="text-center text-xs text-[var(--text-muted)]">
-                  Private &middot; Confidential &middot; Every application reviewed &middot; Response within 24 hours
+                  Private &middot; Confidential &middot; Every application reviewed
                 </p>
               </form>
             )}

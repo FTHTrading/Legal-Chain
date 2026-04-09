@@ -61,7 +61,7 @@ export default function Navbar() {
           </svg>
           <div className="font-serif text-[1.35rem] font-bold tracking-[0.12em] uppercase hidden lg:block">
             <span className="text-[var(--gold)]">Unykorn</span>{" "}
-            <span className="text-[var(--text-primary)] font-normal tracking-[0.06em]">Law</span>
+            <span className="text-[var(--text-primary)] font-normal tracking-[0.06em]">Advocacy</span>
           </div>
         </Link>
 

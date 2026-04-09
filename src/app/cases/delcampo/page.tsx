@@ -28,7 +28,7 @@ const TABS: { key: Tab; label: string; icon: string }[] = [
   { key: "timeline", label: "Timeline", icon: "◷" },
   { key: "evidence", label: "Evidence", icon: "🔗" },
   { key: "contradictions", label: "Contradictions", icon: "⚡" },
-  { key: "legal", label: "Legal Strategy", icon: "📋" },
+  { key: "legal", label: "Issue Analysis", icon: "📋" },
   { key: "blockchain", label: "Chain Anchors", icon: "⬡" },
 ];
 
@@ -103,7 +103,7 @@ export default function DelcampoCasePage() {
       <main className="flex-1 pt-28 pb-20 px-6 md:px-12 max-w-[1400px] mx-auto w-full">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)] mb-6">
-          <Link href="/law" className="text-[var(--gold)] no-underline hover:underline">
+          <Link href="/" className="text-[var(--gold)] no-underline hover:underline">
             Cases
           </Link>
           <span>/</span>
@@ -680,7 +680,7 @@ function BlockchainTab() {
     <div>
       <div className="mb-8">
         <p className="text-[var(--text-muted)] max-w-3xl">
-          All case documents, evidence analyses, and legal strategies are anchored on the Legal-Chain
+          All case documents, evidence analyses, and issue assessments are anchored on the Legal-Chain
           Substrate blockchain. Each anchor creates an immutable, time-stamped, cryptographically
           verified record that can be independently verified through Merkle state proofs.
         </p>

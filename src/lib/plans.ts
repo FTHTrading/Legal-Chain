@@ -47,8 +47,8 @@ export const PLANS: Plan[] = [
     features: [
       `Full AI agent access (${AGENT_NETWORK.total} agents)`,
       "Unlimited case analysis",
-      "RAG-powered legal research",
-      "Document drafting & review",
+      "RAG-powered public records research",
+      "Document organization & templates",
       "Evidence chain tracking",
       "Forensic analysis tools",
       "Web3 wallet integration",
@@ -71,8 +71,8 @@ export const PLANS: Plan[] = [
     features: [
       `Full AI agent access (${AGENT_NETWORK.total} agents)`,
       "Unlimited case analysis",
-      "RAG-powered legal research",
-      "Document drafting & review",
+      "RAG-powered public records research",
+      "Document organization & templates",
       "Evidence chain tracking",
       "Forensic analysis tools",
       "Web3 wallet integration",
@@ -83,8 +83,8 @@ export const PLANS: Plan[] = [
   },
   {
     id: "enterprise",
-    name: "Enterprise / Law Firm",
-    tagline: "White-glove deployment for firms & legal departments",
+    name: "Enterprise / Organization",
+    tagline: "White-glove deployment for organizations & advocacy groups",
     price: 0,
     interval: "month",
     features: [
@@ -106,8 +106,8 @@ export const PLANS: Plan[] = [
 export const ALA_CARTE: AlaCarteService[] = [
   {
     id: "legal-research",
-    name: "AI Legal Research",
-    description: "Deep case law, statute, and precedent research with RAG pipeline",
+    name: "AI Public Records Research",
+    description: "Deep public records, statute, and precedent research with RAG pipeline",
     price: 49,
     unit: "per research query",
     category: "research",
@@ -115,8 +115,8 @@ export const ALA_CARTE: AlaCarteService[] = [
   },
   {
     id: "document-draft",
-    name: "Document Drafting",
-    description: "AI-drafted demand letters, motions, briefs with attorney review queue",
+    name: "Document Organization",
+    description: "AI-organized document templates and self-help forms for your review",
     price: 99,
     unit: "per document",
     category: "drafting",
@@ -133,8 +133,8 @@ export const ALA_CARTE: AlaCarteService[] = [
   },
   {
     id: "case-strategy",
-    name: "AI Case Strategy Session",
-    description: "AI-powered claim viability, risk assessment, and litigation strategy",
+    name: "AI Issue Analysis",
+    description: "AI-powered issue spotting, risk assessment, and situation analysis",
     price: 149,
     unit: "per matter",
     category: "consultation",
@@ -142,8 +142,8 @@ export const ALA_CARTE: AlaCarteService[] = [
   },
   {
     id: "evidence-analysis",
-    name: "Evidence Analysis",
-    description: "AI evidence classification, authenticity assessment, privilege screening",
+    name: "Evidence Organization",
+    description: "AI evidence classification, organization, and timeline assembly",
     price: 79,
     unit: "per evidence set",
     category: "filing",
