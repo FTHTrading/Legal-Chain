@@ -72,7 +72,7 @@ export default function Home() {
           </h1>
           <div className="w-24 h-px bg-[var(--gold)] mx-auto mb-6 opacity-50" />
           <p className="text-xl md:text-2xl text-[var(--text-primary)] max-w-3xl leading-relaxed mb-10">
-            {AGENT_NETWORK.total} AI agents supporting case research, evidence organization, document assembly, and blockchain forensics. Free initial review. Hardship access available.
+            Real human triage. Document stack building. Timeline construction. Evidence organization. {AGENT_NETWORK.total} AI agents backing every case. Free initial review. Hardship access available.
           </p>
           <div className="flex flex-wrap gap-4 justify-center mb-12">
             <Link href="/intake" className="bg-[var(--gold)] text-[var(--midnight)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline">
@@ -127,7 +127,7 @@ export default function Home() {
               BUILT FOR PEOPLE<br/><span className="text-[var(--gold)]">WHO NEED IT MOST.</span>
             </h2>
             <p className="text-lg text-[var(--text-muted)] max-w-2xl mb-16">
-              People facing criminal charges, appeals, crypto fraud, and document-heavy disputes deserve better tools and faster preparation.
+              Built for people dealing with real court pressure, hidden facts, missing documents, urgent hearings, family danger, housing threats, and post-conviction issues — not just generic legal questions.
             </p>
             <div className="grid md:grid-cols-3 gap-8">
               {[
@@ -144,6 +144,65 @@ export default function Home() {
                   <p className="text-[var(--text-muted)] text-base leading-relaxed">{item.text}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ NOT JUST ANOTHER AI TOOL ═══ */}
+        <section className="py-24 px-8 bg-[var(--navy)]">
+          <div className="max-w-[1200px] mx-auto">
+            <p className="font-serif text-xs tracking-[0.4em] uppercase text-[var(--gold)] mb-2">The Difference</p>
+            <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4">
+              NOT JUST<br/><span className="text-[var(--gold)]">ANOTHER AI TOOL.</span>
+            </h2>
+            <p className="text-lg text-[var(--text-muted)] max-w-3xl mb-16">
+              We do not just give you a score or generic prompts. We help you organize the facts, documents, deadlines, and pressure points in your actual case — so you can stop guessing and start moving with a clear plan.
+            </p>
+            <div className="grid md:grid-cols-2 gap-12 items-start">
+              <div>
+                <p className="font-serif text-xs tracking-[0.2em] uppercase text-[var(--text-muted)] mb-6">Generic AI Legal Tools</p>
+                <div className="space-y-3">
+                  {[
+                    "Auto-generated case scores",
+                    "Generic prompt templates",
+                    "Self-guided document prep",
+                    "Same output for every case",
+                    "Software-first, no human review",
+                    "Good for simple questions",
+                  ].map((item) => (
+                    <div key={item} className="flex items-center gap-3 text-[var(--text-muted)]">
+                      <span className="text-xs opacity-40">—</span>
+                      <span className="text-sm">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="font-serif text-xs tracking-[0.2em] uppercase text-[var(--gold)] mb-6">UNYKORN Advocacy</p>
+                <div className="space-y-3">
+                  {[
+                    { label: "Real human case triage", desc: "Every lead reviewed by a person, not a chatbot" },
+                    { label: "Document stack building", desc: "Organized from your actual records, not templates" },
+                    { label: "Timeline construction", desc: "Deadlines, pressure points, and hearing dates mapped" },
+                    { label: "Evidence organization", desc: "Structured so judges and attorneys can follow it" },
+                    { label: "Issue spotting by jurisdiction", desc: "State-specific research, not one-size-fits-all" },
+                    { label: "Attorney referral escalation", desc: "Connected to licensed counsel when you need it" },
+                  ].map((item) => (
+                    <div key={item.label} className="flex items-start gap-3">
+                      <span className="text-[var(--gold)] text-xs mt-1">◆</span>
+                      <div>
+                        <span className="text-sm font-bold text-[var(--text-primary)]">{item.label}</span>
+                        <span className="text-sm text-[var(--text-muted)]"> — {item.desc}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="mt-12 text-center">
+              <Link href="/intake" className="bg-[var(--gold)] text-[var(--midnight)] px-8 py-3 font-serif text-sm font-bold tracking-[0.15em] uppercase rounded-sm hover:bg-[var(--gold-light)] transition-colors no-underline">
+                Get Your Free Review →
+              </Link>
             </div>
           </div>
         </section>

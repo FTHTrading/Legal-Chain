@@ -35,7 +35,7 @@ export default function OpsPage() {
               COMMAND<br /><span className="text-[var(--gold)]">CENTER.</span>
             </h1>
             <p className="text-lg text-[var(--text-muted)] max-w-2xl">
-              Central operations hub for UNYKORN // LAW. Monitor approvals, manage workflows, track research,
+              Central operations hub for UNYKORN // ADVOCACY. Monitor approvals, manage workflows, triage leads, track research,
               oversee forensic investigations, and audit all system activity.
             </p>
           </div>
@@ -61,6 +61,15 @@ export default function OpsPage() {
           {/* Operations Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
+              {
+                title: "Lead Triage",
+                description: "Case intake scoring, outreach templates, pipeline tracking, and human-first triage. Real case buildout — not generic AI prompts.",
+                href: "/ops/leads",
+                icon: "🎯",
+                count: 4,
+                countLabel: "immediate",
+                priority: true,
+              },
               {
                 title: "Approval Center",
                 description: "Review and approve all outbound legal actions, documents, and communications. Nothing leaves without human sign-off.",
