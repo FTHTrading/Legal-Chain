@@ -21,7 +21,7 @@ module.exports = {
       gasPrice: "auto",
     },
     "polygon-mainnet": {
-      url: "https://polygon-rpc.com",
+      url: "https://polygon-bor-rpc.publicnode.com",
       chainId: 137,
       accounts: [DEPLOYER_PK, ISSUER_PK].filter(Boolean),
       gasPrice: "auto",

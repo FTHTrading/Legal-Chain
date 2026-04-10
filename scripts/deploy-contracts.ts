@@ -12,8 +12,16 @@ const fs   = require("fs");
 const path = require("path");
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  const signers = await ethers.getSigners();
   const network = await ethers.provider.getNetwork();
+
+  // Pick the first signer with enough balance (issuer wallet has the POL on mainnet)
+  let deployer = signers[0];
+  for (const signer of signers) {
+    const bal = await ethers.provider.getBalance(signer.address);
+    if (bal >= ethers.parseEther("0.05")) { deployer = signer; break; }
+  }
+
   const balance = await ethers.provider.getBalance(deployer.address);
 
   console.log("\n=== UNYKORN LEGAL CHAIN — CONTRACT DEPLOYMENT ===");
@@ -30,7 +38,7 @@ async function main() {
 
   // 1 — AuditAnchor
   console.log("Deploying AuditAnchor...");
-  const AuditAnchor = await ethers.getContractFactory("AuditAnchor");
+  const AuditAnchor = await ethers.getContractFactory("AuditAnchor", deployer);
   const auditAnchor = await AuditAnchor.deploy();
   await auditAnchor.waitForDeployment();
   deployed.NEXT_PUBLIC_AUDIT_ANCHOR_ADDRESS = await auditAnchor.getAddress();
@@ -38,7 +46,7 @@ async function main() {
 
   // 2 — DocumentRegistry
   console.log("Deploying DocumentRegistry...");
-  const DocumentRegistry = await ethers.getContractFactory("DocumentRegistry");
+  const DocumentRegistry = await ethers.getContractFactory("DocumentRegistry", deployer);
   const documentRegistry = await DocumentRegistry.deploy();
   await documentRegistry.waitForDeployment();
   deployed.NEXT_PUBLIC_DOCUMENT_REGISTRY_ADDRESS = await documentRegistry.getAddress();
@@ -46,7 +54,7 @@ async function main() {
 
   // 3 — LegalCaseNFT
   console.log("Deploying LegalCaseNFT...");
-  const LegalCaseNFT = await ethers.getContractFactory("LegalCaseNFT");
+  const LegalCaseNFT = await ethers.getContractFactory("LegalCaseNFT", deployer);
   const legalCaseNFT = await LegalCaseNFT.deploy();
   await legalCaseNFT.waitForDeployment();
   deployed.NEXT_PUBLIC_LEGAL_CASE_NFT_ADDRESS = await legalCaseNFT.getAddress();
@@ -54,7 +62,7 @@ async function main() {
 
   // 4 — LegalCaseAccount (ERC-6551 implementation)
   console.log("Deploying LegalCaseAccount...");
-  const LegalCaseAccount = await ethers.getContractFactory("LegalCaseAccount");
+  const LegalCaseAccount = await ethers.getContractFactory("LegalCaseAccount", deployer);
   const legalCaseAccount = await LegalCaseAccount.deploy();
   await legalCaseAccount.waitForDeployment();
   deployed.NEXT_PUBLIC_LEGAL_CASE_ACCOUNT_ADDRESS = await legalCaseAccount.getAddress();
@@ -62,7 +70,7 @@ async function main() {
 
   // 5 — LegalNameRegistry (.law / .legal namespaces)
   console.log("Deploying LegalNameRegistry...");
-  const LegalNameRegistry = await ethers.getContractFactory("LegalNameRegistry");
+  const LegalNameRegistry = await ethers.getContractFactory("LegalNameRegistry", deployer);
   const legalNameRegistry = await LegalNameRegistry.deploy();
   await legalNameRegistry.waitForDeployment();
   deployed.NEXT_PUBLIC_LEGAL_NAME_REGISTRY_ADDRESS = await legalNameRegistry.getAddress();
@@ -80,6 +88,12 @@ async function main() {
     let env = fs.readFileSync(envPath, "utf8");
     for (const [key, addr] of Object.entries(deployed)) {
       env = env.replace(new RegExp(`^${key}=.*$`, "m"), `${key}=${addr}`);
+    }
+    // Patch network vars to match the chain we actually deployed to
+    if (String(network.chainId) === "137") {
+      env = env.replace(/^NEXT_PUBLIC_POLYGON_NETWORK=.*$/m, "NEXT_PUBLIC_POLYGON_NETWORK=polygon-mainnet");
+      env = env.replace(/^NEXT_PUBLIC_POLYGON_RPC=.*$/m, "NEXT_PUBLIC_POLYGON_RPC=https://polygon-rpc.com");
+      env = env.replace(/^NEXT_PUBLIC_POLYGON_CHAIN_ID=.*$/m, "NEXT_PUBLIC_POLYGON_CHAIN_ID=137");
     }
     fs.writeFileSync(envPath, env, "utf8");
     console.log("\n✓ .env.local updated with deployed addresses");
