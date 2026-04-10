@@ -121,6 +121,14 @@ export default function OpsPage() {
                 countLabel: "drafts",
               },
               {
+                title: "Legal Chain",
+                description: "Polygon smart contract infrastructure — contract deployment status, ERC-721 case NFTs, .law/.legal namespace NFTs, ERC-6551 vaults, audit anchoring, IPFS, and wallet funding.",
+                href: "/ops/chain",
+                icon: "⛓️",
+                count: 5,
+                countLabel: "contracts",
+              },
+              {
                 title: "Audit Log",
                 description: "Immutable audit trail of all system actions. Every document, approval, agent action, and user login is recorded.",
                 href: "/ops/audit",
