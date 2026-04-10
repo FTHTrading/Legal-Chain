@@ -119,7 +119,7 @@ export default function ClientStatusPage() {
 
   return (
     <ToastProvider>
-      <AppShell title="Client Status Portal" subtitle="Matter status · Next steps" escalationNumbers={ESCALATION}>
+      <AppShell title="Status + Help" subtitle="Check your case. Get your next step." escalationNumbers={ESCALATION}>
         <div className="space-y-4">
           {/* Matter Card */}
           <SectionCard className="glass-panel-hover cursor-pointer" >

@@ -1,11 +1,11 @@
 /**
- * Polygon Legal Chain — Type Definitions
+ * Polygon Legal Chain ΓÇö Type Definitions
  *
  * Core types for audit anchoring, document integrity,
  * case NFTs, ERC-6551 vaults, and escrow on Polygon.
  */
 
-/* ─── Network Config ──────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇΓöÇ Network Config ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 
 export type PolygonNetwork = "polygon-mainnet" | "polygon-amoy";
 
@@ -28,7 +28,7 @@ export interface ContractAddresses {
 
 export const POLYGON_NETWORKS: Record<PolygonNetwork, { rpcUrl: string; chainId: number; explorer: string }> = {
   "polygon-mainnet": {
-    rpcUrl: "https://polygon-rpc.com",
+    rpcUrl: "https://polygon-bor-rpc.publicnode.com",
     chainId: 137,
     explorer: "https://polygonscan.com",
   },
@@ -39,7 +39,7 @@ export const POLYGON_NETWORKS: Record<PolygonNetwork, { rpcUrl: string; chainId:
   },
 };
 
-/* ─── Audit Anchoring ─────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇΓöÇ Audit Anchoring ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 
 export interface AuditAnchor {
   /** SHA-256 hash of the audit batch */
@@ -65,7 +65,7 @@ export interface AuditBatch {
   txHash?: string;
 }
 
-/* ─── Document Integrity ──────────────────────────────────────────────────── */
+/* ΓöÇΓöÇΓöÇ Document Integrity ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 
 export interface DocumentHash {
   documentId: string;
@@ -86,7 +86,7 @@ export interface DocumentVerification {
   blockNumber?: number;
 }
 
-/* ─── Case NFTs (ERC-721) ─────────────────────────────────────────────────── */
+/* ΓöÇΓöÇΓöÇ Case NFTs (ERC-721) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 
 export interface CaseNFT {
   /** ERC-721 token ID */
@@ -136,7 +136,7 @@ export interface CaseNFTMetadata {
   };
 }
 
-/* ─── ERC-6551 Token Bound Accounts (Vaults) ──────────────────────────────── */
+/* ΓöÇΓöÇΓöÇ ERC-6551 Token Bound Accounts (Vaults) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 
 export interface CaseVault {
   /** The TBA address (deterministic from NFT) */
@@ -148,7 +148,7 @@ export interface CaseVault {
   maticBalance: string;
   /** ERC-20 token balances held by the vault */
   tokenBalances: VaultTokenBalance[];
-  /** Documents (hashes) stored in the vault */
+  /** Document hashes anchored in the vault */
   documentHashes: string[];
   /** Evidence anchors stored */
   evidenceAnchors: string[];
@@ -172,7 +172,6 @@ export interface VaultEscrow {
   amount: string;
   token: string; // "MATIC" or ERC-20 address
   depositor: string;
-  /** Purpose: "retainer" | "fee" | "settlement" | "bond" */
   purpose: "retainer" | "fee" | "settlement" | "bond";
   status: "held" | "released" | "refunded";
   depositTxHash: string;
@@ -190,13 +189,15 @@ export interface VaultTransaction {
   description: string;
 }
 
-/* ─── Chain Dashboard State ───────────────────────────────────────────────── */
+/* ΓöÇΓöÇΓöÇ Chain Dashboard State ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 
 export interface ChainStats {
   network: PolygonNetwork;
   explorerUrl: string;
   deployerAddress: string;
   deployerBalance: string;
+  issuerAddress: string;
+  issuerBalance: string;
   contracts: {
     name: string;
     address: string;
@@ -206,6 +207,7 @@ export interface ChainStats {
   totalDocumentHashes: number;
   totalCaseNFTs: number;
   totalVaults: number;
+  totalNamespaces: number;
   activeEscrows: number;
   totalEscrowValue: string;
   totalGasSpent: string;
@@ -213,18 +215,26 @@ export interface ChainStats {
   connected: boolean;
 }
 
-/* ─── On-Chain Events (parsed from contract logs) ─────────────────────────── */
+/* ΓöÇΓöÇΓöÇ On-Chain Events (parsed from contract logs) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 
 export interface ChainEvent {
   id: string;
-  type: "anchor" | "document_hash" | "nft_mint" | "nft_transfer" | "vault_created" | "escrow_deposit" | "escrow_release";
+  type:
+    | "anchor"
+    | "document_hash"
+    | "nft_mint"
+    | "nft_transfer"
+    | "vault_created"
+    | "escrow_deposit"
+    | "escrow_release"
+    | "namespace_registered";
   txHash: string;
   blockNumber: number;
   timestamp: string;
   details: Record<string, string>;
 }
 
-/* ─── Legal Namespace (.law / .legal) ─────────────────────────────────────── */
+/* ΓöÇΓöÇΓöÇ Legal Namespace (.law / .legal) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 
 export type NamespaceTLD = "law" | "legal";
 
@@ -278,7 +288,7 @@ export interface NamespaceMetadata {
   };
 }
 
-/* ─── IPFS Document Types ─────────────────────────────────────────────────── */
+/* ΓöÇΓöÇΓöÇ IPFS Document Types ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 
 export interface IPFSPinResult {
   cid: string;
@@ -298,7 +308,7 @@ export interface IPFSDocument {
   gatewayUrl: string;
 }
 
-/* ─── API Response Wrapper ────────────────────────────────────────────────── */
+/* ΓöÇΓöÇΓöÇ API Response Wrapper ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 
 export interface PolygonApiResponse<T> {
   ok: boolean;

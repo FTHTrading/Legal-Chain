@@ -24,13 +24,9 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UNYKORN // ADVOCACY — AI-Powered Legal Advocacy & Case Support",
-  description: "26 autonomous AI agents supporting advocacy and case research. Web3-powered legal advocacy on Apostle Chain 7332. Zero cost. x402 funded. Relentless.",
-  keywords: "AI advocacy, blockchain records, x402, Apostle Chain, legal advocacy, case support, self-help tools, public records research",
-  icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
-  },
+  title: "UNYKORN // LAW — Sovereign Legal Execution System",
+  description: "Intake to action. Evidence to proof. Forensics to recovery. Draft to approval. Fast, mobile-first legal rescue apps — scan, report, protect, escalate.",
+  keywords: "legal rescue apps, demand letter generator, crypto recovery, evidence preservation, legal intake, AI legal tools, emergency legal help",
 };
 
 export default function RootLayout({

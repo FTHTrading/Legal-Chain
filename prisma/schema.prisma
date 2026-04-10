@@ -1,0 +1,1458 @@
+// UNYKORN LAW — Prisma Schema
+// PostgreSQL relational model for the sovereign legal execution platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── AUTH & USERS ──────────────────────────────────────────────────
+
+enum UserRole {
+  system_admin
+  supervising_attorney
+  case_strategist
+  paralegal
+  investigator
+  forensic_analyst
+  intake_operator
+  client
+  family_viewer
+  auditor
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  emailVerified  DateTime?
+  name           String?
+  passwordHash   String?
+  role           UserRole  @default(client)
+  permissions    String[]  @default([])
+  active         Boolean   @default(true)
+  image          String?
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+
+  // Matters & work
+  assignedMatters   MatterAssignment[]
+  intakesCreated    Intake[]          @relation("IntakeCreator")
+  intakesAssigned   Intake[]          @relation("IntakeAssignee")
+  intakesReviewed   Intake[]          @relation("IntakeReviewer")
+  documentsCreated  Document[]        @relation("DocCreator")
+  approvalsCreated  Approval[]        @relation("ApprovalCreator")
+  approvalsAssigned Approval[]        @relation("ApprovalAssignee")
+  approvalReviews   ApprovalReview[]
+  communications    Communication[]   @relation("CommCreator")
+  researchSessions  ResearchSession[]
+  tasksAssigned     Task[]
+  auditEvents       AuditEvent[]      @relation("AuditActor")
+  notifications     Notification[]
+  namespaceAccess   NamespaceAccess[]
+  forensicCases     ForensicCase[]    @relation("ForensicLead")
+  emailsApproved    EmailLog[]        @relation("EmailApprover")
+  campaignsApproved Campaign[]        @relation("CampaignApprover")
+  assetsApproved    MarketingAsset[]  @relation("AssetApprover")
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  matterId     String?
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ─── MATTERS ───────────────────────────────────────────────────────
+
+enum MatterType {
+  civil_joint_property_accounting
+  civil_sale_proceeds_dispute
+  civil_partition_accounting
+  criminal_defense
+  criminal_appeal
+  crypto_fraud_recovery
+}
+
+enum MatterStatus {
+  intake
+  investigation
+  pre_litigation
+  litigation
+  appeal
+  enforcement
+  closed
+}
+
+model Matter {
+  id               String       @id @default(cuid())
+  caseReference    String       @unique
+  title            String
+  matterType       MatterType
+  status           MatterStatus @default(intake)
+  description      String?
+  jurisdiction     String?
+  courtName        String?
+  caseNumber       String?
+  filingDate       DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  parties          Party[]
+  claims           Claim[]
+  assignments      MatterAssignment[]
+  intakes          Intake[]
+  documents        Document[]
+  evidenceItems    EvidenceItem[]
+  timelineEvents   TimelineEvent[]
+  approvals        Approval[]
+  workflows        Workflow[]
+  communications   Communication[]
+  researchSessions ResearchSession[]
+  forensicCases    ForensicCase[]
+  auditEvents      AuditEvent[]
+  notifications    Notification[]
+  namespace        Namespace?
+  emailLogs        EmailLog[]
+
+  @@index([status])
+  @@index([matterType])
+  @@map("matters")
+}
+
+model MatterAssignment {
+  id        String   @id @default(cuid())
+  matterId  String
+  userId    String
+  role      String
+  grantedAt DateTime @default(now())
+  expiresAt DateTime?
+
+  matter Matter @relation(fields: [matterId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([matterId, userId])
+  @@map("matter_assignments")
+}
+
+enum PartyRole {
+  claimant
+  respondent
+  co_owner
+  counsel
+  witness
+  expert
+  escrow_agent
+}
+
+model Party {
+  id           String    @id @default(cuid())
+  matterId     String
+  name         String
+  role         PartyRole
+  email        String?
+  phone        String?
+  address      String?
+  counselName  String?
+  notes        String?
+  createdAt    DateTime  @default(now())
+
+  matter Matter @relation(fields: [matterId], references: [id], onDelete: Cascade)
+
+  @@index([matterId])
+  @@map("parties")
+}
+
+enum ClaimStrength {
+  strong
+  moderate
+  weak
+  blocked
+}
+
+model Claim {
+  id              String        @id @default(cuid())
+  matterId        String
+  name            String
+  claimType       String
+  strengthScore   Float?
+  strength        ClaimStrength?
+  limitationYears Int?
+  limitationExpiry DateTime?
+  statusNote      String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  matter   Matter         @relation(fields: [matterId], references: [id], onDelete: Cascade)
+  elements ClaimElement[]
+
+  @@index([matterId])
+  @@map("claims")
+}
+
+model ClaimElement {
+  id             String   @id @default(cuid())
+  claimId        String
+  elementName    String
+  requiredProof  String?
+  linkedFacts    String[] @default([])
+  linkedEvidence String[] @default([])
+  missingEvidence String[] @default([])
+  status         String?
+  createdAt      DateTime @default(now())
+
+  claim Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@map("claim_elements")
+}
+
+// ─── INTAKES ───────────────────────────────────────────────────────
+
+enum IntakeSource {
+  web_form
+  phone
+  email
+  referral
+  walk_in
+  social_media
+  chatbot
+  partner_firm
+}
+
+enum IntakeStatus {
+  new_intake
+  screening
+  conflict_check
+  initial_review
+  consultation_scheduled
+  accepted
+  declined
+  referred_out
+  withdrawn
+}
+
+enum FeeStructure {
+  hourly
+  flat_fee
+  contingency
+  hybrid
+  pro_bono
+}
+
+model Intake {
+  id               String        @id @default(cuid())
+  source           IntakeSource  @default(web_form)
+  status           IntakeStatus  @default(new_intake)
+  contactName      String
+  contactEmail     String?
+  contactPhone     String?
+  contactAddress   String?
+  matterType       String
+  jurisdiction     String?
+  briefDescription String?
+  urgency          String?       @default("normal")
+  estimatedValue   Float?
+  retainerRequired Float?
+  feeStructure     FeeStructure?
+  declineReason    String?
+  referralFirmName String?
+  matterId         String?
+  createdById      String?
+  assignedToId     String?
+  reviewedById     String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  screenedAt       DateTime?
+  acceptedAt       DateTime?
+  declinedAt       DateTime?
+
+  matter         Matter?        @relation(fields: [matterId], references: [id])
+  createdBy      User?          @relation("IntakeCreator", fields: [createdById], references: [id])
+  assignedTo     User?          @relation("IntakeAssignee", fields: [assignedToId], references: [id])
+  reviewedBy     User?          @relation("IntakeReviewer", fields: [reviewedById], references: [id])
+  conflictChecks ConflictCheck[]
+  adverseParties AdverseParty[]
+  documents      IntakeDocument[]
+
+  @@index([status])
+  @@index([matterId])
+  @@map("intakes")
+}
+
+enum ConflictResult {
+  clear
+  potential_conflict
+  conflict_found
+}
+
+model ConflictCheck {
+  id                   String         @id @default(cuid())
+  intakeId             String
+  checkedBy            String?
+  checkedByName        String?
+  result               ConflictResult
+  conflictingMatterIds String[]       @default([])
+  conflictingParties   String[]       @default([])
+  notes                String?
+  waived               Boolean        @default(false)
+  waivedBy             String?
+  checkedAt            DateTime       @default(now())
+  waivedAt             DateTime?
+
+  intake Intake @relation(fields: [intakeId], references: [id], onDelete: Cascade)
+
+  @@map("conflict_checks")
+}
+
+model AdverseParty {
+  id           String @id @default(cuid())
+  intakeId     String
+  name         String
+  role         String?
+  knownAddress String?
+  knownCounsel String?
+
+  intake Intake @relation(fields: [intakeId], references: [id], onDelete: Cascade)
+
+  @@map("adverse_parties")
+}
+
+model IntakeDocument {
+  id          String   @id @default(cuid())
+  intakeId    String
+  filename    String
+  description String?
+  uploadedAt  DateTime @default(now())
+
+  intake Intake @relation(fields: [intakeId], references: [id], onDelete: Cascade)
+
+  @@map("intake_documents")
+}
+
+// ─── DOCUMENTS ─────────────────────────────────────────────────────
+
+enum DocumentType {
+  demand_letter
+  motion
+  brief
+  memorandum
+  complaint
+  answer
+  discovery_request
+  discovery_response
+  subpoena
+  settlement_agreement
+  affidavit
+  declaration
+  stipulation
+  order
+  notice
+  correspondence
+  report
+  analysis
+  timeline
+  dossier
+  client_update
+  press_release
+  internal_memo
+  evidence_summary
+  authority_table
+  custom
+}
+
+enum DocumentStatus {
+  generating
+  draft
+  in_review
+  approved
+  filed
+  served
+  superseded
+  withdrawn
+  archived
+}
+
+enum ContentFormat {
+  markdown
+  html
+  plaintext
+}
+
+enum RedactionLevel {
+  none
+  client_safe
+  family_safe
+  public_safe
+}
+
+model Document {
+  id              String          @id @default(cuid())
+  matterId        String
+  documentType    DocumentType
+  title           String
+  subtitle        String?
+  description     String?
+  content         String?
+  contentFormat   ContentFormat   @default(markdown)
+  contentHash     String?
+  filename        String?
+  mimeType        String?
+  fileSizeBytes   Int?
+  storagePath     String?
+  status          DocumentStatus  @default(draft)
+  currentVersion  Int             @default(1)
+  jurisdiction    String?
+  courtName       String?
+  caseNumber      String?
+  filingDate      DateTime?
+  dueDate         DateTime?
+  privileged      Boolean         @default(false)
+  redactionLevel  RedactionLevel  @default(none)
+  visibleToClient Boolean         @default(false)
+  approvalId      String?
+  createdById     String?
+  generatedBy     String?         // "human" | "agent" | "hybrid"
+  agentId         String?
+  agentModel      String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  matter          Matter           @relation(fields: [matterId], references: [id], onDelete: Cascade)
+  createdBy       User?            @relation("DocCreator", fields: [createdById], references: [id])
+  versions        DocumentVersion[]
+  exports         DocumentExport[]
+  citations       SourceCitation[]
+
+  @@index([matterId])
+  @@index([status])
+  @@index([documentType])
+  @@map("documents")
+}
+
+model DocumentVersion {
+  id            String   @id @default(cuid())
+  documentId    String
+  version       Int
+  content       String
+  contentHash   String
+  changeNote    String?
+  createdBy     String?
+  createdByName String?
+  createdAt     DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, version])
+  @@map("document_versions")
+}
+
+model DocumentExport {
+  id          String   @id @default(cuid())
+  documentId  String
+  format      String   // pdf, docx, html
+  filename    String
+  storagePath String
+  fileHash    String?
+  sizeBytes   Int?
+  exportedBy  String?
+  exportedAt  DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("document_exports")
+}
+
+model SourceCitation {
+  id              String   @id @default(cuid())
+  documentId      String?
+  approvalId      String?
+  citationType    String   // case_law, statute, regulation, etc.
+  title           String
+  reference       String?
+  url             String?
+  pageOrSection   String?
+  content         String?
+  jurisdiction    String?
+  confidenceScore Float?
+  verified        Boolean  @default(false)
+  verifiedAt      DateTime?
+  verifiedBy      String?
+  goodLaw         Boolean?
+  createdAt       DateTime @default(now())
+
+  document Document? @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  approval Approval? @relation(fields: [approvalId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([approvalId])
+  @@map("source_citations")
+}
+
+// ─── EVIDENCE ──────────────────────────────────────────────────────
+
+enum EvidenceStatus {
+  alleged
+  supported
+  disputed
+  verified
+}
+
+model EvidenceItem {
+  id              String         @id @default(cuid())
+  matterId        String
+  category        String
+  title           String
+  description     String?
+  dateObtained    DateTime?
+  dateOfDocument  DateTime?
+  status          EvidenceStatus @default(alleged)
+  sourceParty     String?
+  fileUrl         String?
+  storagePath     String?
+  mimeType        String?
+  fileSizeBytes   Int?
+  linkedClaims    String[]       @default([])
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  matter          Matter         @relation(fields: [matterId], references: [id], onDelete: Cascade)
+  hashes          EvidenceHash[]
+
+  @@index([matterId])
+  @@index([status])
+  @@map("evidence_items")
+}
+
+model EvidenceHash {
+  id             String   @id @default(cuid())
+  evidenceItemId String
+  algorithm      String   @default("sha256")
+  hash           String
+  chainTxHash    String?  // on-chain anchor
+  recordedBy     String?
+  recordedAt     DateTime @default(now())
+
+  evidenceItem EvidenceItem @relation(fields: [evidenceItemId], references: [id], onDelete: Cascade)
+
+  @@index([evidenceItemId])
+  @@index([hash])
+  @@map("evidence_hashes")
+}
+
+// ─── TIMELINE ──────────────────────────────────────────────────────
+
+model TimelineEvent {
+  id             String   @id @default(cuid())
+  matterId       String
+  eventDate      DateTime
+  title          String
+  description    String?
+  category       String?
+  evidenceItemId String?
+  documentId     String?
+  createdAt      DateTime @default(now())
+
+  matter Matter @relation(fields: [matterId], references: [id], onDelete: Cascade)
+
+  @@index([matterId, eventDate])
+  @@map("timeline_events")
+}
+
+// ─── APPROVALS ─────────────────────────────────────────────────────
+
+enum ApprovalStatus {
+  draft
+  in_review
+  requires_source_check
+  requires_attorney_review
+  approved
+  rejected
+  sent
+  filed
+  archived
+}
+
+enum ApprovalCategory {
+  outbound_email
+  legal_filing
+  demand_letter
+  motion
+  brief
+  discovery_request
+  discovery_response
+  settlement_offer
+  client_communication
+  evidence_submission
+  social_media_post
+  press_release
+  blockchain_transaction
+  agent_action
+  research_citation
+}
+
+model Approval {
+  id              String           @id @default(cuid())
+  matterId        String
+  category        ApprovalCategory
+  title           String
+  summary         String?
+  content         String?
+  contentVersion  Int?
+  status          ApprovalStatus   @default(draft)
+  priority        String?          @default("normal")
+  confidenceScore Float?
+  assignedToId    String?
+  requiredRole    UserRole?
+  createdById     String?
+  createdByAgent  String?
+  approvedBy      String?
+  approvedAt      DateTime?
+  rejectedBy      String?
+  rejectionReason String?
+  sentAt          DateTime?
+  filedAt         DateTime?
+  dueDate         DateTime?
+  courtDeadline   DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  matter     Matter           @relation(fields: [matterId], references: [id], onDelete: Cascade)
+  createdBy  User?            @relation("ApprovalCreator", fields: [createdById], references: [id])
+  assignedTo User?            @relation("ApprovalAssignee", fields: [assignedToId], references: [id])
+  reviews    ApprovalReview[]
+  redlines   RedlineChange[]
+  citations  SourceCitation[]
+
+  @@index([matterId])
+  @@index([status])
+  @@map("approvals")
+}
+
+model ApprovalReview {
+  id           String   @id @default(cuid())
+  approvalId   String
+  reviewerId   String
+  reviewerRole String?
+  decision     String   // approve, reject, request_changes, escalate
+  comment      String?
+  createdAt    DateTime @default(now())
+
+  approval Approval @relation(fields: [approvalId], references: [id], onDelete: Cascade)
+  reviewer User     @relation(fields: [reviewerId], references: [id])
+
+  @@map("approval_reviews")
+}
+
+model RedlineChange {
+  id           String   @id @default(cuid())
+  approvalId   String
+  changeType   String   // insertion, deletion, modification, comment
+  location     String?
+  originalText String?
+  newText      String?
+  comment      String?
+  authorId     String?
+  authorName   String?
+  accepted     Boolean  @default(false)
+  acceptedBy   String?
+  acceptedAt   DateTime?
+  createdAt    DateTime @default(now())
+
+  approval Approval @relation(fields: [approvalId], references: [id], onDelete: Cascade)
+
+  @@map("redline_changes")
+}
+
+// ─── FORENSICS ─────────────────────────────────────────────────────
+
+enum ForensicChain {
+  tron
+  ethereum
+  polygon
+  solana
+  xrpl
+  stellar
+  bitcoin
+  bsc
+  avalanche
+  arbitrum
+  optimism
+  base
+  apostle
+}
+
+enum RiskLevel {
+  low
+  medium
+  high
+  critical
+}
+
+model ForensicCase {
+  id                   String   @id @default(cuid())
+  matterId             String
+  title                String
+  description          String?
+  caseType             String
+  chains               ForensicChain[]
+  totalValueTraced     Float?
+  totalValueRecoverable Float?
+  status               String   @default("open")
+  leadAnalystId        String?
+  agentIds             String[] @default([])
+  evidenceItemIds      String[] @default([])
+  reportDocumentId     String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  closedAt             DateTime?
+
+  matter      Matter            @relation(fields: [matterId], references: [id], onDelete: Cascade)
+  leadAnalyst User?             @relation("ForensicLead", fields: [leadAnalystId], references: [id])
+  wallets     TracedWallet[]
+  transactions TracedTransaction[]
+  suspects    ForensicSuspect[]
+
+  @@index([matterId])
+  @@map("forensic_cases")
+}
+
+model TracedWallet {
+  id               String        @id @default(cuid())
+  forensicCaseId   String
+  address          String
+  chain            ForensicChain
+  label            String?
+  ownerKnown       Boolean       @default(false)
+  ownerName        String?
+  riskLevel        RiskLevel     @default(low)
+  riskIndicators   String[]      @default([])
+  firstSeen        DateTime?
+  lastSeen         DateTime?
+  totalReceived    Float?
+  totalSent        Float?
+  currentBalance   Float?
+  transactionCount Int?
+  linkedWallets    String[]      @default([])
+  notes            String?
+  createdAt        DateTime      @default(now())
+
+  forensicCase ForensicCase @relation(fields: [forensicCaseId], references: [id], onDelete: Cascade)
+
+  @@index([address, chain])
+  @@map("traced_wallets")
+}
+
+model TracedTransaction {
+  id               String        @id @default(cuid())
+  forensicCaseId   String
+  txHash           String
+  chain            ForensicChain
+  txType           String
+  fromAddress      String
+  toAddress        String
+  amount           Float?
+  asset            String?
+  timestamp        DateTime?
+  blockNumber      Int?
+  fee              Float?
+  riskLevel        RiskLevel     @default(low)
+  riskIndicators   String[]      @default([])
+  isLayering       Boolean       @default(false)
+  isMixing         Boolean       @default(false)
+  isExchangeDeposit Boolean      @default(false)
+  exchangeName     String?
+  evidenceItemId   String?
+  notes            String?
+  createdAt        DateTime      @default(now())
+
+  forensicCase ForensicCase @relation(fields: [forensicCaseId], references: [id], onDelete: Cascade)
+
+  @@index([txHash, chain])
+  @@map("traced_transactions")
+}
+
+model ForensicSuspect {
+  id             String   @id @default(cuid())
+  forensicCaseId String
+  name           String?
+  alias          String?
+  wallets        String[] @default([])
+  notes          String?
+  createdAt      DateTime @default(now())
+
+  forensicCase ForensicCase @relation(fields: [forensicCaseId], references: [id], onDelete: Cascade)
+
+  @@map("forensic_suspects")
+}
+
+// ─── RESEARCH ──────────────────────────────────────────────────────
+
+model ResearchSession {
+  id              String   @id @default(cuid())
+  matterId        String?
+  queryType       String
+  query           String
+  jurisdiction    String?
+  topicTags       String[] @default([])
+  status          String   @default("pending")
+  resultCount     Int?
+  assignedToId    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  matter      Matter?          @relation(fields: [matterId], references: [id])
+  assignedTo  User?            @relation(fields: [assignedToId], references: [id])
+  authorities LegalAuthority[]
+
+  @@index([matterId])
+  @@map("research_sessions")
+}
+
+model LegalAuthority {
+  id                String   @id @default(cuid())
+  researchSessionId String?
+  title             String
+  citation          String
+  authorityType     String
+  strength          String?
+  relevanceScore    Float?
+  jurisdiction      String?
+  court             String?
+  dateDecided       DateTime?
+  holdingSummary    String?
+  verified          Boolean  @default(false)
+  verifiedAt        DateTime?
+  verifiedBy        String?
+  goodLaw           Boolean?
+  shepardized       Boolean  @default(false)
+  shepardizedAt     DateTime?
+  sourceDatabase    String?
+  url               String?
+  createdAt         DateTime @default(now())
+
+  researchSession ResearchSession? @relation(fields: [researchSessionId], references: [id])
+
+  @@index([citation])
+  @@map("legal_authorities")
+}
+
+// ─── COMMUNICATIONS ────────────────────────────────────────────────
+
+enum CommChannel {
+  email
+  secure_message
+  sms
+  letter
+  phone_note
+  internal_note
+}
+
+enum CommDirection {
+  outbound
+  inbound
+  internal
+}
+
+enum CommStatus {
+  draft
+  awaiting_approval
+  approved_comm
+  scheduled
+  sent
+  delivered
+  read_comm
+  bounced
+  failed
+  archived
+}
+
+model Communication {
+  id              String        @id @default(cuid())
+  matterId        String?
+  channel         CommChannel
+  direction       CommDirection @default(outbound)
+  fromUserId      String?
+  fromName        String?
+  fromEmail       String?
+  subject         String?
+  body            String?
+  bodyFormat      ContentFormat @default(plaintext)
+  status          CommStatus    @default(draft)
+  approvalId      String?
+  privileged      Boolean       @default(false)
+  workProduct     Boolean       @default(false)
+  generatedByAgent String?
+  confidenceScore Float?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  sentAt          DateTime?
+
+  matter    Matter? @relation(fields: [matterId], references: [id])
+  createdBy User?   @relation("CommCreator", fields: [fromUserId], references: [id])
+
+  @@index([matterId])
+  @@index([status])
+  @@map("communications")
+}
+
+// ─── WORKFLOWS & TASKS ─────────────────────────────────────────────
+
+enum WorkflowStatus {
+  wf_draft
+  active
+  paused
+  wf_completed
+  wf_failed
+  wf_cancelled
+}
+
+enum TaskStatus {
+  pending
+  assigned
+  in_progress
+  blocked
+  awaiting_approval
+  completed
+  failed
+  cancelled
+  skipped
+}
+
+enum TaskPriority {
+  low
+  normal
+  high
+  urgent
+  court_deadline
+}
+
+model Workflow {
+  id             String         @id @default(cuid())
+  matterId       String
+  workflowType   String
+  title          String
+  description    String?
+  status         WorkflowStatus @default(wf_draft)
+  completedTasks Int            @default(0)
+  totalTasks     Int            @default(0)
+  createdBy      String?
+  supervisorId   String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  startedAt      DateTime?
+  completedAt    DateTime?
+  dueDate        DateTime?
+
+  matter Matter @relation(fields: [matterId], references: [id], onDelete: Cascade)
+  tasks  Task[]
+
+  @@index([matterId])
+  @@map("workflows")
+}
+
+model Task {
+  id              String       @id @default(cuid())
+  workflowId      String
+  matterId        String?
+  title           String
+  description     String?
+  taskType        String?
+  assignedToId    String?
+  assignedToAgent String?
+  requiredRole    UserRole?
+  status          TaskStatus   @default(pending)
+  priority        TaskPriority @default(normal)
+  dependsOn       String[]     @default([])
+  blockedReason   String?
+  requiresApproval Boolean     @default(false)
+  approvalId      String?
+  notes           String?
+  createdAt       DateTime     @default(now())
+  startedAt       DateTime?
+  completedAt     DateTime?
+  dueDate         DateTime?
+
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  assignedTo User?    @relation(fields: [assignedToId], references: [id])
+
+  @@index([workflowId])
+  @@index([status])
+  @@map("tasks")
+}
+
+// ─── AUDIT LOG ─────────────────────────────────────────────────────
+
+model AuditEvent {
+  id                String   @id @default(cuid())
+  timestamp         DateTime @default(now())
+  action            String
+  category          String
+  actorType         String   // user, agent, system
+  actorId           String?
+  actorName         String?
+  actorRole         String?
+  matterId          String?
+  resourceType      String?
+  resourceId        String?
+  summary           String?
+  details           Json?
+  previousValue     Json?
+  newValue          Json?
+  contentHash       String?
+  previousEntryHash String?
+  ipAddress         String?
+  sessionId         String?
+
+  actor  User?   @relation("AuditActor", fields: [actorId], references: [id])
+  matter Matter? @relation(fields: [matterId], references: [id])
+
+  @@index([matterId])
+  @@index([actorId])
+  @@index([action])
+  @@index([timestamp])
+  @@index([resourceType, resourceId])
+  @@map("audit_events")
+}
+
+// ─── NOTIFICATIONS ─────────────────────────────────────────────────
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  matterId  String?
+  type      String
+  title     String
+  message   String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  readAt    DateTime?
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  matter Matter? @relation(fields: [matterId], references: [id])
+
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+// ─── NAMESPACE (CLIENT PORTAL) ─────────────────────────────────────
+
+enum NamespaceStatus {
+  provisioning
+  ns_active
+  suspended
+  ns_archived
+  closed
+}
+
+model Namespace {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  matterId    String          @unique
+  displayName String
+  status      NamespaceStatus @default(provisioning)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  matter  Matter            @relation(fields: [matterId], references: [id], onDelete: Cascade)
+  access  NamespaceAccess[]
+
+  @@map("namespaces")
+}
+
+model NamespaceAccess {
+  id          String   @id @default(cuid())
+  namespaceId String
+  userId      String
+  role        String   // owner, counsel, staff, client, family, expert, read_only
+  permissions String[] @default([])
+  grantedBy   String?
+  grantedAt   DateTime @default(now())
+  expiresAt   DateTime?
+
+  namespace Namespace @relation(fields: [namespaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([namespaceId, userId])
+  @@map("namespace_access")
+}
+
+// ─── AGENTS (REGISTRY) ─────────────────────────────────────────────
+
+enum AgentTeam {
+  case_strategy
+  document_drafting
+  legal_research
+  evidence_analysis
+  client_communications
+  compliance_audit
+  forensic_intelligence
+  workflow_orchestration
+  infrastructure
+  marketing_revenue
+}
+
+enum AgentStatus {
+  agent_active
+  idle
+  busy
+  degraded
+  offline
+  disabled
+}
+
+model Agent {
+  id              String      @id @default(cuid())
+  name            String      @unique
+  team            AgentTeam
+  mission         String?
+  allowedActions  String[]    @default([])
+  forbiddenActions String[]   @default([])
+  modelPreference String?
+  systemPrompt    String?
+  status          AgentStatus @default(idle)
+  lastHeartbeat   DateTime?
+  currentTaskId   String?
+  completedTasks  Int         @default(0)
+  failedTasks     Int         @default(0)
+  apostleAgentId  String?     // Apostle Chain UUID
+  atpBalance      String?
+  version         String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@map("agents")
+}
+
+// ─── EMAIL SYSTEM ──────────────────────────────────────────────────
+
+enum EmailTemplateType {
+  intake_receipt
+  evidence_receipt
+  demand_delivery
+  status_update
+  deadline_reminder
+  approval_request
+  approval_result
+  case_assignment
+  document_delivery
+  escalation_alert
+  welcome
+  custom
+}
+
+model EmailTemplate {
+  id            String            @id @default(cuid())
+  slug          String            @unique
+  templateType  EmailTemplateType
+  name          String
+  subject       String            // Supports {{variable}} interpolation
+  bodyHtml      String            // HTML body with {{variable}} placeholders
+  bodyText      String?           // Plain-text fallback
+  fromIdentity  String            // Key into FIRM.email (e.g. "intake", "cases")
+  replyTo       String?
+  active        Boolean           @default(true)
+  version       Int               @default(1)
+  createdBy     String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  logs EmailLog[]
+
+  @@index([templateType])
+  @@map("email_templates")
+}
+
+enum EmailLogStatus {
+  queued
+  pending_approval
+  approved
+  rejected
+  sent
+  delivered
+  bounced
+  failed
+}
+
+model EmailLog {
+  id              String         @id @default(cuid())
+  templateId      String?
+  matterId        String?
+  fromAddress     String
+  fromName        String?
+  toAddresses     String[]
+  ccAddresses     String[]       @default([])
+  bccAddresses    String[]       @default([])
+  subject         String
+  bodyHtml        String
+  bodyText        String?
+  status          EmailLogStatus @default(queued)
+  requiresApproval Boolean       @default(false)
+  approvalId      String?
+  approvedById    String?
+  approvedAt      DateTime?
+  rejectedReason  String?
+  sentAt          DateTime?
+  deliveredAt     DateTime?
+  errorMessage    String?
+  retryCount      Int            @default(0)
+  metadata        Json?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  template  EmailTemplate? @relation(fields: [templateId], references: [id])
+  matter    Matter?        @relation(fields: [matterId], references: [id])
+  approvedBy User?         @relation("EmailApprover", fields: [approvedById], references: [id])
+
+  @@index([matterId])
+  @@index([status])
+  @@index([templateId])
+  @@map("email_logs")
+}
+// ─── MARKETING & REVENUE ───────────────────────────────────────────
+
+enum WidgetAppId {
+  emergency_intake
+  demand_letter
+  crypto_recovery
+  evidence_drop
+  status_help
+}
+
+enum CampaignStatus {
+  draft
+  staged
+  pending_approval
+  approved
+  active
+  paused
+  completed
+  killed
+}
+
+enum AssetType {
+  landing_page
+  ad_copy
+  email_sequence
+  sms_sequence
+  social_post
+  headline
+  cta
+  one_pager
+  partner_deck
+  comparison_page
+  call_script
+  intake_form
+  retargeting_copy
+  blog_post
+  authority_post
+}
+
+enum ChannelType {
+  paid_search
+  paid_social
+  organic_social
+  seo
+  email_outbound
+  sms_outbound
+  referral
+  affiliate
+  direct_outreach
+  partnership
+  retargeting
+}
+
+model MarketDefinition {
+  id              String      @id @default(cuid())
+  widgetApp       WidgetAppId
+  marketCategory  String
+  targetBuyer     String
+  urgencyLevel    String
+  avgLeadValue    Float?
+  trustBarriers   String[]    @default([])
+  shortestPath    String?
+  icp             String?     // Ideal Customer Profile
+  painPoints      String[]    @default([])
+  competitorMap   Json?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  campaigns Campaign[]
+  assets    MarketingAsset[]
+
+  @@unique([widgetApp])
+  @@map("market_definitions")
+}
+
+model Campaign {
+  id                String         @id @default(cuid())
+  marketDefinitionId String
+  name              String
+  channel           ChannelType
+  status            CampaignStatus @default(draft)
+  offerHeadline     String?
+  offerDescription  String?
+  ctaText           String?
+  ctaUrl            String?
+  targetAudience    String?
+  budgetCents       Int?
+  spentCents        Int            @default(0)
+  impressions       Int            @default(0)
+  clicks            Int            @default(0)
+  leads             Int            @default(0)
+  bookings          Int            @default(0)
+  conversions       Int            @default(0)
+  revenueCents      Int            @default(0)
+  cplCents          Int?           // cost per lead
+  notes             String?
+  approvedById      String?
+  approvedAt        DateTime?
+  launchedAt        DateTime?
+  pausedAt          DateTime?
+  killedAt          DateTime?
+  killReason        String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  marketDefinition MarketDefinition @relation(fields: [marketDefinitionId], references: [id], onDelete: Cascade)
+  approvedBy       User?            @relation("CampaignApprover", fields: [approvedById], references: [id])
+  assets           MarketingAsset[]
+
+  @@index([status])
+  @@index([channel])
+  @@index([marketDefinitionId])
+  @@map("campaigns")
+}
+
+model MarketingAsset {
+  id                  String     @id @default(cuid())
+  marketDefinitionId  String?
+  campaignId          String?
+  assetType           AssetType
+  title               String
+  content             String     // The generated copy/content
+  contentFormat       String     @default("markdown")
+  widgetApp           WidgetAppId?
+  channel             ChannelType?
+  status              CampaignStatus @default(draft)
+  generatedByAgent    String?
+  confidenceScore     Float?
+  approvedById        String?
+  approvedAt          DateTime?
+  version             Int        @default(1)
+  metadata            Json?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+
+  marketDefinition MarketDefinition? @relation(fields: [marketDefinitionId], references: [id])
+  campaign         Campaign?         @relation(fields: [campaignId], references: [id])
+  approvedBy       User?             @relation("AssetApprover", fields: [approvedById], references: [id])
+
+  @@index([widgetApp])
+  @@index([assetType])
+  @@index([status])
+  @@map("marketing_assets")
+}
+
+model LeadRecord {
+  id              String       @id @default(cuid())
+  widgetApp       WidgetAppId?
+  campaignId      String?
+  source          ChannelType?
+  name            String?
+  email           String?
+  phone           String?
+  urgency         String?
+  score           Int?         // 0-100 lead score
+  status          String       @default("new") // new, contacted, qualified, booked, converted, lost, stale
+  matterId        String?
+  notes           String?
+  utmSource       String?
+  utmMedium       String?
+  utmCampaign     String?
+  firstTouchAt    DateTime     @default(now())
+  lastTouchAt     DateTime?
+  bookedAt        DateTime?
+  convertedAt     DateTime?
+  revenueCents    Int?
+  metadata        Json?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([widgetApp])
+  @@index([status])
+  @@index([email])
+  @@map("lead_records")
+}
+
+// ─── BETA SIGNUPS ──────────────────────────────────────────────────
+
+model BetaSignup {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String?
+  role        String?
+  inviteCode  String   @unique
+  referredBy  String?
+  activated   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([inviteCode])
+  @@map("beta_signups")
+}
+
+// ─── REPORTS ───────────────────────────────────────────────────────
+
+model Report {
+  id         String   @id @default(cuid())
+  reportType String
+  matterId   String
+  html       String
+  sizeBytes  Int
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([matterId])
+  @@index([reportType])
+  @@map("reports")
+}

@@ -1,90 +1,97 @@
 /**
- * Polygon Namespace API
+ * /api/chain/polygon/namespace
  *
- * GET /api/chain/polygon/namespace?name=acme&tld=law
- *   → { available: bool, owner?, expiresAt?, resolves? }
- *
- * GET /api/chain/polygon/namespace?wallet=0x…
- *   → { names: NamespaceMetadata[] }
+ * GET  ?name=kevan&tld=law     ΓÇö check availability
+ * GET  ?wallet=0x...           ΓÇö list names owned by wallet (reads totalNames)
+ * GET  ?resolve=kevan.law      ΓÇö resolve a full name
+ * POST { name, tld, owner?, resolution? } ΓÇö server-side issuer registration (admin)
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { ethers } from "ethers";
-import { getProvider, getPolygonConfig } from "@/lib/polygon/client";
-import { POLYGON_NETWORKS } from "@/lib/polygon/types";
-import { LegalNameRegistry_ABI } from "@/lib/polygon/abis";
+import { checkNamespaceAvailability, resolveNamespace, issuerRegisterNamespace, getTotalNamespaces, getRegistrationFee } from "@/lib/polygon/ops";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-  const name   = searchParams.get("name");
-  const tld    = searchParams.get("tld") ?? "law";
-  const wallet = searchParams.get("wallet");
-
-  const registryAddress = process.env.NEXT_PUBLIC_LEGAL_NAME_REGISTRY_ADDRESS;
-
-  if (!registryAddress) {
-    return NextResponse.json({ error: "Contract not deployed yet" }, { status: 503 });
-  }
+  const name = searchParams.get("name");
+  const tld = searchParams.get("tld");
+  const resolve = searchParams.get("resolve");
 
   try {
-    const provider = getProvider();
-    const registry = new ethers.Contract(registryAddress, LegalNameRegistry_ABI, provider);
+    // Resolve a full name
+    if (resolve) {
+      const ns = await resolveNamespace(resolve);
+      if (!ns) {
+        return NextResponse.json({ ok: false, error: "Name not found" }, { status: 404 });
+      }
+      return NextResponse.json({ ok: true, data: ns });
+    }
 
-    // Single name lookup
-    if (name) {
-      const fullName = `${name}.${tld}`;
-      const [available, resolution]: [boolean, string] = await Promise.all([
-        registry.isAvailable(name, tld),
-        registry.resolve(fullName).catch(() => ""),
+    // Check availability
+    if (name && tld) {
+      const clean = name.toLowerCase().replace(/[^a-z0-9-]/g, "");
+      const cleanTld = tld.toLowerCase();
+
+      if (!["law", "legal"].includes(cleanTld)) {
+        return NextResponse.json({ ok: false, error: "TLD must be 'law' or 'legal'" }, { status: 400 });
+      }
+      if (clean.length < 2 || clean.length > 32) {
+        return NextResponse.json({ ok: false, error: "Name must be 2ΓÇô32 characters" }, { status: 400 });
+      }
+
+      const [availability, fee] = await Promise.all([
+        checkNamespaceAvailability(clean, cleanTld),
+        getRegistrationFee(),
       ]);
-
-      if (available) {
-        return NextResponse.json({ available: true, fullName });
-      }
-
-      // Get token metadata if taken
-      const config   = getPolygonConfig();
-      const netInfo  = POLYGON_NETWORKS[config.network];
-      const tokenId: bigint = await registry.nameToTokenId(fullName).catch(() => BigInt(0));
-      const owner: string   = tokenId ? await registry.ownerOf(tokenId).catch(() => "") : "";
-      const expiry: bigint  = tokenId ? await registry.nameExpiry(fullName).catch(() => BigInt(0)) : BigInt(0);
-
-      return NextResponse.json({
-        available:  false,
-        fullName,
-        owner,
-        expiresAt:  expiry ? new Date(Number(expiry) * 1000).toISOString() : null,
-        resolves:   resolution || null,
-        explorerUrl: owner ? `${netInfo.explorer}/address/${owner}` : null,
-      });
+      return NextResponse.json({ ok: true, data: availability, registrationFee: fee });
     }
 
-    // Wallet-owned names (enumerate Transfer events)
-    if (wallet) {
-      const filter = registry.filters.Transfer(null, wallet, null);
-      const events = await registry.queryFilter(filter, -100000);
-      const tokenIds = [...new Set(events.map((e) => (e as ethers.EventLog).args?.[2] as bigint))];
+    // Stats fallback
+    const total = await getTotalNamespaces();
+    const fee = await getRegistrationFee();
+    return NextResponse.json({ ok: true, data: { totalNames: total, registrationFee: fee } });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+  }
+}
 
-      const names: object[] = [];
-      for (const tokenId of tokenIds) {
-        try {
-          const currentOwner: string = await registry.ownerOf(tokenId);
-          if (currentOwner.toLowerCase() !== wallet.toLowerCase()) continue;
-          const uri: string = await registry.tokenURI(tokenId);
-          names.push({ tokenId: tokenId.toString(), uri });
-        } catch {
-          // burned or transferred
-        }
-      }
-
-      return NextResponse.json({ wallet, names });
+export async function POST(req: NextRequest) {
+  try {
+    // Validate admin token
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader || authHeader !== `Bearer ${process.env.ADMIN_API_KEY}`) {
+      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    return NextResponse.json({ error: "Provide ?name= or ?wallet=" }, { status: 400 });
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    const body = await req.json();
+    const { name, tld, owner, resolution } = body as {
+      name?: string;
+      tld?: string;
+      owner?: string;
+      resolution?: string;
+    };
+
+    if (!name || !tld) {
+      return NextResponse.json({ ok: false, error: "name and tld required" }, { status: 400 });
+    }
+    if (!["law", "legal"].includes(tld.toLowerCase())) {
+      return NextResponse.json({ ok: false, error: "TLD must be 'law' or 'legal'" }, { status: 400 });
+    }
+
+    const clean = name.toLowerCase().replace(/[^a-z0-9-]/g, "");
+    const result = await issuerRegisterNamespace(
+      clean,
+      tld.toLowerCase(),
+      owner || process.env.POLYGON_ISSUER_ADDRESS || "",
+      resolution || "{}"
+    );
+
+    return NextResponse.json({ ok: true, data: result });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }

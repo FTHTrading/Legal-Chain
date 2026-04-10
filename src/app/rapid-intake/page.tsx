@@ -11,6 +11,7 @@ import {
   AppShell, SectionCard, StatCard, StatusPill, ResultPanel,
   FormField, GlassInput, GlassSelect, GlassTextarea, GlassButton,
   UploadDropzone, EscalateToAiLine, ToastProvider, toast,
+  ProofReceipt,
 } from '@/components/widgets';
 
 const ESCALATION = getLawNumbers(['law-888', 'law-833']);
@@ -61,7 +62,7 @@ export default function RapidIntakePage() {
 
   return (
     <ToastProvider>
-      <AppShell title="Rapid Case Intake" subtitle="False accusation · Urgent legal review" escalationNumbers={ESCALATION}>
+      <AppShell title="Emergency Intake" subtitle="Report what happened. Get help now." escalationNumbers={ESCALATION}>
         {result ? (
           <div className="space-y-4 widget-enter">
             <ResultPanel title="INTAKE CONFIRMED" variant="success">
@@ -101,6 +102,7 @@ export default function RapidIntakePage() {
                 )}
               </div>
             </ResultPanel>
+            <ProofReceipt caseId={result.caseId} submittedAt={new Date()} type="intake" summary={result.data.summary} />
             <button onClick={handleReset} className="glass-button-outline px-4 py-2 text-sm flex items-center gap-2">
               <ArrowLeft size={14} /> New Intake
             </button>

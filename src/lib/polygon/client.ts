@@ -1,7 +1,7 @@
 /**
- * Polygon Client — Provider + wallet management for Polygon.
+ * Polygon Client ΓÇö Provider + wallet management for Polygon.
  *
- * Server-side only — never import from client components.
+ * Server-side only ΓÇö never import from client components.
  * Uses ethers v6.
  */
 
@@ -18,7 +18,7 @@ let _config: PolygonConfig | null = null;
 export function getPolygonConfig(): PolygonConfig {
   if (_config) return _config;
 
-  const network = (process.env.NEXT_PUBLIC_POLYGON_NETWORK || "polygon-amoy") as PolygonNetwork;
+  const network = (process.env.NEXT_PUBLIC_POLYGON_NETWORK || "polygon-mainnet") as PolygonNetwork;
   const rpcUrl = process.env.NEXT_PUBLIC_POLYGON_RPC || POLYGON_NETWORKS[network].rpcUrl;
   const chainId = Number(process.env.NEXT_PUBLIC_POLYGON_CHAIN_ID) || POLYGON_NETWORKS[network].chainId;
   const deployerAddress = process.env.POLYGON_DEPLOYER_ADDRESS;
@@ -29,7 +29,8 @@ export function getPolygonConfig(): PolygonConfig {
     auditAnchor: process.env.NEXT_PUBLIC_AUDIT_ANCHOR_ADDRESS || "",
     documentRegistry: process.env.NEXT_PUBLIC_DOCUMENT_REGISTRY_ADDRESS || "",
     legalNameRegistry: process.env.NEXT_PUBLIC_LEGAL_NAME_REGISTRY_ADDRESS || "",
-    erc6551Registry: process.env.NEXT_PUBLIC_ERC6551_REGISTRY || "0x000000006551c19487814612e58FE06813775758",
+    erc6551Registry:
+      process.env.NEXT_PUBLIC_ERC6551_REGISTRY || "0x000000006551c19487814612e58FE06813775758",
   };
 
   _config = { network, rpcUrl, chainId, deployerAddress, contracts };
@@ -158,7 +159,9 @@ export async function isContractDeployed(address: string): Promise<boolean> {
 }
 
 /** Get all contract deployment statuses */
-export async function getContractStatuses(): Promise<{ name: string; address: string; deployed: boolean }[]> {
+export async function getContractStatuses(): Promise<
+  { name: string; address: string; deployed: boolean }[]
+> {
   const config = getPolygonConfig();
   const contracts = [
     { name: "LegalCaseNFT", address: config.contracts.legalCaseNFT },

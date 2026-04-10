@@ -11,6 +11,7 @@ import {
   AppShell, SectionCard, StatusPill, ActionPanel,
   FormField, GlassInput, GlassSelect, GlassTextarea, GlassButton,
   EscalateToAiLine, ToastProvider, toast,
+  ProofReceipt,
 } from '@/components/widgets';
 
 const ESCALATION = getLawNumbers(['law-888', 'law-888-763']);
@@ -85,7 +86,7 @@ export default function DemandLetterPage() {
 
   return (
     <ToastProvider>
-      <AppShell title="Demand Letter Generator" subtitle="Unpaid invoice · Breach / payment dispute" escalationNumbers={ESCALATION}>
+      <AppShell title="Demand Letter Now" subtitle="Generate a clean demand letter fast." escalationNumbers={ESCALATION}>
         {result ? (
           <div className="space-y-4 widget-enter">
             <div className="flex items-center justify-between">
@@ -116,6 +117,7 @@ export default function DemandLetterPage() {
                 </GlassButton>
               )}
             </ActionPanel>
+            <ProofReceipt caseId={result.letterId} submittedAt={new Date()} type="demand-letter" />
             <EscalateToAiLine escalationNumbers={ESCALATION} />
           </div>
         ) : (

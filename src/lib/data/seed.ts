@@ -615,21 +615,8 @@ export const VIDEO_GALLERY = [
   { id: "v9", title: "Futuristic Courtroom Elegance", file: "20250127_0106_Futuristic Courtroom Elegance_storyboard_01jjk5w01qfgpt239tqzr0xztq.mp4", category: "courtroom" },
   { id: "v10", title: "Futuristic Courtroom Command", file: "20250127_0101_Futuristic Courtroom Command_storyboard_01jjk5k87yfdrbrr7q29f6p9xd.mp4", category: "courtroom" },
   { id: "v11", title: "Futuristic Courtroom Mastery", file: "20250127_0042_Futuristic Courtroom Mastery_storyboard_01jjk4g9w7ecqbd411hepkqbaz.mp4", category: "courtroom" },
-  { id: "v12", title: "Futuristic Office Mastery", file: "20250127_0033_Futuristic Office Mastery_storyboard_01jjk3zd80fn9rprvsmh2ym8kw.mp4", category: "courtroom" },
-  { id: "v13", title: "Futuristic Justice Unveiled II", file: "20250126_2313_Futuristic Justice Unveiled_storyboard_01jjjzd84vf2abam51pvr4dkyn.mp4", category: "courtroom" },
-  { id: "v14", title: "Courtroom Justice Resolved I", file: "20250126_2310_Futuristic Courtroom Justice Resolved_storyboard_01jjjz7rcce0q8rfcbz087w4s7.mp4", category: "courtroom" },
-  { id: "v15", title: "Courtroom Justice Resolved II", file: "20250126_2310_Futuristic Courtroom Justice Resolved_storyboard_01jjjz7rcjfe999psx5tmb0hp6.mp4", category: "courtroom" },
-  { id: "v16", title: "Futuristic Courtroom Confrontation I", file: "20250127_0118_Futuristic Courtroom Confrontation_storyboard_01jjk6jf40f8qbds1r5wn1cget.mp4", category: "courtroom" },
-  { id: "v17", title: "Futuristic Courtroom Confrontation II", file: "20250127_0118_Futuristic Courtroom Confrontation_storyboard_01jjk6jf39e0v9mrg6cb1xg6av.mp4", category: "courtroom" },
-  { id: "v18", title: "Courtroom Drama I", file: "20250127_0115_Futuristic Courtroom Drama_storyboard_01jjk6cgj9e8xv4zh0ez8nr8qj.mp4", category: "courtroom" },
-  { id: "v19", title: "Courtroom Drama II", file: "20250127_0112_Futuristic Courtroom Drama_storyboard_01jjk671d6feetqp7rxh7tsm7x.mp4", category: "courtroom" },
-  { id: "v20", title: "Courtroom Drama III", file: "20250127_0112_Futuristic Courtroom Drama_storyboard_01jjk671dge39tbgk4sv9hbfmk.mp4", category: "courtroom" },
-  { id: "v21", title: "Courtroom Command II", file: "20250127_0108_Futuristic Courtroom Command_storyboard_01jjk5z80kf92ab6v1p9fxkn4d.mp4", category: "courtroom" },
-  { id: "v22", title: "Courtroom Mastery II", file: "20250127_0105_Futuristic Courtroom Mastery_storyboard_01jjk5t8t8f7xrengkv5pdvzfs.mp4", category: "courtroom" },
-  { id: "v23", title: "Courtroom Drama Unfolds", file: "20250127_0119_Courtroom Drama Unfolds_storyboard_01jjk6khjtfpcazy9zvrtk2x4w.mp4", category: "courtroom" },
-  { id: "v24", title: "Energy Renaissance I", file: "20250303_1439_Energy Renaissance_storyboard_01jnera0rcex6b52spg8qaxb3y.mp4", category: "tech" },
-  { id: "v25", title: "Energy Renaissance II", file: "20250303_1439_Energy Renaissance_storyboard_01jnera0r7eag9q8vkwpwhtkqv.mp4", category: "tech" },
-  { id: "v26", title: "Futuristic Courtroom Resolution II", file: "20250126_2304_Futuristic Courtroom Resolution_storyboard_01jjjywj0rfskan9tn3yvjg8n8.mp4", category: "courtroom" },
+  { id: "v12", title: "Energy Renaissance I", file: "20250303_1439_Energy Renaissance_storyboard_01jnera0rcex6b52spg8qaxb3y.mp4", category: "tech" },
+  { id: "v13", title: "Energy Renaissance II", file: "20250303_1439_Energy Renaissance_storyboard_01jnera0r7eag9q8vkwpwhtkqv.mp4", category: "tech" },
 ];
 
 export const IMAGE_GALLERY = [
