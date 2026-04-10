@@ -38,7 +38,7 @@ interface AIStatus {
 
 interface RAGStatus {
   status: string;
-  vectorStore: { totalDocuments: number; uniqueSources: number; types: Record<string, number> };
+  vectorStore: { totalDocuments: number; byType: Record<string, number>; byMatter: Record<string, number> };
   config: { chunkSize: number; topK: number; embeddingModel: string };
 }
 
@@ -327,7 +327,7 @@ export default function PolygonChainDashboard() {
                     ? ragStatus.vectorStore.totalDocuments.toString()
                     : "—",
                   sub: ragStatus
-                    ? `${ragStatus.vectorStore.uniqueSources} sources · ${Object.keys(ragStatus.vectorStore.types).length} types`
+                    ? `${Object.keys(ragStatus.vectorStore.byType).length} doc types · ${Object.keys(ragStatus.vectorStore.byMatter).length} matters`
                     : "No documents ingested",
                   ok: (ragStatus?.vectorStore.totalDocuments ?? 0) >= 0,
                 },

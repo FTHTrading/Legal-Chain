@@ -54,8 +54,16 @@ export async function GET() {
       contracts: contractStatuses.status === "fulfilled" ? contractStatuses.value : {},
       ipfs: {
         online: ipfsUp,
-        id:     ipfsDetails?.[0].status === "fulfilled" ? ipfsDetails[0].value : null,
-        repo:   ipfsDetails?.[1].status === "fulfilled" ? ipfsDetails[1].value : null,
+        id: (() => {
+          if (ipfsDetails?.[0].status !== "fulfilled" || !ipfsDetails[0].value) return null;
+          const v = ipfsDetails[0].value as { id: string; agentVersion: string };
+          return { ID: v.id, AgentVersion: v.agentVersion };
+        })(),
+        repo: (() => {
+          if (ipfsDetails?.[1].status !== "fulfilled" || !ipfsDetails[1].value) return null;
+          const v = ipfsDetails[1].value as { numObjects: number; repoSize: number };
+          return { RepoSize: v.repoSize, NumObjects: v.numObjects, StorageMax: 10 * 1024 * 1024 * 1024 };
+        })(),
       },
       timestamp: new Date().toISOString(),
     });
