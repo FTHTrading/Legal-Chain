@@ -71,6 +71,15 @@ export default function OpsPage() {
                 priority: true,
               },
               {
+                title: "Case Workspaces",
+                description: "Active case files with fact sheets, evidence timelines, deadline tracking, task boards, and document management. Where leads become cases.",
+                href: "/ops/cases",
+                icon: "📂",
+                count: 4,
+                countLabel: "active",
+                priority: true,
+              },
+              {
                 title: "Approval Center",
                 description: "Review and approve all outbound legal actions, documents, and communications. Nothing leaves without human sign-off.",
                 href: "/ops/approvals",
