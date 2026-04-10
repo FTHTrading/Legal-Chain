@@ -10,7 +10,7 @@ import { useState, useMemo } from "react";
 type Tier = 1 | 2 | 3 | 4;
 type Urgency = "extreme" | "high" | "medium" | "low";
 type LeadStatus = "new" | "commented" | "dm_sent" | "intake_review" | "active" | "screening" | "closed" | "skip";
-type CaseType = "divorce" | "child_abuse" | "post_conviction" | "protection_order" | "housing" | "arrest" | "custody" | "construction" | "simple_divorce" | "question" | "harassment" | "weak" | "out_of_scope" | "not_a_lead";
+type CaseType = "family_safety" | "truancy" | "child_abuse" | "post_conviction" | "protection_order" | "housing" | "arrest" | "custody" | "civil_rights" | "question" | "incomplete" | "not_a_lead";
 
 interface Lead {
   id: string;
@@ -34,9 +34,9 @@ function computeScore(lead: Lead): number {
   const tierWeight: Record<Tier, number> = { 1: 35, 2: 25, 3: 12, 4: 0 };
   const deadlineBonus = lead.deadlineNote ? 15 : 0;
   const conversionBonus: Record<CaseType, number> = {
-    divorce: 8, child_abuse: 5, post_conviction: 7, protection_order: 6,
-    housing: 7, arrest: 6, custody: 8, construction: 9,
-    simple_divorce: 4, question: 2, harassment: 3, weak: 1, out_of_scope: 0, not_a_lead: 0,
+    family_safety: 9, truancy: 7, child_abuse: 5, post_conviction: 7, protection_order: 6,
+    housing: 8, arrest: 6, custody: 8, civil_rights: 5,
+    question: 2, incomplete: 1, not_a_lead: 0,
   };
   return Math.min(100, urgencyWeight[lead.urgency] + tierWeight[lead.tier] + deadlineBonus + conversionBonus[lead.caseType]);
 }
@@ -46,122 +46,102 @@ function computeScore(lead: Lead): number {
 const INITIAL_LEADS: Lead[] = [
   // ── TIER 1: Immediate Action ──
   {
-    id: "lead-001", name: "Anonymous (CT)", state: "CT", tier: 1, urgency: "extreme",
-    caseType: "divorce", status: "new",
-    description: "Divorce with hidden assets. Pre-trial hearing next week. Safety concerns. Spouse hiding financial records. Needs immediate document organization and timeline.",
-    whatTheyNeed: "Asset tracing, financial document organization, pre-trial prep, safety plan documentation",
-    whatWeCanDo: "Financial timeline construction, document stack building, public records pull on spouse business interests, evidence organization for hearing, referral to licensed counsel",
-    deadlineNote: "Pre-trial hearing NEXT WEEK", score: 0,
+    id: "lead-001", name: "Ascarestayathomemom", state: "Unknown", tier: 1, urgency: "extreme",
+    caseType: "family_safety", status: "new",
+    description: "Pregnant with multiple kids. Husband moved male coworker on probation into small home. No consent, no disclosure. Safety concern for children. Control imbalance — spouse controls vehicle and income.",
+    whatTheyNeed: "Safety documentation, household risk assessment, emergency custody positioning, financial control documentation",
+    whatWeCanDo: "Build safety and household risk summary, document the cohabitation timeline, prep emergency custody or protective positioning materials, organize evidence of control imbalance for attorney referral",
+    deadlineNote: "Active safety risk — children in home", score: 0,
   },
   {
-    id: "lead-002", name: "Anonymous (GA)", state: "GA", tier: 1, urgency: "extreme",
-    caseType: "child_abuse", status: "new",
-    description: "Child abuse case with police tampering and church influence. Officers involved in cover-up. Institutional interference. Evidence of falsified reports.",
-    whatTheyNeed: "Evidence preservation, public records on officers, institutional correspondence organization, timeline of tampering events",
-    whatWeCanDo: "Build tampering timeline from public records, organize evidence chain, FOIA/open records request prep, referral to child advocacy attorney",
+    id: "lead-002", name: "Lauren L Edlund", state: "Unknown", tier: 1, urgency: "high",
+    caseType: "truancy", status: "new",
+    description: "Charged with contributing to truancy. Has documented discipline structure and enforcement actions. School pushing additional meetings before court date. Risk of saying wrong thing in school meetings that could hurt defense.",
+    whatTheyNeed: "Defense narrative construction, compliance evidence packet, timeline of parental enforcement actions, pre-court prep on what to say and not say",
+    whatWeCanDo: "Build compliance evidence packet from her records, construct timeline of enforcement actions, prep what-to-say/not-say guidance before court, organize school correspondence and discipline records",
+    deadlineNote: "Court date pending — school meetings imminent", score: 0,
+  },
+  {
+    id: "lead-003", name: "Anonymous (Kansas/Topeka)", state: "KS", tier: 1, urgency: "high",
+    caseType: "housing", status: "new",
+    description: "Claims illegal eviction for nonpayment. Has bank statements proving rent was paid. Cannot find attorney locally. Family with kids, housing currently blocked. Emotional, willing to engage — strong conversion signal.",
+    whatTheyNeed: "Payment proof timeline, lease and notice organization, counterclaim or defense positioning, local attorney referral",
+    whatWeCanDo: "Build payment proof timeline from bank records, organize lease agreements and eviction notices, research KS tenant protections and wrongful eviction remedies, prep counterclaim document stack",
+    deadlineNote: "Active eviction — family displaced", score: 0,
+  },
+  {
+    id: "lead-004", name: "Anonymous (GA)", state: "GA", tier: 1, urgency: "extreme",
+    caseType: "civil_rights", status: "new",
+    description: "Child abuse case with alleged police tampering and church influence. Officers involved in cover-up. Cannot go to DA. Needs evidence converted from emotion into structured documentation for external escalation.",
+    whatTheyNeed: "Evidence index, who/what/when/proof mapping, external escalation path identification, structured documentation for outside counsel",
+    whatWeCanDo: "Build evidence index and tampering timeline from available records, identify external escalation paths (state AG, FBI civil rights, DFCS oversight), organize testimony and correspondence, prep attorney-ready escalation packet",
     deadlineNote: "Active danger — child safety", score: 0,
   },
   {
-    id: "lead-003", name: "Alisha Prather", state: "MS", tier: 1, urgency: "high",
+    id: "lead-005", name: "Alisha Prather", state: "MS", tier: 1, urgency: "high",
     caseType: "post_conviction", status: "new",
-    description: "Son incarcerated. Claims fabricated evidence. Mississippi post-conviction relief case. Mother advocating. Possible Brady violations and ineffective assistance of counsel.",
-    whatTheyNeed: "Trial transcript review, evidence audit, PCR motion research, Brady violation analysis",
-    whatWeCanDo: "Organize trial record, build evidence inconsistency timeline, research MS PCR standards, draft case summary for attorney referral",
+    description: "Son incarcerated. Needs PCR filing help. Mother advocating. Likely ineffective assistance of counsel or due process claim. Needs full case reconstruction and attorney-ready packet.",
+    whatTheyNeed: "Case timeline and document list, PCR grounds identification, trial record organization, attorney-ready summary",
+    whatWeCanDo: "Organize trial record, build case timeline and evidence inconsistency log, research MS PCR standards and grounds, identify potential Brady or IAC issues, draft case summary for attorney referral",
     score: 0,
   },
   {
-    id: "lead-004", name: "Anonymous (EPO)", state: "Unknown", tier: 1, urgency: "extreme",
+    id: "lead-006", name: "EnthusiasticArugula5160", state: "Unknown", tier: 1, urgency: "extreme",
     caseType: "protection_order", status: "new",
-    description: "Emergency protection order situation. Cannot retrieve personal belongings. Children need clothing and essentials. Active court order but enforcement issues.",
-    whatTheyNeed: "EPO enforcement documentation, property retrieval plan, emergency motion support",
-    whatWeCanDo: "Document the enforcement gaps, organize EPO paperwork, build timeline of violations, connect with local DV advocacy resources",
+    description: "Active emergency protection order. Cannot retrieve personal belongings. Children need clothing and essentials. Police refusing standby assistance. Immediate court access and property issue.",
+    whatTheyNeed: "Property list, urgency narrative for court, court request structure, enforcement gap documentation",
+    whatWeCanDo: "Build itemized property list and urgency narrative, document enforcement gaps and police refusals, prep court request structure for property retrieval, organize EPO paperwork and violation timeline",
     deadlineNote: "IMMEDIATE — children without essentials", score: 0,
   },
 
   // ── TIER 2: Strong / High-Conversion ──
   {
-    id: "lead-005", name: "Anonymous (Tenant)", state: "Unknown", tier: 2, urgency: "high",
+    id: "lead-007", name: "Anonymous (Gas Leaks)", state: "Unknown", tier: 2, urgency: "high",
     caseType: "housing", status: "new",
-    description: "Gas leaks in rental unit. Landlord threatening illegal eviction. Habitability violations. Needs documentation of conditions and tenant rights research.",
-    whatTheyNeed: "Habitability documentation, tenant rights research, eviction defense prep, condition photo/video organization",
-    whatWeCanDo: "Research state-specific tenant protections, organize condition evidence, draft complaint letter framework, build violation timeline",
+    description: "Gas leaks and electrical issues in rental unit. Landlord refuses certified repairs. Attempting illegal 2-day eviction. Habitability violations and possible retaliation.",
+    whatTheyNeed: "Violation and retaliation case documentation, photo/notice timeline, tenant rights research, eviction defense",
+    whatWeCanDo: "Build violation and retaliation timeline, organize condition photos and landlord communications, research state-specific habitability protections and illegal eviction remedies, prep defense documentation",
     score: 0,
   },
   {
-    id: "lead-006", name: "Mike Chene", state: "FL", tier: 2, urgency: "medium",
+    id: "lead-008", name: "Mike Chene", state: "FL", tier: 2, urgency: "medium",
     caseType: "arrest", status: "new",
-    description: "Florida arrest. Claims video evidence was erased. Officers refused to show badges. Possible civil rights violations. Needs evidence preservation and complaint organization.",
-    whatTheyNeed: "Body cam FOIA request, complaint organization, civil rights violation research, evidence timeline",
-    whatWeCanDo: "Public records request prep for body cam footage, organize incident timeline, research FL civil rights complaint process, build document stack",
+    description: "Florida arrest for failure to ID. Claims video evidence was deleted by officers. Officers refused to show badges. Possible civil rights violations. Needs incident reconstruction and records requests.",
+    whatTheyNeed: "Incident reconstruction, body cam and records requests, civil rights complaint research, evidence timeline",
+    whatWeCanDo: "Build incident reconstruction timeline, prep public records and FOIA requests for body cam footage, research FL civil rights complaint process and failure-to-ID statute, organize evidence for complaint or defense",
     score: 0,
   },
   {
-    id: "lead-007", name: "Anonymous (OK)", state: "OK", tier: 2, urgency: "medium",
+    id: "lead-009", name: "SerenePhoenix4023", state: "OK", tier: 2, urgency: "medium",
     caseType: "custody", status: "new",
-    description: "Pro se litigant in Oklahoma custody case. Needs help with contempt filing and visitation modification. Self-represented, overwhelmed by process.",
-    whatTheyNeed: "Contempt motion research, visitation modification procedures, court filing organization, deadline tracking",
-    whatWeCanDo: "Research OK family court procedures, organize existing orders and violations, build filing checklist, draft motion framework for attorney review",
+    description: "Six years pro se in Oklahoma custody case. Needs help drafting contempt motion and visitation modification. Overwhelmed by process. Long history of self-representation. Needs structured motion format and violation organization.",
+    whatTheyNeed: "Clean contempt motion format, visitation modification drafting, violation organization, filing checklist",
+    whatWeCanDo: "Structure clean motion format, organize violations and requested relief, research OK family court contempt and modification procedures, build filing checklist and deadline tracker",
     score: 0,
-  },
-  {
-    id: "lead-008", name: "Anonymous (FL Construction)", state: "FL", tier: 2, urgency: "medium",
-    caseType: "construction", status: "new",
-    description: "Florida construction dispute. $7,500 at stake. Mediation coming up. Contractor dispute with documentation gaps.",
-    whatTheyNeed: "Contract review organization, mediation prep, damage documentation, payment timeline",
-    whatWeCanDo: "Organize contract and payment records, build chronological timeline, research FL construction lien law, prep mediation document stack",
-    deadlineNote: "Mediation date approaching", score: 0,
   },
 
-  // ── TIER 3: Light Touch / Screen ──
-  {
-    id: "lead-009", name: "Nikki Betz", state: "Unknown", tier: 3, urgency: "low",
-    caseType: "simple_divorce", status: "new",
-    description: "Simple divorce paperwork needs. Appears straightforward, no contested issues mentioned.",
-    whatTheyNeed: "Basic divorce paperwork guidance, filing requirements",
-    whatWeCanDo: "Provide state-specific filing checklist, organize documents, refer to legal aid if appropriate",
-    score: 0,
-  },
+  // ── TIER 3: Low Priority / Screen ──
   {
     id: "lead-010", name: "Anonymous (Bound Over)", state: "Unknown", tier: 3, urgency: "low",
     caseType: "question", status: "new",
-    description: "Asked about what 'bound over' means in their case. Basic procedural question. May have deeper case needs.",
-    whatTheyNeed: "Procedural explanation, possible deeper intake",
+    description: "Asked about what 'bound over' means. No additional facts provided. Basic procedural question — may have deeper case needs if screened.",
+    whatTheyNeed: "Procedural explanation, possible deeper intake screening",
     whatWeCanDo: "Explain bind-over process, screen for underlying case complexity, offer full intake if warranted",
     score: 0,
   },
   {
-    id: "lead-011", name: "Anonymous (DoorDash)", state: "Unknown", tier: 3, urgency: "low",
-    caseType: "harassment", status: "new",
-    description: "DoorDash-related harassment complaint. Details limited. Needs screening to determine actionability.",
-    whatTheyNeed: "Incident documentation guidance, platform complaint process",
-    whatWeCanDo: "Screen for actionable claims, organize incident records, advise on reporting channels",
+    id: "lead-011", name: "Adam Skalski", state: "Unknown", tier: 3, urgency: "low",
+    caseType: "incomplete", status: "screening",
+    description: "Name provided but no usable case facts yet. Needs screening call to determine if there is an actionable matter.",
+    whatTheyNeed: "Screening call to surface facts",
+    whatWeCanDo: "Brief outreach to determine situation, screen for actionable issues, offer intake if warranted",
     score: 0,
   },
-
-  // ── TIER 4: Skip / No Action ──
   {
-    id: "lead-012", name: "Adam", state: "Unknown", tier: 4, urgency: "low",
-    caseType: "weak", status: "skip",
-    description: "Ex introduced children to new partner. No custody order violation. Emotionally difficult but legally weak without more facts.",
-    whatTheyNeed: "Screening only", whatWeCanDo: "Brief response — no actionable issue without custody order violation", score: 0,
-  },
-  {
-    id: "lead-013", name: "Anonymous (South Africa)", state: "South Africa", tier: 4, urgency: "low",
-    caseType: "out_of_scope", status: "skip",
-    description: "Located in South Africa. Outside US jurisdiction scope.",
-    whatTheyNeed: "N/A — outside scope", whatWeCanDo: "Polite redirect — outside geographic scope", score: 0,
-  },
-  {
-    id: "lead-014", name: "Anonymous (India/Jaipur)", state: "India", tier: 4, urgency: "low",
+    id: "lead-012", name: "International / Non-Relevant", state: "N/A", tier: 3, urgency: "low",
     caseType: "not_a_lead", status: "skip",
-    description: "India/Jaipur inquiry. Not a viable lead for US-focused advocacy platform.",
-    whatTheyNeed: "N/A", whatWeCanDo: "No action", score: 0,
-  },
-  {
-    id: "lead-015", name: "YouTube Content", state: "N/A", tier: 4, urgency: "low",
-    caseType: "not_a_lead", status: "skip",
-    description: "YouTube content interaction. Not a lead.",
-    whatTheyNeed: "N/A", whatWeCanDo: "No action", score: 0,
+    description: "International inquiries (South Africa, India/Jaipur) and non-English posts. Outside US jurisdiction scope. No action.",
+    whatTheyNeed: "N/A — outside scope", whatWeCanDo: "Polite redirect where appropriate, otherwise no action", score: 0,
   },
 ];
 
@@ -177,59 +157,87 @@ const PUBLIC_COMMENTS = [
     text: "I saw your post — if your family member is dealing with a wrongful charge or sentencing issue, we help organize records, audit trial evidence, and build clear timelines. Free initial review. DM if you want to talk.",
   },
   {
-    id: "pub-3", label: "Custody / Family",
-    text: "Custody battles are overwhelming, especially pro se. We help people get organized — documents, timelines, filing checklists — so you walk into court prepared, not guessing. Happy to take a look if you want to message me.",
+    id: "pub-3", label: "Custody / Family Safety",
+    text: "Family situations like this are overwhelming. We help people organize the facts, build safety documentation, and get prepared — not with generic templates, but with actual case-specific structure. Free initial review. DM me if you want help.",
   },
   {
-    id: "pub-4", label: "Housing / Tenant",
+    id: "pub-4", label: "Housing / Eviction",
     text: "If your landlord is threatening illegal eviction or ignoring habitability issues, there are real protections. We help organize evidence, research tenant rights, and build documentation. Free to start — DM me.",
   },
   {
     id: "pub-5", label: "Evidence / Police Misconduct",
     text: "Missing body cam footage, badge refusals, and erased evidence are serious. We help people organize what they have, file public records requests, and build incident timelines. Free initial review — reach out anytime.",
   },
+  {
+    id: "pub-6", label: "Parent Criminal Charge (Truancy)",
+    text: "Being charged because of your kid's school attendance is terrifying, especially when you have documented enforcement. We help build compliance evidence packets and prep what to say — and what not to say — before court. DM me if you want a hand.",
+  },
 ];
 
 const DM_TEMPLATES = [
   {
+    id: "dm-family-safety", label: "Family Safety / Custody Risk",
+    text: `Hi — I saw your post and I want you to know you are not alone in this. What you described — someone moved into your home without your consent, around your children — is a real safety concern, not just a relationship issue.
+
+We help people in situations like yours by:
+- Building a household risk and safety summary
+- Documenting the timeline of what happened and when
+- Organizing facts for emergency custody or protective positioning
+- Connecting you with resources and referrals
+
+We are not attorneys — we are a case support team that helps you get organized so you are not scrambling when it matters. Free initial review. Want to tell me more?`,
+  },
+  {
+    id: "dm-truancy-defense", label: "Truancy / Parent Criminal Charge",
+    text: `Hi Lauren — I saw your post about the truancy charge. Being charged as a parent when you have documented enforcement is incredibly frustrating.
+
+Here is what we can do:
+- Build a compliance evidence packet from your records — discipline logs, school communications, attendance records
+- Construct a clear timeline showing your enforcement actions
+- Help you prep what to say (and what NOT to say) in school meetings before court
+- Organize everything into a format a defense attorney can use immediately
+
+Free initial review. No obligation. Want to send me some details about your situation?`,
+  },
+  {
+    id: "dm-wrongful-eviction", label: "Wrongful Eviction (Kansas)",
+    text: `Hi — I saw your post about the eviction situation in Topeka. If you have bank statements proving payment, that is strong evidence.
+
+We help by:
+- Building a payment proof timeline from your bank records
+- Organizing your lease, notices, and landlord communications
+- Researching Kansas tenant protections and wrongful eviction remedies
+- Prepping a document stack for counterclaim or defense positioning
+
+We are not a law firm — we help you get organized so an attorney (or you) can move fast. Free initial review. Want to share the details?`,
+  },
+  {
     id: "dm-ms-pcr", label: "Mississippi Post-Conviction",
-    text: `Hi [Name] — I saw your post about your son's case. I work with UNYKORN Advocacy, and we help families dealing with wrongful convictions and sentencing issues in Mississippi.
+    text: `Hi Alisha — I saw your post about your son's case. I work with UNYKORN Advocacy, and we help families dealing with wrongful convictions and sentencing issues.
 
 What we can do:
 - Organize the trial record and identify inconsistencies
 - Research post-conviction relief standards in MS
 - Build a clear timeline of what happened
-- Prepare a case summary that an attorney can use
+- Prepare a case summary that an attorney can use immediately
 
 We do the heavy lifting on the documents and research so you are not starting from scratch. Free initial review. Would you like to send me some details?`,
   },
   {
-    id: "dm-ok-custody", label: "Oklahoma Custody",
-    text: `Hi — I saw you are dealing with a custody situation in Oklahoma. That can feel impossible when you are representing yourself.
+    id: "dm-ok-custody", label: "Oklahoma Custody (Pro Se)",
+    text: `Hi — I saw you have been dealing with a custody situation in Oklahoma for 6 years pro se. That takes real persistence.
 
 We help pro se parents get organized:
-- Research your state's procedures for contempt and modification
-- Organize your existing orders and evidence of violations  
+- Structure clean contempt motion format
+- Organize your existing orders and evidence of violations
 - Build filing checklists so nothing gets missed
 - Create a clear timeline judges can follow
 
-Free initial review. Want to tell me a bit more about your situation?`,
-  },
-  {
-    id: "dm-fl-construction", label: "Florida Construction Dispute",
-    text: `Hi — I saw your post about the contractor situation. $7,500 disputes like this are exactly what mediation prep is for.
-
-We help by:
-- Organizing all your contracts, receipts, and communications
-- Building a payment and work timeline
-- Researching FL construction/lien law relevant to your case
-- Preparing your mediation document stack
-
-Free initial review. Want to send me the details?`,
+Free initial review. Want to tell me a bit more about where things stand now?`,
   },
   {
     id: "dm-general", label: "General Intake",
-    text: `Hi [Name] — I saw your post and wanted to reach out. I work with UNYKORN Advocacy — we help people organize their cases, build evidence timelines, and get prepared before court dates or deadlines.
+    text: `Hi — I saw your post and wanted to reach out. I work with UNYKORN Advocacy — we help people organize their cases, build evidence timelines, and get prepared before court dates or deadlines.
 
 We are not a law firm — we are a case support and advocacy organization that uses AI tools and real human review to help people who are overwhelmed by legal processes.
 
@@ -270,11 +278,10 @@ const STATUS_LABELS: Record<LeadStatus, { label: string; color: string }> = {
 };
 
 const CASE_LABELS: Record<CaseType, string> = {
-  divorce: "Divorce / Assets", child_abuse: "Child Abuse", post_conviction: "Post-Conviction",
-  protection_order: "Protection Order", housing: "Housing / Tenant", arrest: "Arrest / Misconduct",
-  custody: "Custody", construction: "Construction Dispute", simple_divorce: "Simple Divorce",
-  question: "Legal Question", harassment: "Harassment", weak: "Weak / No Action",
-  out_of_scope: "Out of Scope", not_a_lead: "Not a Lead",
+  family_safety: "Family Safety", truancy: "Truancy / Parent Charge", child_abuse: "Child Abuse",
+  post_conviction: "Post-Conviction", protection_order: "Protection Order", housing: "Housing / Eviction",
+  arrest: "Arrest / Misconduct", custody: "Custody", civil_rights: "Civil Rights",
+  question: "Legal Question", incomplete: "Incomplete", not_a_lead: "Not a Lead",
 };
 
 const PIPELINE_STAGES: { key: LeadStatus; label: string; icon: string }[] = [

@@ -66,7 +66,7 @@ export default function OpsPage() {
                 description: "Case intake scoring, outreach templates, pipeline tracking, and human-first triage. Real case buildout — not generic AI prompts.",
                 href: "/ops/leads",
                 icon: "🎯",
-                count: 4,
+                count: 6,
                 countLabel: "immediate",
                 priority: true,
               },
