@@ -28,6 +28,20 @@ interface PolygonStatus {
   timestamp: string;
 }
 
+interface AIStatus {
+  status: string;
+  providers: string[];
+  models: Record<string, string>;
+  toolCount: number;
+  tools: { name: string; description: string }[];
+}
+
+interface RAGStatus {
+  status: string;
+  vectorStore: { totalDocuments: number; uniqueSources: number; types: Record<string, number> };
+  config: { chunkSize: number; topK: number; embeddingModel: string };
+}
+
 const CONTRACT_META: Record<string, { label: string; icon: string; description: string }> = {
   legalCaseNFT:      { label: "LegalCaseNFT",      icon: "⚖️",  description: "ERC-721 case file tokens" },
   legalCaseAccount:  { label: "LegalCaseAccount",   icon: "🏦",  description: "ERC-6551 token-bound vaults" },
@@ -41,19 +55,31 @@ function isFundedAddress(balance: string): boolean {
 }
 
 export default function PolygonChainDashboard() {
-  const [status, setStatus]     = useState<PolygonStatus | null>(null);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState<string | null>(null);
+  const [status, setStatus]         = useState<PolygonStatus | null>(null);
+  const [aiStatus, setAiStatus]     = useState<AIStatus | null>(null);
+  const [ragStatus, setRagStatus]   = useState<RAGStatus | null>(null);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState<string | null>(null);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
   const fetchStatus = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/chain/polygon", { cache: "no-store" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      setStatus(data);
+      const [chainRes, aiRes, ragRes] = await Promise.allSettled([
+        fetch("/api/chain/polygon", { cache: "no-store" }),
+        fetch("/api/ai/status",     { cache: "no-store" }),
+        fetch("/api/rag/status",    { cache: "no-store" }),
+      ]);
+      if (chainRes.status === "fulfilled" && chainRes.value.ok) {
+        setStatus(await chainRes.value.json());
+      }
+      if (aiRes.status === "fulfilled" && aiRes.value.ok) {
+        setAiStatus(await aiRes.value.json());
+      }
+      if (ragRes.status === "fulfilled" && ragRes.value.ok) {
+        setRagStatus(await ragRes.value.json());
+      }
       setLastRefresh(new Date());
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : String(e));
@@ -280,6 +306,94 @@ export default function PolygonChainDashboard() {
             </div>
           </div>
 
+          {/* AI Intelligence Layer */}
+          <div className="mb-10">
+            <h2 className="font-serif text-sm tracking-[0.2em] uppercase text-[var(--gold)] mb-6">AI INTELLIGENCE LAYER</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              {[
+                {
+                  label: "AI Provider",
+                  value: aiStatus?.providers.length
+                    ? aiStatus.providers[0].toUpperCase()
+                    : "Not Configured",
+                  sub: aiStatus?.providers.length
+                    ? `${aiStatus.models.analysis} · ${aiStatus.toolCount} tools`
+                    : "Add OPENAI_API_KEY to .env.local",
+                  ok: (aiStatus?.providers.length ?? 0) > 0,
+                },
+                {
+                  label: "RAG Vectorstore",
+                  value: ragStatus?.vectorStore.totalDocuments != null
+                    ? ragStatus.vectorStore.totalDocuments.toString()
+                    : "—",
+                  sub: ragStatus
+                    ? `${ragStatus.vectorStore.uniqueSources} sources · ${Object.keys(ragStatus.vectorStore.types).length} types`
+                    : "No documents ingested",
+                  ok: (ragStatus?.vectorStore.totalDocuments ?? 0) >= 0,
+                },
+                {
+                  label: "MCP Server",
+                  value: "Configured",
+                  sub: "legal-chain v1.0 · stdio transport",
+                  ok: true,
+                },
+                {
+                  label: "Agent Network",
+                  value: "5 Agents",
+                  sub: "Atlas · Lexis · DocDrafter · Forensics · Settlement",
+                  ok: true,
+                },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className={`bg-[var(--navy-card)] border rounded-lg p-5 ${
+                    stat.ok
+                      ? "border-[rgba(201,168,76,0.12)]"
+                      : "border-orange-800/40 bg-orange-950/20"
+                  }`}
+                >
+                  <p className={`text-xl font-serif font-bold mb-1 ${
+                    stat.ok ? "text-[var(--gold)]" : "text-orange-400"
+                  }`}>
+                    {stat.value}
+                  </p>
+                  <p className="text-xs font-mono text-[var(--text-muted)] tracking-wider mb-1 uppercase">{stat.label}</p>
+                  <p className="text-xs font-mono text-[var(--text-muted)] opacity-60 leading-relaxed">{stat.sub}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Anchor-to-RAG bridge explainer */}
+            <div className="bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-6">
+              <div className="flex items-start gap-4">
+                <div className="text-2xl mt-0.5">🤖</div>
+                <div className="flex-1">
+                  <h3 className="font-serif text-base font-bold mb-2">Blockchain ↔ AI Bridge</h3>
+                  <p className="text-sm text-[var(--text-muted)] mb-4 leading-relaxed">
+                    When a document is anchored, the system simultaneously pins it to IPFS, registers the content hash on-chain
+                    (DocumentRegistry + AuditAnchor), and ingests the full text into the RAG vectorstore — making every
+                    anchored document instantly searchable by the AI agent network.
+                  </p>
+                  <div className="flex flex-wrap gap-2 text-xs font-mono">
+                    {[
+                      { step: "1", label: "IPFS pin → CID",            color: "text-blue-400 border-blue-800/30 bg-blue-900/20" },
+                      { step: "2", label: "Polygon anchor → TX hash",   color: "text-[var(--gold)] border-[rgba(201,168,76,0.3)] bg-[rgba(201,168,76,0.05)]" },
+                      { step: "3", label: "RAG ingest → embeddings",    color: "text-green-400 border-green-800/30 bg-green-900/20" },
+                      { step: "4", label: "AI agents → searchable",     color: "text-purple-400 border-purple-800/30 bg-purple-900/20" },
+                    ].map((s) => (
+                      <span key={s.step} className={`px-3 py-1 rounded border ${s.color}`}>
+                        {s.step}. {s.label}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-xs font-mono text-[var(--text-muted)] opacity-50 mt-3">
+                    Endpoint: POST /api/chain/polygon/anchor
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* IPFS Details */}
           {status?.ipfs.online && status.ipfs.id && (
             <div className="mb-10">
@@ -310,15 +424,15 @@ export default function PolygonChainDashboard() {
             </div>
           )}
 
-          {/* Deploy Instructions (when contracts not deployed) */}
+          {/* Deploy Instructions (shown when contracts not deployed) */}
           {deployedCount < totalContracts && (
             <div className="mb-10 bg-[var(--navy-card)] border border-[rgba(201,168,76,0.1)] rounded-lg p-8">
               <h2 className="font-serif text-sm tracking-[0.2em] uppercase text-[var(--gold)] mb-4">DEPLOY CONTRACTS</h2>
               <p className="text-sm text-[var(--text-muted)] mb-4">
-                Fund issuer wallet with MATIC, then run from project root:
+                Fund issuer wallet with POL, then run from project root:
               </p>
               <pre className="bg-[var(--midnight)] rounded p-4 text-xs font-mono text-[var(--gold)] overflow-x-auto">
-                npx hardhat run scripts/deploy-contracts.ts --network polygon-amoy
+                npx hardhat run scripts/deploy-contracts.ts --network polygon-mainnet
               </pre>
               <p className="text-xs text-[var(--text-muted)] mt-3 opacity-70">
                 Addresses auto-patched into .env.local after successful deploy. Redeploy Vercel to publish.
