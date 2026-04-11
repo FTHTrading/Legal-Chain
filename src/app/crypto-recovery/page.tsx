@@ -11,6 +11,7 @@ import {
   AppShell, SectionCard, StatCard, StatusPill, ResultPanel,
   FormField, GlassInput, GlassSelect, GlassTextarea, GlassButton,
   EscalateToAiLine, ToastProvider, toast,
+  ProofReceipt,
 } from '@/components/widgets';
 
 const ESCALATION = getLawNumbers(['law-888', 'law-888-974']);
@@ -62,7 +63,7 @@ export default function CryptoRecoveryPage() {
 
   return (
     <ToastProvider>
-      <AppShell title="Crypto Recovery Intake" subtitle="Stolen crypto · Wallet tracing" escalationNumbers={ESCALATION}>
+      <AppShell title="Crypto Recovery Report" subtitle="Log the theft. Start the trace." escalationNumbers={ESCALATION}>
         {result ? (
           <div className="space-y-4 widget-enter">
             <ResultPanel title="INCIDENT LOGGED" variant="success">
@@ -117,6 +118,7 @@ export default function CryptoRecoveryPage() {
                 <Search size={14} /> Ready for Forensic Review
               </div>
             </div>
+            <ProofReceipt caseId={result.caseId} submittedAt={new Date()} type="crypto-recovery" summary={result.data.summary} />
             <EscalateToAiLine escalationNumbers={ESCALATION} />
           </div>
         ) : (

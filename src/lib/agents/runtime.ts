@@ -9,6 +9,7 @@
 import { randomUUID } from "crypto";
 import type { Agent, AgentActionLog } from "../schemas/agent";
 import { executeTask, type TaskRequest, type TaskResult } from "./executor";
+import { MARKETING_AGENTS } from "./marketing-roster";
 
 // ── Runtime State ──
 
@@ -233,6 +234,9 @@ export function initRuntime(): void {
   if (state.isRunning) return;
 
   for (const agent of DEFAULT_AGENTS) {
+    state.agents.set(agent.id, agent);
+  }
+  for (const agent of MARKETING_AGENTS) {
     state.agents.set(agent.id, agent);
   }
 

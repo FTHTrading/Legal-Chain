@@ -76,7 +76,7 @@ export default function EvidenceTimelinePage() {
 
   return (
     <ToastProvider>
-      <AppShell title="Evidence Timeline" subtitle="Upload evidence · Organize timeline events" escalationNumbers={ESCALATION}>
+      <AppShell title="Evidence Drop" subtitle="Save the proof before it disappears." escalationNumbers={ESCALATION}>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

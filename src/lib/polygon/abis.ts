@@ -1,6 +1,6 @@
 /**
- * Contract ABIs — Minimal interfaces for ethers.js interaction.
- * These match the deployed Solidity contracts.
+ * Contract ABIs ΓÇö Minimal interfaces for ethers.js v6 interaction.
+ * These match the deployed Solidity contracts on Polygon mainnet (chain 137).
  */
 
 export const LegalCaseNFT_ABI = [

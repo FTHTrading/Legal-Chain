@@ -12,6 +12,7 @@ export const AgentTeam = z.enum([
   "forensic_intelligence",
   "workflow_orchestration",
   "infrastructure",
+  "marketing_revenue",
 ]);
 
 // ── Agent Status ──
@@ -39,9 +40,23 @@ export const EscalationTriggerSchema = z.object({
     "client_facing_content",
     "error_or_failure",
     "ethical_concern",
+    // Marketing triggers
+    "budget_exceeded",
+    "roi_below_threshold",
+    "no_viable_angle",
+    "discount_too_high",
+    "low_funnel_conversion",
+    "high_bounce_rate",
+    "spam_complaint",
+    "cpa_exceeded",
+    "budget_warning",
+    "slow_response",
+    "zero_conversion_burn",
+    "compliance_violation",
+    "misleading_claim",
   ]),
   threshold: z.number().optional(),
-  escalateTo: z.enum(["supervising_attorney", "case_strategist", "paralegal", "system_admin"]),
+  escalateTo: z.string(), // role or agent ID
   notifyImmediately: z.boolean().default(false),
 });
 export type EscalationTrigger = z.infer<typeof EscalationTriggerSchema>;

@@ -61,6 +61,11 @@ export const Permission = z.enum([
   "namespace:read",
   "namespace:download",
   "namespace:message",
+  // Marketing
+  "marketing:view",
+  "marketing:manage",
+  "marketing:approve",
+  "marketing:analytics",
 ]);
 export type Permission = z.infer<typeof Permission>;
 
@@ -77,6 +82,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "research:query", "research:read", "research:export",
     "forensics:analyze", "forensics:export",
     "namespace:read", "namespace:download",
+    "marketing:view", "marketing:manage", "marketing:approve", "marketing:analytics",
   ],
   case_strategist: [
     "matter:read", "matter:write",

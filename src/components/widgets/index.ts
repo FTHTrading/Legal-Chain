@@ -11,3 +11,5 @@ export { LegalHotlineStrip } from './LegalHotlineStrip';
 export { CallbackRequestModal } from './CallbackRequestModal';
 export { EscalateToAiLine } from './EscalateToAiLine';
 export { ClickToCallButton } from './ClickToCallButton';
+export { UrgentHelpFAB } from './UrgentHelpFAB';
+export { ProofReceipt } from './ProofReceipt';

@@ -1,5 +1,5 @@
 /**
- * IPFS Client — Pin and retrieve documents via local Kubo node.
+ * IPFS Client ΓÇö Pin and retrieve documents via local Kubo node.
  *
  * Server-side only. Requires IPFS daemon running on localhost:5001.
  * Uses the Kubo RPC API (HTTP).
@@ -67,7 +67,7 @@ export async function pinJSON(data: Record<string, unknown>, name?: string): Pro
 
 /** Pin raw bytes/file to IPFS */
 export async function pinFile(content: Buffer | Uint8Array, filename: string): Promise<IPFSPinResult> {
-  const buf  = Buffer.isBuffer(content) ? content : Buffer.from(content as Uint8Array);
+  const buf = Buffer.isBuffer(content) ? content : Buffer.from(content as Uint8Array);
   const blob = new Blob([new Uint8Array(buf)]);
   const form = new FormData();
   form.append("file", blob, filename);
@@ -169,4 +169,25 @@ export async function getRepoStats(): Promise<{ numObjects: number; repoSize: nu
   } catch {
     return null;
   }
+}
+
+/** Build an IPFSDocument descriptor */
+export function buildIPFSDocument(
+  cid: string,
+  name: string,
+  caseRef: string,
+  docType: string,
+  contentHash: string,
+  size: number
+): IPFSDocument {
+  return {
+    cid,
+    name,
+    caseRef,
+    docType,
+    contentHash,
+    size,
+    pinnedAt: new Date().toISOString(),
+    gatewayUrl: getGatewayUrl(cid),
+  };
 }

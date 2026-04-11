@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import { TopBar } from './TopBar';
 import { LegalHotlineStrip } from './LegalHotlineStrip';
 import { AiLineCard } from './AiLineCard';
+import { UrgentHelpFAB } from './UrgentHelpFAB';
 import type { LegalNumber } from '@/lib/legal-numbers';
 
 interface AppShellProps {
@@ -35,6 +36,7 @@ export function AppShell({ title, subtitle, children, escalationNumbers = [] }: 
         {children}
       </main>
       <LegalHotlineStrip numbers={escalationNumbers} />
+      <UrgentHelpFAB />
     </div>
   );
 }

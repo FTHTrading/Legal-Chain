@@ -13,9 +13,7 @@ import {
   type GeneratedReport,
 } from "@/lib/reports/pdf-generator";
 import { getOrchestration } from "@/lib/orchestrator/orchestrator";
-
-// In-memory report store
-const reportStore = new Map<string, GeneratedReport>();
+import { db } from "@/lib/db";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -25,7 +23,7 @@ export async function GET(request: NextRequest) {
 
   // Fetch specific report
   if (reportId) {
-    const report = reportStore.get(reportId);
+    const report = await db.report.findUnique({ where: { id: reportId } });
     if (!report) {
       return NextResponse.json({ error: "Report not found" }, { status: 404 });
     }
@@ -45,7 +43,7 @@ export async function GET(request: NextRequest) {
       id: report.id,
       reportType: report.reportType,
       matterId: report.matterId,
-      generatedAt: report.generatedAt,
+      generatedAt: report.createdAt.toISOString(),
       sizeBytes: report.sizeBytes,
       downloadUrl: `/api/reports?id=${report.id}&format=html`,
     });
@@ -53,27 +51,36 @@ export async function GET(request: NextRequest) {
 
   // List reports for a matter
   if (matterId) {
-    const reports = Array.from(reportStore.values())
-      .filter(r => r.matterId === matterId)
-      .map(r => ({
+    const reports = await db.report.findMany({
+      where: { matterId },
+      select: { id: true, reportType: true, matterId: true, createdAt: true, sizeBytes: true },
+    });
+    return NextResponse.json({
+      count: reports.length,
+      reports: reports.map(r => ({
         id: r.id,
         reportType: r.reportType,
         matterId: r.matterId,
-        generatedAt: r.generatedAt,
+        generatedAt: r.createdAt.toISOString(),
         sizeBytes: r.sizeBytes,
-      }));
-    return NextResponse.json({ count: reports.length, reports });
+      })),
+    });
   }
 
   // List all reports (just metadata)
-  const all = Array.from(reportStore.values()).map(r => ({
-    id: r.id,
-    reportType: r.reportType,
-    matterId: r.matterId,
-    generatedAt: r.generatedAt,
-    sizeBytes: r.sizeBytes,
-  }));
-  return NextResponse.json({ count: all.length, reports: all });
+  const all = await db.report.findMany({
+    select: { id: true, reportType: true, matterId: true, createdAt: true, sizeBytes: true },
+  });
+  return NextResponse.json({
+    count: all.length,
+    reports: all.map(r => ({
+      id: r.id,
+      reportType: r.reportType,
+      matterId: r.matterId,
+      generatedAt: r.createdAt.toISOString(),
+      sizeBytes: r.sizeBytes,
+    })),
+  });
 }
 
 export async function POST(request: NextRequest) {
@@ -134,7 +141,16 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    reportStore.set(report.id, report);
+    // Persist to database
+    await db.report.create({
+      data: {
+        id: report.id,
+        reportType: report.reportType,
+        matterId: report.matterId,
+        html: report.html,
+        sizeBytes: report.sizeBytes,
+      },
+    });
 
     return NextResponse.json({
       id: report.id,

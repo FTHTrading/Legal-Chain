@@ -1,24 +1,6 @@
 import { NextResponse } from "next/server";
 import { randomBytes } from "crypto";
-
-/**
- * Beta Tester Store — In-memory for now, persists via Vercel KV or DB later.
- * Each signup gets a unique invite code they can share.
- */
-
-export interface BetaTester {
-  id: string;
-  email: string;
-  name?: string;
-  role?: string;
-  inviteCode: string;
-  referredBy?: string;
-  signedUpAt: string;
-  activated: boolean;
-}
-
-// In-memory store (will be replaced with DB)
-const betaTesters: BetaTester[] = [];
+import { db } from "@/lib/db";
 
 function generateInviteCode(): string {
   return `UNYLAW-${randomBytes(4).toString("hex").toUpperCase()}`;
@@ -43,45 +25,53 @@ export async function POST(request: Request) {
     }
 
     // Check duplicate
-    if (betaTesters.some((t) => t.email.toLowerCase() === email.toLowerCase())) {
-      const existing = betaTesters.find((t) => t.email.toLowerCase() === email.toLowerCase())!;
+    const existing = await db.betaSignup.findUnique({
+      where: { email: email.toLowerCase() },
+    });
+    if (existing) {
+      const totalSignups = await db.betaSignup.count();
+      // Determine position by counting signups created before this one
+      const position = await db.betaSignup.count({
+        where: { createdAt: { lte: existing.createdAt } },
+      });
       return NextResponse.json({
         ok: true,
         message: "Already registered!",
         inviteCode: existing.inviteCode,
-        position: betaTesters.indexOf(existing) + 1,
-        totalSignups: betaTesters.length,
+        position,
+        totalSignups,
       });
     }
 
     // Validate referral code if provided
     let referredBy: string | undefined;
     if (referralCode) {
-      const referrer = betaTesters.find((t) => t.inviteCode === referralCode);
+      const referrer = await db.betaSignup.findUnique({
+        where: { inviteCode: referralCode },
+      });
       if (referrer) referredBy = referrer.email;
     }
 
-    const tester: BetaTester = {
-      id: `beta-${Date.now()}-${randomBytes(4).toString("hex")}`,
-      email: email.toLowerCase(),
-      name,
-      role,
-      inviteCode: generateInviteCode(),
-      referredBy,
-      signedUpAt: new Date().toISOString(),
-      activated: false,
-    };
+    const tester = await db.betaSignup.create({
+      data: {
+        email: email.toLowerCase(),
+        name,
+        role,
+        inviteCode: generateInviteCode(),
+        referredBy,
+      },
+    });
 
-    betaTesters.push(tester);
+    const totalSignups = await db.betaSignup.count();
 
-    console.log(`[Beta Signup] #${betaTesters.length}: ${email} (ref: ${referralCode || "direct"})`);
+    console.log(`[Beta Signup] #${totalSignups}: ${email} (ref: ${referralCode || "direct"})`);
 
     return NextResponse.json({
       ok: true,
       message: "Welcome to the UNYKORN // LAW beta!",
       inviteCode: tester.inviteCode,
-      position: betaTesters.length,
-      totalSignups: betaTesters.length,
+      position: totalSignups,
+      totalSignups,
       shareUrl: `https://law.unykorn.org/beta?ref=${tester.inviteCode}`,
     });
   } catch (err) {
@@ -94,13 +84,19 @@ export async function POST(request: Request) {
  * GET /api/beta/signup — Get beta stats
  */
 export async function GET() {
+  const totalSignups = await db.betaSignup.count();
+  const recentSignups = await db.betaSignup.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 5,
+    select: { name: true, role: true, createdAt: true },
+  });
   return NextResponse.json({
-    totalSignups: betaTesters.length,
-    spotsRemaining: Math.max(0, 100 - betaTesters.length),
-    recentSignups: betaTesters.slice(-5).map((t) => ({
+    totalSignups,
+    spotsRemaining: Math.max(0, 100 - totalSignups),
+    recentSignups: recentSignups.map((t) => ({
       name: t.name || "Anonymous",
       role: t.role || "Tester",
-      signedUpAt: t.signedUpAt,
+      signedUpAt: t.createdAt.toISOString(),
     })),
   });
 }
