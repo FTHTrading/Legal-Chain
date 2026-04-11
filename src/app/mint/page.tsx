@@ -10,9 +10,9 @@ type EthereumProvider = ethers.Eip1193Provider & {
   request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
 };
 
-const REGISTRY_ADDRESS = process.env.NEXT_PUBLIC_LEGAL_NAME_REGISTRY_ADDRESS ?? "";
-const AMOY_CHAIN_ID    = 80002;
-const AMOY_CHAIN_HEX   = "0x13882";
+const REGISTRY_ADDRESS   = process.env.NEXT_PUBLIC_LEGAL_NAME_REGISTRY_ADDRESS ?? "";
+const POLYGON_CHAIN_ID   = 137;
+const POLYGON_CHAIN_HEX  = "0x89";
 
 const TLD_OPTIONS = ["law", "legal"] as const;
 type TLD = typeof TLD_OPTIONS[number];
@@ -71,12 +71,12 @@ export default function MintNamespacePage() {
       if (!accounts.length) return;
 
       const network = await prov.getNetwork();
-      if (Number(network.chainId) !== AMOY_CHAIN_ID) {
+      if (Number(network.chainId) !== POLYGON_CHAIN_ID) {
         setWrongNetwork(true);
         try {
           await eth.request({
             method: "wallet_switchEthereumChain",
-            params: [{ chainId: AMOY_CHAIN_HEX }],
+            params: [{ chainId: POLYGON_CHAIN_HEX }],
           });
           setWrongNetwork(false);
         } catch {
@@ -84,11 +84,11 @@ export default function MintNamespacePage() {
           await eth.request({
             method: "wallet_addEthereumChain",
             params: [{
-              chainId:   AMOY_CHAIN_HEX,
-              chainName: "Polygon Amoy Testnet",
-              nativeCurrency: { name: "MATIC", symbol: "MATIC", decimals: 18 },
-              rpcUrls:        ["https://rpc-amoy.polygon.technology"],
-              blockExplorerUrls: ["https://amoy.polygonscan.com"],
+              chainId:   POLYGON_CHAIN_HEX,
+              chainName: "Polygon Mainnet",
+              nativeCurrency: { name: "POL", symbol: "POL", decimals: 18 },
+              rpcUrls:        ["https://polygon-bor-rpc.publicnode.com"],
+              blockExplorerUrls: ["https://polygonscan.com"],
             }],
           });
           setWrongNetwork(false);
@@ -198,8 +198,8 @@ export default function MintNamespacePage() {
               CLAIM YOUR<br /><span className="text-[var(--gold)]">.LAW NAME.</span>
             </h1>
             <p className="text-lg text-[var(--text-muted)] max-w-xl">
-              Register a sovereign <strong className="text-white">.law</strong> or <strong className="text-white">.legal</strong> namespace on Polygon.
-              Each name is an ERC-721 NFT — own your identity on-chain, forever.
+              Register a sovereign <strong className="text-white">.law</strong> or <strong className="text-white">.legal</strong> namespace on Polygon Mainnet.
+              Each name is an ERC-721 NFT — own your legal identity on-chain, forever.
             </p>
           </div>
 
@@ -220,7 +220,7 @@ export default function MintNamespacePage() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                   <p className="font-serif text-base font-bold mb-1">Connect Wallet</p>
-                  <p className="text-sm text-[var(--text-muted)]">MetaMask required · Polygon Amoy Testnet</p>
+                  <p className="text-sm text-[var(--text-muted)]">MetaMask required · Polygon Mainnet</p>
                 </div>
                 <button
                   onClick={connectWallet}
@@ -236,7 +236,7 @@ export default function MintNamespacePage() {
                   <p className="text-sm font-mono text-white break-all">{wallet}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <BadgePill color="green">Amoy Testnet</BadgePill>
+                  <BadgePill color="green">Polygon Mainnet</BadgePill>
                   <button
                     onClick={disconnectWallet}
                     className="text-xs font-mono text-[var(--text-muted)] hover:text-red-400 transition-colors"
@@ -248,7 +248,7 @@ export default function MintNamespacePage() {
             )}
             {wrongNetwork && (
               <p className="text-orange-400 text-xs font-mono mt-3">
-                ⚠ Wrong network — please switch to Polygon Amoy Testnet (chain ID 80002) in MetaMask.
+                ⚠ Wrong network — please switch to Polygon Mainnet (chain ID 137) in MetaMask.
               </p>
             )}
           </div>
@@ -324,7 +324,7 @@ export default function MintNamespacePage() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div>
                     <p className="font-serif text-base font-bold mb-0.5">Mint <span className="text-[var(--gold)]">{fullName}</span></p>
-                    <p className="text-xs text-[var(--text-muted)]">Price: Free (testnet) · Gas: ~0.001 MATIC estimated</p>
+                    <p className="text-xs text-[var(--text-muted)]">Price: Free · Gas: ~0.001 POL estimated</p>
                   </div>
                   <button
                     onClick={mintName}
@@ -339,7 +339,7 @@ export default function MintNamespacePage() {
                   <div className="mt-4 bg-[var(--midnight)] rounded p-4 text-xs font-mono">
                     <p className="text-yellow-400 mb-1">Transaction submitted…</p>
                     <a
-                      href={`https://amoy.polygonscan.com/tx/${txHash}`}
+                      href={`https://polygonscan.com/tx/${txHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[var(--gold)] hover:underline break-all"
@@ -353,7 +353,7 @@ export default function MintNamespacePage() {
                   <div className="mt-4 bg-green-950/30 border border-green-800/30 rounded p-4 text-xs font-mono text-green-400">
                     ✓ {fullName} minted successfully!{" "}
                     <a
-                      href={`https://amoy.polygonscan.com/tx/${txHash}`}
+                      href={`https://polygonscan.com/tx/${txHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="underline"
