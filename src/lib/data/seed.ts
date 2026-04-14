@@ -587,8 +587,51 @@ export const ACTIVE_CASES = [
     chains: "GA / FL",
     namespace: "creamer.unykorn.org",
     description: "Joint venture property accounting â€” Georgia-led with Florida enforcement overlay",
+  },  // ── Sovereign / International Matters ──
+  {
+    id: "icc-2026-gulf-001",
+    title: "ICC-2026-GULF-001",
+    subtitle: "Gulf Sovereign Fund — Digital Asset Recovery",
+    type: "sovereign_arbitration",
+    status: "active_arbitration",
+    amount: "$2.4B",
+    chains: "ICC / ADGM / Abu Dhabi",
+    namespace: "gulf-sovereign.unykorn.org",
+    description: "ICC International Court of Arbitration — Abu Dhabi sovereign wealth vehicle recovering $2.4B in misappropriated digital assets from exchange operator across ADGM, FSRA, and FATF R.15 compliance frameworks",
   },
-];
+  {
+    id: "lcia-2026-eu-001",
+    title: "LCIA-2026-EU-001",
+    subtitle: "EU Institutional Fund — MiCA Regulatory Defense",
+    type: "regulatory_enforcement_defense",
+    status: "regulatory_response",
+    amount: "€890M",
+    chains: "LCIA / England & Wales / EU Multi-State",
+    namespace: "eu-mica.unykorn.org",
+    description: "LCIA arbitration defending €890M European institutional asset manager against ESMA and member-state regulators under MiCA (Reg 2023/1114), AMLD6, EMIR Refit, and GDPR enforcement proceedings",
+  },
+  {
+    id: "uncitral-2026-apac-001",
+    title: "UNCITRAL-2026-APAC-001",
+    subtitle: "Singapore MAS — Cross-Border Stablecoin Reserve Dispute",
+    type: "regulatory_arbitration",
+    status: "regulatory_proceedings",
+    amount: "SGD 1.2B (~$890M)",
+    chains: "UNCITRAL / Singapore SICC / MAS",
+    namespace: "apac-mas.unykorn.org",
+    description: "UNCITRAL Model Law arbitration before Singapore International Commercial Court — MAS enforcement action against digital payment institution under Payment Services Act 2019, PS(A)A 2021, PDPA, and FATF R.15 stablecoin reserve requirements",
+  },
+  {
+    id: "icsid-2026-latam-001",
+    title: "ICSID-2026-LATAM-001",
+    subtitle: "Sovereign Treasury — BIT Arbitration — Digital Infrastructure",
+    type: "bilateral_investment_treaty",
+    status: "preliminary_jurisdiction",
+    amount: "$3.1B",
+    chains: "ICSID / BIT / Vienna Convention",
+    namespace: "latam-bit.unykorn.org",
+    description: "ICSID Convention Art. 25 BIT arbitration — sovereign state treasury asserting $3.1B claim for expropriation of digital infrastructure investment; preliminary jurisdiction phase under Vienna Convention on the Law of Treaties and UNCITRAL Model Law",
+  },];
 
 // Agent Network Data
 export const AGENT_NETWORK = {

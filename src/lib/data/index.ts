@@ -6,6 +6,14 @@
 export { SEED_MATTER_CREAMER } from "./seed";
 export { SEED_FORENSIC_CRYPTO_NTI_2026_001 } from "./seed-platform";
 
+// Sovereign & International Jurisdiction Seed Data (ICC, LCIA, UNCITRAL, ICSID)
+export {
+  SEED_NAMESPACE_GULF_ICC,
+  SEED_NAMESPACE_EU_LCIA,
+  SEED_NAMESPACE_APAC_UNCITRAL,
+  SEED_NAMESPACE_LATAM_ICSID,
+} from "./seed-sovereign";
+
 // New seed cases (Cases 006, 007, 008)
 export { SEED_CASE_006_TENANT_HABITABILITY, SEED_CASE_007_LANDLORD_RECOVERY, SEED_CASE_008_WRONGFUL_FORECLOSURE, SEED_CASES } from "./seed-cases";
 
